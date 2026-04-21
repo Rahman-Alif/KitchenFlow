@@ -1,8 +1,79 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\PasswordResetController;
+
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\MenuItemController;
+use App\Http\Controllers\Admin\DashboardController;
+
+use App\Http\Controllers\KitchenStaff\OrderQueueController;
+use App\Http\Controllers\KitchenStaff\MenuAvailabilityController;
+use App\Http\Controllers\KitchenStaff\TransactionController;
+
+use App\Http\Controllers\User\MenuController;
+use App\Http\Controllers\User\OrderController;
+
+// ─── Public ───────────────────────────────────────────────
+Route::post('/auth/login', [LoginController::class, 'store']);
+Route::post('/auth/password-reset/request', [PasswordResetController::class, 'request']);
+Route::post('/auth/password-reset/confirm', [PasswordResetController::class, 'confirm']);
+
+// ─── Authenticated ────────────────────────────────────────
+Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
+
+    Route::post('/auth/logout', [LogoutController::class, 'store']);
+
+    // ─── Admin ────────────────────────────────────────────
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
+
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index']);
+
+        // Users
+        Route::apiResource('users', UserController::class);
+        Route::patch('/users/{user}/activate', [UserController::class, 'activate']);
+        Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate']);
+        Route::post('/users/bulk', [UserController::class, 'bulk']);
+
+        // Categories
+        Route::apiResource('categories', CategoryController::class)->except(['update']);
+
+        // Menu Items
+        Route::apiResource('menu-items', MenuItemController::class);
+        Route::patch('/menu-items/{menuItem}/restock', [MenuItemController::class, 'restock']);
+    });
+
+    // ─── Kitchen Staff ────────────────────────────────────
+    Route::middleware('role:kitchen_staff')->prefix('kitchen')->group(function () {
+
+        // Order Queue
+        Route::get('/orders', [OrderQueueController::class, 'index']);
+        Route::get('/orders/{order}', [OrderQueueController::class, 'show']);
+        Route::patch('/orders/{order}/status', [OrderQueueController::class, 'updateStatus']);
+
+        // Menu Availability
+        Route::get('/menu-items', [MenuAvailabilityController::class, 'index']);
+        Route::patch('/menu-items/{menuItem}/toggle', [MenuAvailabilityController::class, 'toggle']);
+        Route::patch('/menu-items/{menuItem}/restock', [MenuAvailabilityController::class, 'restock']);
+
+        // Transactions
+        Route::post('/orders/{order}/transaction', [TransactionController::class, 'store']);
+    });
+
+    // ─── User ─────────────────────────────────────────────
+    Route::middleware('role:user')->prefix('user')->group(function () {
+
+        // Menu
+        Route::get('/menu', [MenuController::class, 'index']);
+
+        // Orders
+        Route::post('/orders', [OrderController::class, 'store']);
+        Route::get('/orders/{order}', [OrderController::class, 'show']);
+    });
+
+});
