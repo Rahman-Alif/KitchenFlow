@@ -52,14 +52,20 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
     Route::middleware('role:kitchen_staff')->prefix('kitchen')->group(function () {
 
         // Order Queue
+        Route::get('/orders', [\App\Http\Controllers\KitchenStaff\OrderQueueController::class, 'index']);
         Route::get('/orders', [OrderQueueController::class, 'index']);
         Route::get('/orders/{order}', [OrderQueueController::class, 'show']);
         Route::patch('/orders/{order}/status', [OrderQueueController::class, 'updateStatus']);
+        Route::patch('/orders/{id}/status', [\App\Http\Controllers\KitchenStaff\OrderQueueController::class, 'updateStatus']);
+        Route::get('/orders/{id}', [\App\Http\Controllers\KitchenStaff\OrderQueueController::class, 'show']);
+        Route::post('/orders/{id}/transaction', [\App\Http\Controllers\KitchenStaff\TransactionController::class, 'store']);
 
         // Menu Availability
         Route::get('/menu-items', [MenuAvailabilityController::class, 'index']);
         Route::patch('/menu-items/{menuItem}/toggle', [MenuAvailabilityController::class, 'toggle']);
         Route::patch('/menu-items/{menuItem}/restock', [MenuAvailabilityController::class, 'restock']);
+        Route::get('/menu', [\App\Http\Controllers\KitchenStaff\MenuAvailabilityController::class, 'index']);
+        Route::patch('/menu/{id}/availability', [\App\Http\Controllers\KitchenStaff\MenuAvailabilityController::class, 'updateAvailability']);
 
         // Transactions
         Route::post('/orders/{order}/transaction', [TransactionController::class, 'store']);

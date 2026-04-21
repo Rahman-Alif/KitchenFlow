@@ -24,8 +24,9 @@ class Transaction extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function recordedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'recorded_by');
-    }
+    public function recordedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+   {
+    return $this->belongsTo(User::class, 'recorded_by');
+   }
 }
+
