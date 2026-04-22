@@ -45,4 +45,34 @@ class AuthService
             'token' => $token,
         ];
     }
+    public function requestPasswordReset(string $email): void
+    {
+        $user = User::where('email', $email)->firstOrFail();
+
+        // Delete any existing token for this user
+        \App\Models\PasswordResetToken::where('user_id', $user->id)->delete();
+
+        $token = \Illuminate\Support\Str::random(64);
+
+        \App\Models\PasswordResetToken::create([
+            'user_id'    => $user->id,
+            'token'      => $token,
+            'expires_at' => now()->addMinutes(60),
+        ]);
+
+        \Illuminate\Support\Facades\Mail::to($user->email)->send(
+            new \App\Mail\PasswordResetMail($token)
+        );
+    }
+
+    public function confirmPasswordReset(string $token, string $password): void
+    {
+        $record = \App\Models\PasswordResetToken::where('token', $token)
+            ->where('expires_at', '>', now())
+            ->firstOrFail();
+
+        $record->user->update(['password' => $password]);
+
+        $record->delete();
+    }
 }
