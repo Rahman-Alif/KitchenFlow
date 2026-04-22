@@ -48,4 +48,17 @@ class UserController extends Controller
             abort(403, 'Unauthorized.');
         }
     }
-}
+    public function activate(Request $request, User $user): UserResource
+    {
+        $this->authorizeTenant($user, $request);
+        $user->update(['is_active' => true]);
+        return new UserResource($user);
+    }
+
+    public function deactivate(Request $request, User $user): UserResource
+    {
+        $this->authorizeTenant($user, $request);
+        $user->update(['is_active' => false]);
+        return new UserResource($user);
+    }
+    }
