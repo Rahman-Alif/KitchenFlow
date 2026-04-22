@@ -28,8 +28,7 @@ class MenuAvailabilityService
      */
     public function updateAvailability(int $itemId, bool $isAvailable, int $tenantId): MenuItem
     {
-        $item = MenuItem::with('category:id,name')->findOrFail($itemId);
-
+        $item = MenuItem::with('category:id,name,tenant_id')->findOrFail($itemId);
         if ($item->category->tenant_id !== $tenantId) {
             abort(403, 'Menu item does not belong to your organization.');
         }

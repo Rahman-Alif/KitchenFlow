@@ -4,7 +4,7 @@ namespace App\Services\KitchenStaff;
 
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
-
+use Illuminate\Support\Facades\Log;
 class OrderQueueService
 {
     private const VALID_TRANSITIONS = [
@@ -24,9 +24,9 @@ class OrderQueueService
             })
             ->whereIn('status', ['pending', 'preparing', 'ready'])
             ->with([
-                'user:id,name',
-                'orderItems.menuItem:id,name',
-            ])
+    'user',
+    'orderItems.menuItem:id,name',
+])
             ->oldest()
             ->get();
     }
@@ -51,7 +51,7 @@ class OrderQueueService
         $order->status = $newStatus;
         $order->save();
 
-        return $order->load(['user:id,name', 'orderItems.menuItem:id,name']);
+        return $order->load(['user', 'orderItems.menuItem:id,name']);
     }
 
     /**
@@ -59,18 +59,18 @@ class OrderQueueService
      * Aborts 403 if order belongs to a different tenant.
      * Aborts 404 if order not found.
      */
-    public function getOrderDetail(int $orderId, int $tenantId): Order
-    {
-        $order = Order::with([
-            'user:id,name',
-            'orderItems.menuItem:id,name',
-            'transaction',
-        ])->findOrFail($orderId);
+ public function getOrderDetail(int $orderId, int $tenantId): Order
+{
+    $order = Order::with([
+        'user',
+        'orderItems.menuItem:id,name',
+        'transaction',
+    ])->findOrFail($orderId);
 
-        if ($order->user->tenant_id !== $tenantId) {
-            abort(403, 'Order does not belong to your organization.');
-        }
-
-        return $order;
+    if ($order->user->tenant_id !== $tenantId) {
+        abort(403, 'Order does not belong to your organization.');
     }
+
+    return $order;
+}
 }

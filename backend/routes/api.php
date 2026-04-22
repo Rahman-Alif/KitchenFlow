@@ -19,56 +19,47 @@ use App\Http\Controllers\User\MenuController;
 use App\Http\Controllers\User\OrderController;
 
 // ─── Public ───────────────────────────────────────────────
-Route::post('/auth/login', [LoginController::class, 'store']);
-Route::post('/auth/password-reset/request', [PasswordResetController::class, 'request']);
-Route::post('/auth/password-reset/confirm', [PasswordResetController::class, 'confirm']);
+Route::post('/login', [LoginController::class, 'store']);
+//Route::post('/auth/password-reset/request', [PasswordResetController::class, 'request']);
+//Route::post('/auth/password-reset/confirm', [PasswordResetController::class, 'confirm']);
 
 // ─── Authenticated ────────────────────────────────────────
 Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
 
-    Route::post('/auth/logout', [LogoutController::class, 'store']);
+    Route::post('/logout', [LogoutController::class, 'store']);
 
     // ─── Admin ────────────────────────────────────────────
     Route::middleware('role:admin')->prefix('admin')->group(function () {
 
         // Dashboard
-        Route::get('/dashboard', [DashboardController::class, 'index']);
+       // Route::get('/dashboard', [DashboardController::class, 'index']);
 
         // Users
-        Route::apiResource('users', UserController::class);
-        Route::patch('/users/{user}/activate', [UserController::class, 'activate']);
-        Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate']);
-        Route::post('/users/bulk', [UserController::class, 'bulk']);
+       // Route::apiResource('users', UserController::class);
+       // Route::patch('/users/{user}/activate', [UserController::class, 'activate']);
+       // Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate']);
+       // Route::post('/users/bulk', [UserController::class, 'bulk']);
 
         // Categories
-        Route::apiResource('categories', CategoryController::class)->except(['update']);
+       // Route::apiResource('categories', CategoryController::class)->except(['update']);
 
         // Menu Items
-        Route::apiResource('menu-items', MenuItemController::class);
-        Route::patch('/menu-items/{menuItem}/restock', [MenuItemController::class, 'restock']);
+       // Route::apiResource('menu-items', MenuItemController::class);
+       // Route::patch('/menu-items/{menuItem}/restock', [MenuItemController::class, 'restock']);
     });
 
     // ─── Kitchen Staff ────────────────────────────────────
     Route::middleware('role:kitchen_staff')->prefix('kitchen')->group(function () {
 
         // Order Queue
-        Route::get('/orders', [\App\Http\Controllers\KitchenStaff\OrderQueueController::class, 'index']);
         Route::get('/orders', [OrderQueueController::class, 'index']);
-        Route::get('/orders/{order}', [OrderQueueController::class, 'show']);
-        Route::patch('/orders/{order}/status', [OrderQueueController::class, 'updateStatus']);
-        Route::patch('/orders/{id}/status', [\App\Http\Controllers\KitchenStaff\OrderQueueController::class, 'updateStatus']);
-        Route::get('/orders/{id}', [\App\Http\Controllers\KitchenStaff\OrderQueueController::class, 'show']);
-        Route::post('/orders/{id}/transaction', [\App\Http\Controllers\KitchenStaff\TransactionController::class, 'store']);
+        Route::get('/orders/{id}', [OrderQueueController::class, 'show']);
+        Route::patch('/orders/{id}/status', [OrderQueueController::class, 'updateStatus']);
+        Route::post('/orders/{id}/transaction', [TransactionController::class, 'store']);
 
         // Menu Availability
-        Route::get('/menu-items', [MenuAvailabilityController::class, 'index']);
-        Route::patch('/menu-items/{menuItem}/toggle', [MenuAvailabilityController::class, 'toggle']);
-        Route::patch('/menu-items/{menuItem}/restock', [MenuAvailabilityController::class, 'restock']);
-        Route::get('/menu', [\App\Http\Controllers\KitchenStaff\MenuAvailabilityController::class, 'index']);
-        Route::patch('/menu/{id}/availability', [\App\Http\Controllers\KitchenStaff\MenuAvailabilityController::class, 'updateAvailability']);
-
-        // Transactions
-        Route::post('/orders/{order}/transaction', [TransactionController::class, 'store']);
+        Route::get('/menu', [MenuAvailabilityController::class, 'index']);
+        Route::patch('/menu/{id}/availability', [MenuAvailabilityController::class, 'updateAvailability']);
     });
 
     // ─── User ─────────────────────────────────────────────
