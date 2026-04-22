@@ -59,9 +59,8 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::post('/orders/{id}/transaction', [TransactionController::class, 'store']);
 
         // Menu Availability
-        Route::get('/menu-items', [MenuAvailabilityController::class, 'index']);
-        Route::patch('/menu-items/{menuItem}/toggle', [MenuAvailabilityController::class, 'toggle']);
-        Route::patch('/menu-items/{menuItem}/restock', [MenuAvailabilityController::class, 'restock']);
+        Route::get('/menu', [MenuAvailabilityController::class, 'index']);
+        Route::patch('/menu/{id}/availability', [MenuAvailabilityController::class, 'updateAvailability']);
     });
 
     // ─── User ─────────────────────────────────────────────
