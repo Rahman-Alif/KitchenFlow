@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\UserResource;
 use App\Http\Requests\Admin\CreateUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -31,5 +32,20 @@ class UserController extends Controller
         ]);
 
         return new UserResource($user);
+    }
+    public function update(UpdateUserRequest $request, User $user): UserResource
+    {
+        $this->authorizeTenant($user, $request);
+
+        $user->update($request->only(['name', 'email', 'role']));
+
+        return new UserResource($user);
+    }
+
+    private function authorizeTenant(User $user, Request $request): void
+    {
+        if ($user->tenant_id !== $request->user()->tenant_id) {
+            abort(403, 'Unauthorized.');
+        }
     }
 }
