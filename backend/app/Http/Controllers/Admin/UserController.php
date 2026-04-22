@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\UserResource;
 use App\Http\Requests\Admin\CreateUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Http\Requests\Admin\BulkCreateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -32,6 +33,54 @@ class UserController extends Controller
         ]);
 
         return new UserResource($user);
+    }
+    public function bulk(BulkCreateUserRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $file = $request->file('file');
+        $handle = fopen($file->getPathname(), 'r');
+
+        $created = [];
+        $errors  = [];
+        $row     = 0;
+
+        while (($line = fgetcsv($handle)) !== false) {
+            $row++;
+
+            // Skip header row
+            if ($row === 1) continue;
+
+            [$name, $email, $role] = array_pad($line, 3, null);
+
+            // Validate each row
+            if (!$name || !$email || !in_array($role, ['admin', 'kitchen_staff', 'user'])) {
+                $errors[] = "Row {$row}: invalid data.";
+                continue;
+            }
+
+            if (User::where('email', $email)->exists()) {
+                $errors[] = "Row {$row}: email {$email} already exists.";
+                continue;
+            }
+
+            $user = User::create([
+                'tenant_id' => $request->user()->tenant_id,
+                'name'      => trim($name),
+                'email'     => trim($email),
+                'password'  => 'password123',
+                'role'      => trim($role),
+                'is_active' => true,
+            ]);
+
+            $created[] = $user->id;
+        }
+
+        fclose($handle);
+
+        return response()->json([
+            'message' => count($created) . ' users created.',
+            'created' => count($created),
+            'errors'  => $errors,
+        ]);
     }
     public function update(UpdateUserRequest $request, User $user): UserResource
     {
@@ -61,4 +110,10 @@ class UserController extends Controller
         $user->update(['is_active' => false]);
         return new UserResource($user);
     }
+    public function destroy(Request $request, User $user): \Illuminate\Http\JsonResponse
+    {
+        $this->authorizeTenant($user, $request);
+        $user->delete();
+        return response()->json(['message' => 'User deleted successfully.']);
     }
+}
