@@ -33,7 +33,7 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
     Route::middleware('role:admin')->prefix('admin')->group(function () {
 
         // Dashboard
-        Route::get('/dashboard', [DashboardController::class, 'index']);
+        // Route::get('/dashboard', [DashboardController::class, 'index']);
 
         // Users
         Route::apiResource('users', UserController::class);
