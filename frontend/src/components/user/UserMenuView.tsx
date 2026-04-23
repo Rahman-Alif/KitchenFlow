@@ -98,12 +98,22 @@ export default function UserMenuView() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <div className="flex gap-6">
 
-        {/* Menu */}
+        {/* Menu — left side */}
         <div className="flex-1">
-          <h2 className="text-2xl font-bold text-white mb-6">Menu</h2>
+
+          {/* Page Header */}
+          <div className="text-center py-8 mb-6 border-b border-zinc-800">
+            <p className="text-zinc-500 text-xs tracking-widest uppercase mb-1">
+              Betopia Limited
+            </p>
+            <h1 className="text-3xl font-bold text-white tracking-tight">
+              Kitchen<span className="text-orange-500">Flow</span>
+            </h1>
+            <p className="text-zinc-500 text-sm mt-2">Fresh meals, made to order</p>
+          </div>
 
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg px-4 py-3 mb-6">
@@ -112,77 +122,87 @@ export default function UserMenuView() {
           )}
 
           {loading ? (
-            <div className="text-zinc-500 text-sm">Loading menu...</div>
-          ) : categories.length === 0 ? (
-            <div className="text-zinc-500 text-sm">No items available.</div>
+            <div className="text-center py-20 text-zinc-500 text-sm">Loading menu...</div>
           ) : (
-            <div className="space-y-8">
+            <div>
               {categories.map((cat) => (
-                <div key={cat.category_id}>
-                  <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-                    {cat.category_name}
-                  </h3>
-                  <div className="space-y-2">
+                <div key={cat.category_id} className="mb-12">
+
+                  {/* Category header */}
+                  <div className="text-center mb-6">
+                    <p className="text-zinc-600 text-lg">···</p>
+                    <h2 className="text-xl font-bold text-white uppercase tracking-widest mt-1">
+                      {cat.category_name}
+                    </h2>
+                    <p className="text-zinc-600 text-lg">···</p>
+                  </div>
+
+                  {/* Items grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                     {cat.items.map((item) => {
                       const qty = getQuantity(item.id);
                       return (
-                        <div
-                          key={item.id}
-                          className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden flex"
-                        >
+                        <div key={item.id} className="flex flex-col items-center text-center">
+
                           {/* Image */}
-                          {item.image_path && (
-                            <div className="w-24 h-24 shrink-0">
+                          <div className="w-full aspect-square rounded-lg overflow-hidden mb-3 bg-zinc-800">
+                            {item.image_path ? (
                               <img
                                 src={item.image_path}
                                 alt={item.name}
                                 className="w-full h-full object-cover"
                               />
-                            </div>
-                          )}
-
-                          {/* Details */}
-                          <div className="flex-1 p-4 flex items-center justify-between">
-                            <div className="flex-1 mr-4">
-                              <p className="text-white font-medium">{item.name}</p>
-                              {item.description && (
-                                <p className="text-zinc-500 text-xs mt-0.5 line-clamp-2">
-                                  {item.description}
-                                </p>
-                              )}
-                              <p className="text-orange-400 font-semibold text-sm mt-1">
-                                ৳{item.price}
-                              </p>
-                            </div>
-
-                            {/* Quantity control */}
-                            {qty === 0 ? (
-                              <button
-                                onClick={() => addToCart(item)}
-                                className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition"
-                              >
-                                Add
-                              </button>
                             ) : (
-                              <div className="flex items-center gap-3">
-                                <button
-                                  onClick={() => removeFromCart(item.id)}
-                                  className="w-8 h-8 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-lg flex items-center justify-center transition"
-                                >
-                                  −
-                                </button>
-                                <span className="text-white font-semibold w-4 text-center">
-                                  {qty}
-                                </span>
-                                <button
-                                  onClick={() => addToCart(item)}
-                                  className="w-8 h-8 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-lg flex items-center justify-center transition"
-                                >
-                                  +
-                                </button>
+                              <div className="w-full h-full flex items-center justify-center text-zinc-600 text-sm">
+                                No image
                               </div>
                             )}
                           </div>
+
+                          {/* Name */}
+                          <p className="text-white font-semibold text-sm leading-tight mb-1">
+                            {item.name}
+                          </p>
+
+                          {/* Description */}
+                          {item.description && (
+                            <p className="text-zinc-500 text-xs leading-relaxed mb-2 line-clamp-2 px-1">
+                              {item.description}
+                            </p>
+                          )}
+
+                          {/* Price */}
+                          <p className="text-orange-400 font-bold text-base mb-3">
+                            ৳{item.price}
+                          </p>
+
+                          {/* Add / Quantity control */}
+                          {qty === 0 ? (
+                            <button
+                              onClick={() => addToCart(item)}
+                              className="px-5 py-1.5 border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white text-xs font-semibold rounded-full transition"
+                            >
+                              Add to Order
+                            </button>
+                          ) : (
+                            <div className="flex items-center gap-3">
+                              <button
+                                onClick={() => removeFromCart(item.id)}
+                                className="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white flex items-center justify-center transition"
+                              >
+                                −
+                              </button>
+                              <span className="text-white font-semibold text-sm w-4 text-center">
+                                {qty}
+                              </span>
+                              <button
+                                onClick={() => addToCart(item)}
+                                className="w-7 h-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition"
+                              >
+                                +
+                              </button>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -193,7 +213,7 @@ export default function UserMenuView() {
           )}
         </div>
 
-        {/* Cart */}
+        {/* Cart — right side, always visible */}
         <div className="w-80 shrink-0">
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 sticky top-6">
             <h3 className="text-white font-bold text-lg mb-4">Your Order</h3>
@@ -211,9 +231,23 @@ export default function UserMenuView() {
                           ৳{item.price} x {item.quantity}
                         </p>
                       </div>
-                      <p className="text-white text-sm font-semibold">
-                        ৳{(parseFloat(item.price) * item.quantity).toFixed(2)}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => removeFromCart(item.menu_item_id)}
+                          className="w-6 h-6 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white text-xs flex items-center justify-center transition"
+                        >
+                          −
+                        </button>
+                        <span className="text-white text-sm font-semibold w-4 text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => addToCart({ id: item.menu_item_id, name: item.name, price: item.price })}
+                          className="w-6 h-6 rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs flex items-center justify-center transition"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
