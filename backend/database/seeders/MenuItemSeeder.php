@@ -28,7 +28,7 @@ class MenuItemSeeder extends Seeder
                 ['category_id' => 3, 'name' => 'Mishti Doi',         'price' => 35,  'stock' => 20, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 3, 'name' => 'Rasgolla',           'price' => 30,  'stock' => 0,  'available' => false, 'image_path' => 'https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 3, 'name' => 'Firni',              'price' => 50,  'stock' => 16, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80'],
-            ['category_id' => 3, 'name' => 'Jilapi',             'price' => 25,  'stock' => 45, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6?auto=format&fit=crop&w=800&q=80'],
+            ['category_id' => 3, 'name' => 'Jilapi',             'price' => 25,  'stock' => 45, 'available' => true,  'image_path' => 'https://www.thedailystar.net/sites/default/files/styles/big_1/public/images/2025/03/13/hq720.jpg'],
             ['category_id' => 3, 'name' => 'Chocolate Brownie',  'price' => 80,  'stock' => 14, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80'],
 
             // Beverages (category 4)
