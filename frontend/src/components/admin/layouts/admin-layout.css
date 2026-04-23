@@ -109,3 +109,81 @@
 .adm-main {
   padding: calc(var(--adm-topbar-height) + 24px) 24px 24px;
 }
+
+.adm-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 12, 20, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+  padding: 16px;
+}
+
+.adm-modal-card {
+  width: 100%;
+  max-width: 460px;
+  border-radius: 12px;
+  border: 1px solid var(--adm-border);
+  background: #ffffff;
+  box-shadow: 0 14px 38px rgba(12, 18, 35, 0.22);
+  padding: 18px;
+}
+
+.adm-modal-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.adm-modal-message {
+  margin: 0;
+  color: var(--adm-muted);
+  line-height: 1.45;
+}
+
+.adm-modal-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.adm-modal-input {
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+.adm-modal-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.adm-modal-btn {
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--adm-text);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.adm-modal-btn--primary {
+  background: var(--adm-primary);
+  border-color: var(--adm-primary);
+  color: #fff;
+}
+
+.adm-modal-btn--danger {
+  background: #d92d20;
+  border-color: #d92d20;
+  color: #fff;
+}

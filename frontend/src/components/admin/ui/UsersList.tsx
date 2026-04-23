@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import AdminConfirmDialog from '@/components/admin/shared/AdminConfirmDialog';
 import {
   AdminUser,
   activateUser,
@@ -26,6 +27,7 @@ export default function UsersList() {
   const [actionUserId, setActionUserId] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
   const [bulkMessage, setBulkMessage] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
 
   async function loadUsers() {
     setLoading(true);
@@ -107,13 +109,17 @@ export default function UsersList() {
     setActionUserId(null);
   }
 
-  async function handleDelete(user: AdminUser) {
+  function handleDelete(user: AdminUser) {
     if (actionUserId !== null) return;
-    if (!window.confirm(`Delete user "${user.name}"?`)) return;
+    setDeleteTarget(user);
+  }
 
-    setActionUserId(user.id);
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setActionUserId(deleteTarget.id);
     setError(null);
-    const response = await deleteUser(user.id);
+    const response = await deleteUser(deleteTarget.id);
 
     if (response.error) {
       setError(response.error);
@@ -121,6 +127,7 @@ export default function UsersList() {
       return;
     }
 
+    setDeleteTarget(null);
     await loadUsers();
     setActionUserId(null);
   }
@@ -258,6 +265,16 @@ export default function UsersList() {
           </tbody>
         </table>
       </div>
+
+      <AdminConfirmDialog
+        open={deleteTarget !== null}
+        title="Delete User"
+        message={deleteTarget ? `Delete user "${deleteTarget.name}"? This action cannot be undone.` : ''}
+        confirmText="Delete"
+        danger
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+      />
     </section>
   );
 }
