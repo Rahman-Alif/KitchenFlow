@@ -102,6 +102,22 @@ class MenuItemController extends Controller
         return new MenuItemResource($menuItem->load('category'));
     }
 
+    public function lowStock(Request $request): AnonymousResourceCollection
+    {
+        $tenantId = $request->user()->tenant_id;
+    
+        $items = MenuItem::whereHas('category', function ($query) use ($tenantId) {
+                $query->where('tenant_id', $tenantId);
+            })
+            ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+            ->where('stock_quantity', '>', 0)
+            ->with('category')
+            ->orderBy('stock_quantity')
+            ->get();
+    
+        return MenuItemResource::collection($items);
+    }    
+
     private function authorizeCategoryTenant(int $categoryId, int $tenantId): void
     {
         $category = Category::findOrFail($categoryId);

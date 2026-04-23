@@ -49,6 +49,7 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::apiResource('categories', CategoryController::class)->except(['update']);
 
         // Menu Items
+        Route::get('/menu-items/low-stock', [MenuItemController::class, 'lowStock']);
         Route::apiResource('menu-items', MenuItemController::class);
         Route::patch('/menu-items/{menuItem}/restock', [MenuItemController::class, 'restock']);
     });

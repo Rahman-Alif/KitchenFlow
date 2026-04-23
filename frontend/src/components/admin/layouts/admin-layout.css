@@ -188,22 +188,6 @@
   color: #fff;
 }
 
-.adm-subscription-btn {
-  border: 1px solid var(--adm-border);
-  background: #fff;
-  color: var(--adm-text);
-  border-radius: var(--adm-radius);
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.adm-subscription-btn:hover {
-  color: var(--adm-text-main);
-  border-color: var(--adm-text-muted);
-}
-
 /* Subscription dropdown */
 .adm-subscription-wrapper {
   position: relative;
@@ -214,16 +198,18 @@
   border: 1px solid var(--adm-border);
   color: var(--adm-text-muted);
   padding: 6px 14px;
-  border-radius: var(--adm-radius);
+  border-radius: 8px;
   font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .adm-subscription-btn:hover,
 .adm-subscription-btn--active {
+  background: #f8faff;
   color: var(--adm-text-main);
-  border-color: var(--adm-text-muted);
+  border-color: var(--adm-border);
 }
 
 .adm-subscription-dropdown {
