@@ -4,11 +4,39 @@ namespace Database\Seeders;
 
 use App\Models\MenuItem;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MenuItemSeeder extends Seeder
 {
     public function run(): void
     {
+        $duplicateGroups = MenuItem::query()
+            ->select('category_id', 'name')
+            ->groupBy('category_id', 'name')
+            ->havingRaw('COUNT(*) > 1')
+            ->get();
+
+        foreach ($duplicateGroups as $group) {
+            $records = MenuItem::query()
+                ->where('category_id', $group->category_id)
+                ->where('name', $group->name)
+                ->orderBy('id')
+                ->get();
+
+            $keep = $records->first();
+            $duplicateIds = $records->skip(1)->pluck('id')->all();
+
+            if (!$keep || empty($duplicateIds)) {
+                continue;
+            }
+
+            DB::table('order_items')
+                ->whereIn('menu_item_id', $duplicateIds)
+                ->update(['menu_item_id' => $keep->id]);
+
+            MenuItem::query()->whereIn('id', $duplicateIds)->delete();
+        }
+
         $items = [
             // Main Course (category 1)
             ['category_id' => 1, 'name' => 'Chicken Biryani',    'price' => 120, 'stock' => 50, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1563379091339-03246963d29d?auto=format&fit=crop&w=800&q=80'],
@@ -25,7 +53,7 @@ class MenuItemSeeder extends Seeder
             ['category_id' => 2, 'name' => 'Fish Finger',        'price' => 95,  'stock' => 20, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=800&q=80'],
 
             // Desserts (category 3)
-                ['category_id' => 3, 'name' => 'Mishti Doi',         'price' => 35,  'stock' => 20, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=800&q=80'],
+            ['category_id' => 3, 'name' => 'Mishti Doi',         'price' => 35,  'stock' => 20, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 3, 'name' => 'Rasgolla',           'price' => 30,  'stock' => 0,  'available' => false, 'image_path' => 'https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 3, 'name' => 'Firni',              'price' => 50,  'stock' => 16, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 3, 'name' => 'Jilapi',             'price' => 25,  'stock' => 45, 'available' => true,  'image_path' => 'https://www.thedailystar.net/sites/default/files/styles/big_1/public/images/2025/03/13/hq720.jpg'],
@@ -43,7 +71,7 @@ class MenuItemSeeder extends Seeder
             ['category_id' => 5, 'name' => 'Piyaju',             'price' => 10,  'stock' => 0,  'available' => false, 'image_path' => 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 5, 'name' => 'Chicken Puff',       'price' => 35,  'stock' => 50, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 5, 'name' => 'Dal Puri',           'price' => 20,  'stock' => 42, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80'],
-            ['category_id' => 5, 'name' => 'Egg Chop',           'price' => 25,  'stock' => 38, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&w=800&q=80'],
+            ['category_id' => 5, 'name' => 'Egg Chop',           'price' => 25,  'stock' => 38, 'available' => true,  'image_path' => 'https://eggs.ca/wp-content/uploads/2024/06/Masala-Egg-Chops-CMS.jpg'],
 
             // Special Menu (category 6)
             ['category_id' => 6, 'name' => 'Friday Special',      'price' => 200, 'stock' => 15, 'available' => true, 'image_path' => 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80'],
@@ -52,15 +80,19 @@ class MenuItemSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            MenuItem::create([
-                'category_id'         => $item['category_id'],
-                'name'                => $item['name'],
-                'price'               => $item['price'],
-                'stock_quantity'      => $item['stock'],
-                'low_stock_threshold' => 10,
-                'is_available'        => $item['available'],
-                'image_path'          => $item['image_path'] ?? null,
-            ]);
+            MenuItem::updateOrCreate(
+                [
+                    'category_id' => $item['category_id'],
+                    'name'        => $item['name'],
+                ],
+                [
+                    'price'               => $item['price'],
+                    'stock_quantity'      => $item['stock'],
+                    'low_stock_threshold' => 10,
+                    'is_available'        => $item['available'],
+                    'image_path'          => $item['image_path'] ?? null,
+                ]
+            );
         }
     }
 }

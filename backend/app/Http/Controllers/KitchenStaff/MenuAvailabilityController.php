@@ -36,4 +36,14 @@ class MenuAvailabilityController extends Controller
 
         return new MenuItemResource($item);
     }
+
+    public function requestRestock(Request $request, int $id): MenuItemResource
+    {
+        $tenantId = $request->user()->tenant_id;
+        $quantity = $request->input('quantity');
+
+        $item = $this->menuAvailabilityService->requestRestock($id, $tenantId, $quantity);
+
+        return new MenuItemResource($item);
+    }
 }

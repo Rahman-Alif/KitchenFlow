@@ -97,7 +97,7 @@ class MenuItemController extends Controller
         $request->validate(['quantity' => ['required', 'integer', 'min:1']]);
 
         $menuItem->increment('stock_quantity', $request->quantity);
-        $menuItem->update(['is_available' => true]);
+        $menuItem->update(['is_available' => true, 'needs_restock' => false, 'requested_restock_quantity' => null]);
 
         return new MenuItemResource($menuItem->load('category'));
     }

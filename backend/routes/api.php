@@ -61,6 +61,7 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         // Menu Availability
         Route::get('/menu', [MenuAvailabilityController::class, 'index']);
         Route::patch('/menu/{id}/availability', [MenuAvailabilityController::class, 'updateAvailability']);
+        Route::post('/menu/{id}/request-restock', [MenuAvailabilityController::class, 'requestRestock']);
     });
 
     // ─── User ─────────────────────────────────────────────

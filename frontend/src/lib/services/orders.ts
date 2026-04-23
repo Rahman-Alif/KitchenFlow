@@ -38,6 +38,8 @@ export interface KitchenMenuItem {
   low_stock_threshold: number;
   is_available:        boolean;
   is_low_stock:        boolean;
+  needs_restock:       boolean;
+  requested_restock_quantity: number | null;
 }
 
 export interface UserMenuItem {
@@ -96,6 +98,13 @@ export async function updateAvailability(id: number, is_available: boolean) {
   return apiRequest<{ data: KitchenMenuItem }>(`/kitchen/menu/${id}/availability`, {
     method: 'PATCH',
     body:   { is_available },
+  });
+}
+
+export async function requestRestock(id: number, quantity?: number) {
+  return apiRequest<{ data: KitchenMenuItem }>(`/kitchen/menu/${id}/request-restock`, {
+    method: 'POST',
+    body: quantity ? { quantity } : undefined,
   });
 }
 

@@ -42,4 +42,24 @@ class MenuAvailabilityService
 
         return $item;
     }
+
+    /**
+     * Sets needs_restock to true for a menu item.
+     * Aborts 403 on tenant mismatch.
+     */
+    public function requestRestock(int $itemId, int $tenantId, ?int $quantity = null): MenuItem
+    {
+        $item = MenuItem::with('category:id,name,tenant_id')->findOrFail($itemId);
+        if ($item->category->tenant_id !== $tenantId) {
+            abort(403, 'Menu item does not belong to your organization.');
+        }
+
+        $item->needs_restock = true;
+        if ($quantity !== null) {
+            $item->requested_restock_quantity = $quantity;
+        }
+        $item->save();
+
+        return $item;
+    }
 }
