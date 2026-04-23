@@ -168,3 +168,12 @@
   justify-content: flex-end;
   gap: 8px;
 }
+
+.adm-users-toggle-btn {
+  transition: opacity 0.2s ease;
+}
+
+.adm-users-toggle-btn--loading {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
