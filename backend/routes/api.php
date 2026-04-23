@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\TenantController;
 
 use App\Http\Controllers\KitchenStaff\OrderQueueController;
 use App\Http\Controllers\KitchenStaff\MenuAvailabilityController;
@@ -34,6 +35,9 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
 
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index']);
+
+        // Tenant
+        Route::get('/tenant', [TenantController::class, 'show']);
 
         // Users
         Route::apiResource('users', UserController::class);

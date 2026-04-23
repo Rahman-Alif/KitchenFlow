@@ -187,3 +187,115 @@
   border-color: #d92d20;
   color: #fff;
 }
+
+.adm-subscription-btn {
+  border: 1px solid var(--adm-border);
+  background: #fff;
+  color: var(--adm-text);
+  border-radius: var(--adm-radius);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.adm-subscription-btn:hover {
+  color: var(--adm-text-main);
+  border-color: var(--adm-text-muted);
+}
+
+/* Subscription dropdown */
+.adm-subscription-wrapper {
+  position: relative;
+}
+
+.adm-subscription-btn {
+  background: transparent;
+  border: 1px solid var(--adm-border);
+  color: var(--adm-text-muted);
+  padding: 6px 14px;
+  border-radius: var(--adm-radius);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.adm-subscription-btn:hover,
+.adm-subscription-btn--active {
+  color: var(--adm-text-main);
+  border-color: var(--adm-text-muted);
+}
+
+.adm-subscription-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 300px;
+  background: #ffffff;
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  padding: 16px 20px;
+  z-index: 100;
+}
+
+.adm-subscription-dropdown-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--adm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.adm-subscription-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.adm-subscription-divider {
+  height: 1px;
+  background: var(--adm-border);
+}
+
+.adm-subscription-label {
+  font-size: 0.8rem;
+  color: var(--adm-text-muted);
+}
+
+.adm-subscription-value {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--adm-text-main);
+}
+
+.adm-subscription-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.adm-subscription-badge--active {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.adm-subscription-badge--inactive {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.adm-subscription-muted {
+  font-size: 0.8rem;
+  color: var(--adm-text-muted);
+}
+
+.adm-subscription-error {
+  font-size: 0.8rem;
+  color: #ef4444;
+}
