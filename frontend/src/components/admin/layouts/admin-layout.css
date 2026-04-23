@@ -1,0 +1,111 @@
+.adm-shell {
+  --adm-sidebar-width: 260px;
+  --adm-topbar-height: 72px;
+  --adm-bg: #f5f7fb;
+  --adm-surface: #ffffff;
+  --adm-border: #e6eaf2;
+  --adm-text: #121826;
+  --adm-muted: #5c6475;
+  --adm-primary: #2a61ff;
+
+  min-height: 100vh;
+  background: var(--adm-bg);
+  color: var(--adm-text);
+}
+
+.adm-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--adm-sidebar-width);
+  background: #11182a;
+  color: #f8f9fc;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+}
+
+.adm-brand {
+  height: var(--adm-topbar-height);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.adm-nav {
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.adm-nav-item {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: #cad1e3;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.adm-nav-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.adm-nav-item--active {
+  background: rgba(42, 97, 255, 0.22);
+  color: #ffffff;
+}
+
+.adm-content {
+  margin-left: var(--adm-sidebar-width);
+  min-height: 100vh;
+}
+
+.adm-topbar {
+  height: var(--adm-topbar-height);
+  position: fixed;
+  top: 0;
+  left: var(--adm-sidebar-width);
+  right: 0;
+  background: var(--adm-surface);
+  border-bottom: 1px solid var(--adm-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 20;
+}
+
+.adm-user-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adm-logout-btn {
+  border: 1px solid var(--adm-border);
+  background: #fff;
+  color: var(--adm-text);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.adm-logout-btn:hover {
+  background: #f8faff;
+}
+
+.adm-main {
+  padding: calc(var(--adm-topbar-height) + 24px) 24px 24px;
+}
