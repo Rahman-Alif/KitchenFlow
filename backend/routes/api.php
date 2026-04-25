@@ -73,5 +73,10 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         // Orders
         Route::post('/orders', [OrderController::class, 'store']);
         Route::get('/orders/{order}', [OrderController::class, 'show']); //DUPLICATE
+        Route::get('/orders', [OrderController::class, 'index']);
+        Route::patch('/orders/{order}', [OrderController::class, 'update']);
+        Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel']);
+
+        
     });
 });

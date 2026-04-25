@@ -124,3 +124,25 @@ export async function placeOrder(items: { menu_item_id: number; quantity: number
 export async function getUserOrder(id: number) {
   return apiRequest<{ data: Order }>(`/user/orders/${id}`);
 }
+
+export async function getUserOrders() {
+  return apiRequest<{ data: Order[] }>('/user/orders');
+}
+
+export async function updateUserOrder(
+  orderId: number,
+  items: { order_item_id: number; quantity: number }[],
+  notes?: string
+) {
+  return apiRequest<{ data: Order }>(`/user/orders/${orderId}`, {
+    method: 'PATCH',
+    body:   { items, notes },
+  });
+}
+
+export async function cancelUserOrder(orderId: number) {
+  return apiRequest<{ data: Order }>(`/user/orders/${orderId}/cancel`, {
+    method: 'PATCH',
+  });
+}
+
