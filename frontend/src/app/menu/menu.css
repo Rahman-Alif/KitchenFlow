@@ -168,3 +168,23 @@
   justify-content: flex-end;
   gap: 8px;
 }
+
+.adm-menu-badge--toggle {
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.adm-menu-badge--toggle:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.adm-menu-badge--loading {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.adm-menu-badge--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -71,15 +71,8 @@ class OrderService
                     'unit_price'   => $unitPrice,
                 ];
 
-                // Decrement stock atomically — floor is 0
-                $menuItem->decrement('stock_quantity', $quantity);
-                $menuItem->refresh();
-
-                // Auto-disable if stock hits zero (FR-04.1)
-                if ($menuItem->stock_quantity === 0) {
-                    $menuItem->is_available = false;
-                    $menuItem->save();
-                }
+                $menuItem->stock_quantity -= $quantity;
+                $menuItem->save();
             }
 
             $order = Order::create([

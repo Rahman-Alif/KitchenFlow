@@ -96,8 +96,14 @@ class MenuItemController extends Controller
 
         $request->validate(['quantity' => ['required', 'integer', 'min:1']]);
 
-        $menuItem->increment('stock_quantity', $request->quantity);
-        $menuItem->update(['is_available' => true]);
+        $menuItem->stock_quantity += (int) $request->quantity;
+
+        // Restock can re-enable only when stock is above threshold.
+        if ($menuItem->stock_quantity > $menuItem->low_stock_threshold) {
+            $menuItem->is_available = true;
+        }
+
+        $menuItem->save();
 
         return new MenuItemResource($menuItem->load('category'));
     }
@@ -131,5 +137,27 @@ class MenuItemController extends Controller
         if ($menuItem->category->tenant_id !== $tenantId) {
             abort(403, 'Unauthorized.');
         }
+    }
+    
+    public function updateAvailability(Request $request, MenuItem $menuItem): JsonResponse
+    {
+        $this->authorizeItemTenant($menuItem, $request->user()->tenant_id);
+    
+        $request->validate([
+            'is_available' => ['required', 'boolean'],
+        ]);
+    
+        $enabling = $request->boolean('is_available');
+    
+        // Prevent enabling if stock is at or below threshold
+        if ($enabling && $menuItem->stock_quantity <= $menuItem->low_stock_threshold) {
+            return response()->json([
+                'message' => "Cannot enable — stock ({$menuItem->stock_quantity}) is at or below the low stock threshold ({$menuItem->low_stock_threshold}).",
+            ], 422);
+        }
+    
+        $menuItem->update(['is_available' => $enabling]);
+    
+        return response()->json(['message' => 'Availability updated.']);
     }
 }

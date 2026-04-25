@@ -17,6 +17,11 @@ export interface DashboardData {
   topItems: DashboardTopItem[];
 }
 
+export interface RevenueWeekRow {
+  date: string;
+  revenue: number;
+}
+
 interface DashboardApiPayload {
   data?: {
     total_orders?: number;
@@ -28,6 +33,13 @@ interface DashboardApiPayload {
   total_revenue?: number;
   orders_by_status?: Array<{ status?: string; count?: number }>;
   top_items?: Array<{ name?: string; quantity?: number }>;
+}
+
+interface RevenueWeekApiPayload {
+  data?: Array<{
+    date?: string;
+    revenue?: string | number;
+  }>;
 }
 
 export async function getDashboardData(date: string): Promise<{
@@ -59,6 +71,25 @@ export async function getDashboardData(date: string): Promise<{
       ordersByStatus,
       topItems,
     },
+    error: null,
+  };
+}
+
+export async function getRevenueWeekData(): Promise<{
+  data: RevenueWeekRow[] | null;
+  error: string | null;
+}> {
+  const response = await apiRequest<RevenueWeekApiPayload>('/admin/dashboard/revenue-week');
+
+  if (response.error || !response.data?.data) {
+    return { data: null, error: response.error ?? 'Failed to load weekly revenue.' };
+  }
+
+  return {
+    data: response.data.data.map((row) => ({
+      date: row.date ?? '',
+      revenue: Number(row.revenue ?? 0),
+    })),
     error: null,
   };
 }

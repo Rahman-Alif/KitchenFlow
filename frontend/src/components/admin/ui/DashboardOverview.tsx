@@ -1,7 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { DashboardData, getDashboardData } from '@/lib/services/dashboard';
+import {
+  DashboardData,
+  RevenueWeekRow,
+  getDashboardData,
+  getRevenueWeekData,
+} from '@/lib/services/dashboard';
 import { LowStockItem, getLowStockItems, restockItem } from '@/lib/services/lowStock';
 
 const POLL_INTERVAL_DASHBOARD = 30_000;
@@ -31,6 +36,11 @@ function formatTime(date: Date): string {
     minute: '2-digit',
     second: '2-digit',
   });
+}
+
+function formatWeekday(dateText: string): string {
+  const dt = new Date(`${dateText}T00:00:00`);
+  return dt.toLocaleDateString('en-US', { weekday: 'short' });
 }
 
 // ── Animated number ───────────────────────────────────────────
@@ -123,6 +133,33 @@ function DonutChart({ segments, total }: DonutChartProps) {
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+function RevenueBarChart({ rows }: { rows: RevenueWeekRow[] }) {
+  const maxRevenue = Math.max(0, ...rows.map((row) => row.revenue));
+
+  return (
+    <div className="adm-bar-chart">
+      <div className="adm-bar-grid">
+        {rows.map((row) => {
+          const pct = maxRevenue > 0 ? (row.revenue / maxRevenue) * 100 : 0;
+          return (
+            <div key={row.date} className="adm-bar-col">
+              <span className="adm-bar-value">{formatCurrency(row.revenue)}</span>
+              <div className="adm-bar-track">
+                <div
+                  className="adm-bar-fill"
+                  style={{ height: `${Math.max(2, pct)}%` }}
+                  title={`${row.date}: ${formatCurrency(row.revenue)}`}
+                />
+              </div>
+              <span className="adm-bar-label">{formatWeekday(row.date)}</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -238,6 +275,8 @@ export default function DashboardOverview() {
   const [error,       setError]       = useState<string | null>(null);
   const [loading,     setLoading]     = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [revenueWeek, setRevenueWeek] = useState<RevenueWeekRow[] | null>(null);
+  const [revenueWeekError, setRevenueWeekError] = useState<string | null>(null);
 
   const [lowStock,      setLowStock]      = useState<LowStockItem[] | null>(null);
   const [lowStockError, setLowStockError] = useState<string | null>(null);
@@ -261,12 +300,29 @@ export default function DashboardOverview() {
     if (!silent) setLoading(false);
   }
 
-  useEffect(() => { loadDashboard(date); }, [date]);
+  async function loadRevenueWeek() {
+    const response = await getRevenueWeekData();
+    if (response.error || !response.data) {
+      setRevenueWeekError(response.error ?? 'Could not load weekly revenue.');
+      return;
+    }
+
+    setRevenueWeekError(null);
+    setRevenueWeek(response.data);
+  }
+
+  useEffect(() => {
+    loadDashboard(date);
+    loadRevenueWeek();
+  }, [date]);
 
   // Poll only when viewing today
   useEffect(() => {
     if (!isToday) return;
-    const id = setInterval(() => loadDashboard(date, true), POLL_INTERVAL_DASHBOARD);
+    const id = setInterval(() => {
+      loadDashboard(date, true);
+      loadRevenueWeek();
+    }, POLL_INTERVAL_DASHBOARD);
     return () => clearInterval(id);
   }, [date, isToday]);
 
@@ -386,6 +442,19 @@ export default function DashboardOverview() {
           )}
         </article>
       </div>
+
+      <article className="adm-dash-card">
+        <div className="adm-dash-card-head">
+          <h3>Revenue (Past 7 Days)</h3>
+        </div>
+        {revenueWeekError ? (
+          <p className="adm-dash-muted">{revenueWeekError}</p>
+        ) : revenueWeek && revenueWeek.length > 0 ? (
+          <RevenueBarChart rows={revenueWeek} />
+        ) : (
+          <p className="adm-dash-muted">Loading weekly revenue...</p>
+        )}
+      </article>
 
       {/* Low stock */}
       <article className="adm-dash-card">

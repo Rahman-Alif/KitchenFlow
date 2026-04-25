@@ -416,3 +416,58 @@
   color: #ef4444;
   margin: 0;
 }
+
+/* Weekly revenue bar chart */
+.adm-bar-chart {
+  width: 100%;
+  overflow-x: auto;
+  padding-top: 6px;
+}
+
+.adm-bar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(72px, 1fr));
+  gap: 10px;
+  align-items: end;
+  min-height: 220px;
+}
+
+.adm-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-bar-value {
+  font-size: 11px;
+  color: var(--adm-muted);
+}
+
+.adm-bar-track {
+  width: 100%;
+  max-width: 52px;
+  height: 150px;
+  border-radius: 8px;
+  background: rgba(148, 163, 184, 0.16);
+  border: 1px solid var(--adm-border);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.adm-bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+  animation: adm-bar-grow 0.7s ease-out both;
+}
+
+.adm-bar-label {
+  font-size: 12px;
+  color: var(--adm-text);
+  font-weight: 600;
+}
+
+@keyframes adm-bar-grow {
+  from { height: 0; }
+}

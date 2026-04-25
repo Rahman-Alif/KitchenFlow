@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
 
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index']);
+        Route::get('/dashboard/revenue-week', [DashboardController::class, 'revenueWeek']);
 
         // Tenant
         Route::get('/tenant', [TenantController::class, 'show']);
@@ -53,6 +54,7 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::get('/menu-items/low-stock', [MenuItemController::class, 'lowStock']);
         Route::apiResource('menu-items', MenuItemController::class);
         Route::patch('/menu-items/{menuItem}/restock', [MenuItemController::class, 'restock']);
+        Route::patch('/menu-items/{menuItem}/availability', [MenuItemController::class, 'updateAvailability']);
 
         // Orders
         Route::get('/orders', [AdminOrderController::class, 'index']);  //AdminController is OrderController renamed

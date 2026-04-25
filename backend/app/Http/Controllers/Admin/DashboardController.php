@@ -67,4 +67,30 @@ class DashboardController extends Controller
             'top_items'    => $topItems,
         ]);
     }
+
+    public function revenueWeek(Request $request): JsonResponse
+    {
+        $tenantId = $request->user()->tenant_id;
+        $endDate = now()->startOfDay();
+        $startDate = now()->subDays(6)->startOfDay();
+
+        $totalsByDate = Transaction::query()
+            ->whereHas('order.user', fn($query) => $query->where('tenant_id', $tenantId))
+            ->whereBetween('created_at', [$startDate, $endDate->copy()->endOfDay()])
+            ->orderBy('created_at')
+            ->get()
+            ->groupBy(fn(Transaction $transaction) => $transaction->created_at->toDateString())
+            ->map(fn($transactions) => (float) $transactions->sum('tendered_amount'));
+
+        $data = [];
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $dateKey = $date->toDateString();
+            $data[] = [
+                'date' => $dateKey,
+                'revenue' => number_format($totalsByDate->get($dateKey, 0), 2, '.', ''),
+            ];
+        }
+
+        return response()->json(['data' => $data]);
+    }
 }

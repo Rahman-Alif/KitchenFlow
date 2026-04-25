@@ -64,6 +64,17 @@ export async function getMenuItems(): Promise<{ data: AdminMenuItem[] | null; er
   return { data: data.data ?? [], error: null };
 }
 
+export async function updateMenuItemAvailability(
+  id: number,
+  isAvailable: boolean
+): Promise<{ error: string | null }> {
+  const { error } = await apiRequest(`/admin/menu-items/${id}/availability`, {
+    method: 'PATCH',
+    body:   { is_available: isAvailable },
+  });
+  return { error: error ?? null };
+}
+
 export async function getMenuItem(menuItemId: number): Promise<{
   data: AdminMenuItem | null;
   error: string | null;
