@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->integer('stock_quantity')->default(0);
             $table->integer('low_stock_threshold')->default(10);
             $table->boolean('is_available')->default(true);
+            $table->boolean('needs_restock')->default(false);
+            $table->integer('requested_restock_quantity')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

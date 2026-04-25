@@ -1,23 +1,28 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   getUserMenu,
   placeOrder,
   MenuCategory,
   CartItem,
+  UserMenuItem,
 } from '@/lib/services/orders';
+
+type SortOption = 'default' | 'price_asc' | 'price_desc';
 
 export default function UserMenuView() {
   const router = useRouter();
   const [categories, setCategories] = useState<MenuCategory[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState('');
-  const [cart, setCart]             = useState<CartItem[]>([]);
-  const [notes, setNotes]           = useState('');
-  const [placing, setPlacing]       = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [notes, setNotes] = useState('');
+  const [placing, setPlacing] = useState(false);
   const [orderError, setOrderError] = useState('');
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState<SortOption>('default');
 
   useEffect(() => {
     fetchMenu();
@@ -45,9 +50,9 @@ export default function UserMenuView() {
       }
       return [...prev, {
         menu_item_id: item.id,
-        name:         item.name,
-        price:        item.price,
-        quantity:     1,
+        name: item.name,
+        price: item.price,
+        quantity: 1,
       }];
     });
   }
@@ -82,7 +87,7 @@ export default function UserMenuView() {
 
     const items = cart.map((c) => ({
       menu_item_id: c.menu_item_id,
-      quantity:     c.quantity,
+      quantity: c.quantity,
     }));
 
     const { data, error } = await placeOrder(items, notes || undefined);
@@ -97,11 +102,53 @@ export default function UserMenuView() {
     router.push(`/orders/${orderId}/confirmation`);
   }
 
+  // ─── Search + Sort logic ──────────────────────────────
+  const filteredCategories = useMemo(() => {
+    // Flatten all items
+    let allItems: (UserMenuItem & { category_name: string })[] = [];
+    categories.forEach((cat) => {
+      cat.items.forEach((item) => {
+        allItems.push({ ...item, category_name: cat.category_name });
+      });
+    });
+
+    // Search filter
+    if (search.trim()) {
+      allItems = allItems.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    // Sort
+    if (sort === 'price_asc') {
+      allItems.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (sort === 'price_desc') {
+      allItems.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    }
+
+    // If search or sort is active — show flat list
+    if (search.trim() || sort !== 'default') {
+      if (allItems.length === 0) return [];
+      return [{
+        category_id: 0,
+        category_name: search.trim()
+          ? `Results for "${search}"`
+          : sort === 'price_asc'
+            ? 'Price: Low to High'
+            : 'Price: High to Low',
+        items: allItems,
+      }];
+    }
+
+    // Default — return original grouped categories
+    return categories;
+  }, [categories, search, sort]);
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex gap-6">
 
-        {/* Menu — left side */}
+        {/* Menu */}
         <div className="flex-1">
 
           {/* Page Header */}
@@ -115,6 +162,49 @@ export default function UserMenuView() {
             <p className="text-zinc-500 text-sm mt-2">Fresh meals, made to order</p>
           </div>
 
+          {/* Search + Filter bar */}
+          <div className="flex gap-3 mb-8">
+            <div className="flex-1 relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">
+                🔍
+              </span>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search food by name..."
+                className="w-full bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition text-xs"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortOption)}
+              className="bg-zinc-900 border border-zinc-700 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer"
+            >
+              <option value="default">Sort by</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+            </select>
+
+            {(search || sort !== 'default') && (
+              <button
+                onClick={() => { setSearch(''); setSort('default'); }}
+                className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg px-4 py-3 mb-6">
               {error}
@@ -123,9 +213,20 @@ export default function UserMenuView() {
 
           {loading ? (
             <div className="text-center py-20 text-zinc-500 text-sm">Loading menu...</div>
+          ) : filteredCategories.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-zinc-500 text-lg">No items found</p>
+              <p className="text-zinc-600 text-sm mt-1">Try a different search term</p>
+              <button
+                onClick={() => { setSearch(''); setSort('default'); }}
+                className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
+              >
+                Clear search
+              </button>
+            </div>
           ) : (
             <div>
-              {categories.map((cat) => (
+              {filteredCategories.map((cat) => (
                 <div key={cat.category_id} className="mb-12">
 
                   {/* Category header */}
@@ -213,7 +314,7 @@ export default function UserMenuView() {
           )}
         </div>
 
-        {/* Cart — right side, always visible */}
+        {/* Cart — right side */}
         <div className="w-80 shrink-0">
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 sticky top-6">
             <h3 className="text-white font-bold text-lg mb-4">Your Order</h3>
@@ -259,7 +360,6 @@ export default function UserMenuView() {
                   </div>
                 </div>
 
-                {/* Notes */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-zinc-300 mb-1.5">
                     Notes (optional)
