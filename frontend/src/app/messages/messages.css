@@ -1,0 +1,297 @@
+/* frontend/src/app/messages/messages.css */
+
+.adm-msg-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: space-between;
+}
+
+.adm-msg-filters-left {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.adm-msg-input,
+.adm-msg-select {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+    background: var(--adm-surface);
+    color: var(--adm-text);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.adm-msg-input:focus,
+.adm-msg-select:focus {
+    border-color: var(--adm-accent, #3b82f6);
+}
+
+.adm-msg-select {
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.adm-msg-btn {
+    height: 38px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 8px;
+    background: var(--adm-text);
+    color: var(--adm-surface);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.adm-msg-btn:hover {
+    opacity: 0.85;
+}
+
+.adm-msg-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.adm-msg-table-wrap {
+    border: 1px solid var(--adm-border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.adm-msg-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.adm-msg-table thead {
+    background: var(--adm-surface);
+}
+
+.adm-msg-table thead th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--adm-muted);
+    border-bottom: 1px solid var(--adm-border);
+    white-space: nowrap;
+}
+
+.adm-msg-table tbody td {
+    padding: 13px 16px;
+    color: var(--adm-text);
+    border-bottom: 1px solid var(--adm-border);
+    vertical-align: top;
+}
+
+.adm-msg-row:last-child td {
+    border-bottom: none;
+}
+
+.adm-msg-row--clickable {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.adm-msg-row--clickable:hover {
+    background: var(--adm-surface);
+}
+
+.adm-msg-row--expanded {
+    background: var(--adm-surface);
+}
+
+.adm-msg-row--expanded td {
+    border-bottom: none;
+}
+
+.adm-msg-row--unread {
+    font-weight: 600;
+}
+
+.adm-msg-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.adm-msg-badge--high {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.adm-msg-badge--medium {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.adm-msg-badge--low {
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.adm-msg-badge--tag {
+    background: var(--adm-border);
+    color: var(--adm-text);
+}
+
+.adm-msg-detail {
+    background: var(--adm-surface);
+    border-bottom: 1px solid var(--adm-border);
+    animation: adm-msg-expand 0.2s ease-out both;
+}
+
+.adm-msg-detail td {
+    padding: 16px 20px !important;
+    border-bottom: none !important;
+}
+
+@keyframes adm-msg-expand {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.adm-msg-detail-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--adm-muted);
+    margin-bottom: 10px;
+}
+
+.adm-msg-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--adm-text);
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.adm-msg-state-row td {
+    padding: 32px 16px !important;
+    text-align: center;
+    color: var(--adm-muted);
+    font-size: 13px;
+}
+
+.adm-msg-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 20px;
+}
+
+.adm-msg-page-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+    background: var(--adm-surface);
+    color: var(--adm-text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.adm-msg-page-btn:hover:not(:disabled) {
+    background: var(--adm-border);
+}
+
+.adm-msg-page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.adm-msg-page-btn--active {
+    background: var(--adm-text);
+    color: var(--adm-surface);
+    border-color: var(--adm-text);
+    font-weight: 600;
+}
+
+/* Modal styles for sending message */
+.adm-msg-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.adm-msg-modal {
+    background: var(--adm-surface);
+    padding: 24px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid var(--adm-border);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.adm-msg-modal-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.adm-msg-form-group {
+    margin-bottom: 16px;
+}
+
+.adm-msg-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.adm-msg-form-group input,
+.adm-msg-form-group select,
+.adm-msg-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.adm-msg-form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+    padding: 10px 12px;
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+    background: var(--adm-surface);
+    color: var(--adm-text);
+    font-size: 13px;
+    outline: none;
+    font-family: inherit;
+}
+
+.adm-msg-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}

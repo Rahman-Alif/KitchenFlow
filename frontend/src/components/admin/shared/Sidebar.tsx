@@ -9,6 +9,7 @@ const navItems = [
   { href: '/categories', label: 'Categories' },
   { href: '/menu', label: 'Menu Items' },
   { href: '/orders-history', label: 'Order History' },
+  { href: '/messages', label: 'Messages' },
 ];
 
 export default function Sidebar() {

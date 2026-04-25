@@ -7,7 +7,7 @@ const PUBLIC_ROUTES = [
 ];
 
 const ROLE_ROUTES: Record<string, string[]> = {
-  admin:         ['/dashboard', '/users', '/categories', '/menu', '/orders-history'],
+  admin:         ['/dashboard', '/users', '/categories', '/menu', '/orders-history', '/messages'],
   kitchen_staff: ['/orders', '/menu'],
   user:          ['/menu', '/orders'],
 };
