@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { DashboardData, getDashboardData } from '@/lib/services/dashboard';
-import { LowStockItem, getLowStockItems } from '@/lib/services/lowStock';
+import { LowStockItem, getLowStockItems, restockItem } from '@/lib/services/lowStock';
 
 const POLL_INTERVAL_DASHBOARD = 30_000;
 const POLL_INTERVAL_LOWSTOCK  = 60_000;
@@ -124,6 +124,107 @@ function DonutChart({ segments, total }: DonutChartProps) {
         ))}
       </ul>
     </div>
+  );
+}
+
+// ── Low stock row ─────────────────────────────────────────────
+
+function LowStockRow({
+  item: initialItem,
+  onRestocked,
+  onStockUpdated,
+}: {
+  item:            LowStockItem;
+  onRestocked:     (id: number) => void;
+  onStockUpdated:  (id: number, newQty: number) => void;
+}) {
+  const [item, setItem] = useState(initialItem);
+  const [expanded, setExpanded] = useState(false);
+  const [quantity, setQuantity] = useState('');
+  const [saving,   setSaving]   = useState(false);
+  const [error,    setError]    = useState<string | null>(null);
+
+  async function handleRestock() {
+    const qty = parseInt(quantity, 10);
+    if (!qty || qty <= 0) {
+      setError('Enter a valid quantity.');
+      return;
+    }
+  
+    setSaving(true);
+    setError(null);
+    const { error: apiError } = await restockItem(item.id, qty);
+    setSaving(false);
+  
+    if (apiError) {
+      setError(apiError);
+      return;
+    }
+  
+    // Only remove from list if new total exceeds threshold
+    const newTotal = item.stock_quantity + qty;
+    if (newTotal > item.low_stock_threshold) {
+      onRestocked(item.id);
+    } else {
+      setItem((prev) => ({ ...prev, stock_quantity: newTotal }));
+      onStockUpdated(item.id, newTotal);
+      setError(`Still below threshold (${item.low_stock_threshold}). Add more stock.`);
+      setExpanded(false);
+      setQuantity('');
+    }
+  }
+
+  return (
+    <li className="adm-dash-list-item adm-dash-list-item--animated adm-dash-stock-row">
+      <div className="adm-dash-stock-info">
+        <span className="adm-dash-stock-name">{item.name}</span>
+        <span className="adm-dash-stock-category">{item.category}</span>
+      </div>
+
+      <div className="adm-dash-stock-right">
+        <span className="adm-dash-stock-badge">{item.stock_quantity} left</span>
+
+        {!expanded ? (
+          <button
+            type="button"
+            className="adm-dash-restock-btn"
+            onClick={() => setExpanded(true)}
+          >
+            Restock
+          </button>
+        ) : (
+          <div className="adm-dash-restock-inline">
+            <input
+              type="number"
+              min={1}
+              className="adm-dash-restock-input"
+              placeholder="Qty"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              autoFocus
+            />
+            <button
+              type="button"
+              className="adm-dash-restock-confirm"
+              onClick={handleRestock}
+              disabled={saving}
+            >
+              {saving ? '...' : 'Confirm'}
+            </button>
+            <button
+              type="button"
+              className="adm-dash-restock-cancel"
+              onClick={() => { setExpanded(false); setQuantity(''); setError(null); }}
+              disabled={saving}
+            >
+              ✕
+            </button>
+          </div>
+        )}
+      </div>
+
+      {error && <p className="adm-dash-restock-error">{error}</p>}
+    </li>
   );
 }
 
@@ -301,20 +402,24 @@ export default function DashboardOverview() {
         ) : lowStock && lowStock.length > 0 ? (
           <ul className="adm-dash-list">
             {lowStock.map((item) => (
-              <li key={item.id} className="adm-dash-list-item adm-dash-list-item--animated">
-                <div className="adm-dash-stock-info">
-                  <span className="adm-dash-stock-name">{item.name}</span>
-                  <span className="adm-dash-stock-category">{item.category}</span>
-                </div>
-                <span className="adm-dash-stock-badge">{item.stock_quantity} left</span>
-              </li>
+              <LowStockRow
+              key={item.id}
+              item={item}
+              onRestocked={(id) =>
+                setLowStock((prev) => prev?.filter((i) => i.id !== id) ?? null)
+              }
+              onStockUpdated={(id, newQty) =>
+                setLowStock((prev) =>
+                  prev?.map((i) => i.id === id ? { ...i, stock_quantity: newQty } : i) ?? null
+                )
+              }
+            />
             ))}
           </ul>
         ) : (
           <p className="adm-dash-muted">All items are sufficiently stocked.</p>
         )}
       </article>
-
     </section>
   );
 }

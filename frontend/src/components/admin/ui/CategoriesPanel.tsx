@@ -9,6 +9,9 @@ import {
   getCategories,
 } from '@/lib/services/categories';
 
+type SortKey = 'name' | 'created';
+type SortDirection = 'asc' | 'desc';
+
 export default function CategoriesPanel() {
   const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +19,8 @@ export default function CategoriesPanel() {
   const [success, setSuccess] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [search, setSearch] = useState('');
+  const [sortKey, setSortKey] = useState<SortKey>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminCategory | null>(null);
@@ -66,6 +71,16 @@ export default function CategoriesPanel() {
     setSuccess('Category created successfully.');
     await loadCategories();
     setSubmitting(false);
+  }
+
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDirection((previous) => (previous === 'asc' ? 'desc' : 'asc'));
+      return;
+    }
+
+    setSortKey(key);
+    setSortDirection('asc');
   }
 
   function handleDeleteCategory(category: AdminCategory) {
@@ -130,13 +145,17 @@ export default function CategoriesPanel() {
 
         <div className="adm-cat-table-wrap">
           <table className="adm-cat-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Created</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+          <thead>
+            <tr>
+              <th>
+                <button type="button" className="adm-cat-sort-btn" onClick={() => toggleSort('name')}>
+                  Name {sortKey === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                </button>
+              </th>
+              <th>Created</th>
+              <th>Action</th>
+            </tr>
+          </thead>
             <tbody>
               {loading ? (
                 <tr>

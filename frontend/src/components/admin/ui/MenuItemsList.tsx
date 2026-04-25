@@ -144,36 +144,36 @@ export default function MenuItemsList() {
 
       <div className="adm-menu-table-wrap">
         <table className="adm-menu-table">
-          <thead>
-            <tr>
-              <th>
-                <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('name')}>
-                  Name
-                </button>
-              </th>
-              <th>
-                <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('category')}>
-                  Category
-                </button>
-              </th>
-              <th>
-                <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('price')}>
-                  Price
-                </button>
-              </th>
-              <th>
-                <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('stock')}>
-                  Stock
-                </button>
-              </th>
-              <th>
-                <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('status')}>
-                  Status
-                </button>
-              </th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        <thead>
+          <tr>
+            <th>
+              <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('name')}>
+                Name {sortKey === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+              </button>
+            </th>
+            <th>
+              <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('category')}>
+                Category {sortKey === 'category' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+              </button>
+            </th>
+            <th>
+              <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('price')}>
+                Price {sortKey === 'price' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+              </button>
+            </th>
+            <th>
+              <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('stock')}>
+                Stock {sortKey === 'stock' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+              </button>
+            </th>
+            <th>
+              <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('status')}>
+                Status {sortKey === 'status' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+              </button>
+            </th>
+            <th>Actions</th>
+          </tr>
+        </thead>
           <tbody>
             {loading ? (
               <tr>

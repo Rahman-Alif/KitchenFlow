@@ -42,3 +42,14 @@ export async function getLowStockItems(): Promise<{
 
   return { data: items, error: null };
 }
+
+export async function restockItem(id: number, quantity: number): Promise<{
+  error: string | null;
+}> {
+  const { error } = await apiRequest(`/admin/menu-items/${id}/restock`, {
+    method: 'PATCH',
+    body:   { quantity },
+  });
+
+  return { error: error ?? null };
+}

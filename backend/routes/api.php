@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TenantController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 use App\Http\Controllers\KitchenStaff\OrderQueueController;
 use App\Http\Controllers\KitchenStaff\MenuAvailabilityController;
@@ -52,6 +53,10 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::get('/menu-items/low-stock', [MenuItemController::class, 'lowStock']);
         Route::apiResource('menu-items', MenuItemController::class);
         Route::patch('/menu-items/{menuItem}/restock', [MenuItemController::class, 'restock']);
+
+        // Orders
+        Route::get('/orders', [AdminOrderController::class, 'index']);  //AdminController is OrderController renamed
+        Route::get('/orders/{order}', [AdminOrderController::class, 'show']);  //AdminController is OrderController renamed
     });
 
     // ─── Kitchen Staff ────────────────────────────────────

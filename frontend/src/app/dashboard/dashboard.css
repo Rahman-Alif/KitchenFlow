@@ -337,3 +337,82 @@
   border: 1px solid rgba(239, 68, 68, 0.2);
   white-space: nowrap;
 }
+
+/* Low stock restock inline */
+.adm-dash-stock-row {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.adm-dash-stock-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.adm-dash-restock-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--adm-border);
+  background: transparent;
+  color: var(--adm-text);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.adm-dash-restock-btn:hover {
+  background: var(--adm-border);
+}
+
+.adm-dash-restock-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adm-dash-restock-input {
+  width: 64px;
+  padding: 4px 8px;
+  border: 1px solid var(--adm-border);
+  border-radius: 6px;
+  font-size: 13px;
+  background: var(--adm-surface);
+  color: var(--adm-text);
+}
+
+.adm-dash-restock-confirm {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: #22c55e;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.adm-dash-restock-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.adm-dash-restock-cancel {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--adm-border);
+  background: transparent;
+  color: var(--adm-text-muted);
+  cursor: pointer;
+}
+
+.adm-dash-restock-error {
+  width: 100%;
+  font-size: 12px;
+  color: #ef4444;
+  margin: 0;
+}
