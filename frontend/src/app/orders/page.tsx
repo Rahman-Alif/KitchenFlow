@@ -1,20 +1,16 @@
 'use client';
 
-import '@/components/admin/layouts/admin-layout.css';
-import './menu.css';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getUser, AuthUser } from '@/lib/auth';
-import AdminLayout from '@/components/admin/layouts/AdminLayout';
-import MenuItemsList from '@/components/admin/ui/MenuItemsList';
 import KitchenLayout from '@/components/kitchen/layouts/KitchenLayout';
-import KitchenMenuView from '@/components/kitchen/KitchenMenuView';
+import OrderQueueView from '@/components/kitchen/OrderQueueView';
 import UserLayout from '@/components/user/layouts/UserLayout';
-import UserMenuView from '@/components/user/UserMenuView';
+import UserOrderHistory from '@/components/user/UserOrderHistory';
 
-export default function MenuPage() {
+export default function OrdersPage() {
   const router = useRouter();
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser]   = useState<AuthUser | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -29,18 +25,10 @@ export default function MenuPage() {
 
   if (!ready || !user) return null;
 
-  if (user.role === 'admin') {
-    return (
-      <AdminLayout title="Menu Items">
-        <MenuItemsList />
-      </AdminLayout>
-    );
-  }
-
   if (user.role === 'kitchen_staff') {
     return (
       <KitchenLayout>
-        <KitchenMenuView />
+        <OrderQueueView />
       </KitchenLayout>
     );
   }
@@ -48,7 +36,7 @@ export default function MenuPage() {
   if (user.role === 'user') {
     return (
       <UserLayout>
-        <UserMenuView />
+        <UserOrderHistory />
       </UserLayout>
     );
   }

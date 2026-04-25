@@ -73,6 +73,7 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         // Menu Availability
         Route::get('/menu', [MenuAvailabilityController::class, 'index']);
         Route::patch('/menu/{id}/availability', [MenuAvailabilityController::class, 'updateAvailability']);
+        Route::post('/menu/{id}/request-restock', [MenuAvailabilityController::class, 'requestRestock']);
     });
 
     // ─── User ─────────────────────────────────────────────
@@ -84,5 +85,10 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         // Orders
         Route::post('/orders', [OrderController::class, 'store']);
         Route::get('/orders/{order}', [OrderController::class, 'show']); //DUPLICATE
+        Route::get('/orders', [OrderController::class, 'index']);
+        Route::patch('/orders/{order}', [OrderController::class, 'update']);
+        Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel']);
+
+        
     });
 });

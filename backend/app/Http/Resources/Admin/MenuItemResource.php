@@ -20,8 +20,10 @@ class MenuItemResource extends JsonResource
             'price'               => $this->price,
             'stock_quantity'      => $this->stock_quantity,
             'low_stock_threshold' => $this->low_stock_threshold,
-            'is_available'        => $this->is_available,
-            'created_at'          => $this->created_at,
+            'is_available'               => $this->is_available,
+            'needs_restock'              => $this->needs_restock,
+            'requested_restock_quantity' => $this->requested_restock_quantity,
+            'created_at'                 => $this->created_at,
         ];
     }
 }

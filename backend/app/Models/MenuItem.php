@@ -20,10 +20,14 @@ class MenuItem extends Model
         'stock_quantity',
         'low_stock_threshold',
         'is_available',
+        'needs_restock',
+        'requested_restock_quantity',
     ];
 
     protected $casts = [
         'is_available' => 'boolean',
+        'needs_restock' => 'boolean',
+        'requested_restock_quantity' => 'integer',
         'price' => 'decimal:2',
     ];
 

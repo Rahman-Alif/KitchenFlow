@@ -103,6 +103,10 @@ class MenuItemController extends Controller
             $menuItem->is_available = true;
         }
 
+        // Always reset restock request flags when admin restocks
+        $menuItem->needs_restock = false;
+        $menuItem->requested_restock_quantity = null;
+
         $menuItem->save();
 
         return new MenuItemResource($menuItem->load('category'));
