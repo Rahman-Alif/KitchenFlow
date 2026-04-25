@@ -21,6 +21,8 @@ class OrderQueueResource extends JsonResource
             'items' => $this->orderItems->map(fn ($item) => [
                 'id'           => $item->id,
                 'name'         => $item->menuItem->name,
+                'description'  => $item->menuItem->description,
+                'image_url'    => $item->menuItem->image_path,
                 'quantity'     => $item->quantity,
                 'unit_price'   => $item->unit_price,
             ]),

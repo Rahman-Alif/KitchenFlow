@@ -25,7 +25,7 @@ class OrderQueueService
             ->whereIn('status', ['pending', 'preparing', 'ready'])
             ->with([
     'user',
-    'orderItems.menuItem:id,name',
+    'orderItems.menuItem',
 ])
             ->oldest()
             ->get();
@@ -51,7 +51,7 @@ class OrderQueueService
         $order->status = $newStatus;
         $order->save();
 
-        return $order->load(['user', 'orderItems.menuItem:id,name']);
+        return $order->load(['user', 'orderItems.menuItem']);
     }
 
     /**
@@ -63,7 +63,7 @@ class OrderQueueService
 {
     $order = Order::with([
         'user',
-        'orderItems.menuItem:id,name',
+        'orderItems.menuItem',
         'transaction',
     ])->findOrFail($orderId);
 

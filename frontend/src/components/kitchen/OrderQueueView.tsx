@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { getOrderQueue, updateOrderStatus, Order } from '@/lib/services/orders';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -29,6 +30,15 @@ export default function OrderQueueView() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
   const [updating, setUpdating] = useState<number | null>(null);
+
+  const [pendingRef]   = useAutoAnimate<HTMLDivElement>();
+  const [preparingRef] = useAutoAnimate<HTMLDivElement>();
+  const [readyRef]     = useAutoAnimate<HTMLDivElement>();
+  const refs: Record<string, React.RefObject<HTMLDivElement> | any> = {
+    pending: pendingRef,
+    preparing: preparingRef,
+    ready: readyRef,
+  };
 
   useEffect(() => {
     fetchOrders();
@@ -69,20 +79,55 @@ export default function OrderQueueView() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Order Queue</h2>
-          <p className="text-zinc-400 text-sm mt-1">
-            {orders.length} active {orders.length === 1 ? 'order' : 'orders'}
-          </p>
+
+      {/* ── Staff Hero ── */}
+      <div className="relative mb-6 rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border border-zinc-800/80">
+
+        {/* Decorative glow — blue for staff */}
+        <div className="absolute -top-16 -right-16 w-64 h-64 bg-blue-500/8 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-blue-600/5 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative px-8 py-6 flex items-center justify-between gap-6 flex-wrap">
+
+          {/* Left: badge + title */}
+          <div>
+            <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-3 py-1 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+              <span className="text-blue-400 text-xs font-semibold uppercase tracking-widest">Kitchen Staff · Live Queue</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
+              Order <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Queue</span>
+            </h1>
+            <p className="text-zinc-400 text-sm mt-1">Manage incoming orders and update their status in real time.</p>
+          </div>
+
+          {/* Right: stats + refresh */}
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-6">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-yellow-400">{grouped.pending.length}</p>
+                <p className="text-zinc-500 text-xs mt-0.5">Pending</p>
+              </div>
+              <div className="w-px h-10 bg-zinc-700" />
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-400">{grouped.preparing.length}</p>
+                <p className="text-zinc-500 text-xs mt-0.5">Preparing</p>
+              </div>
+              <div className="w-px h-10 bg-zinc-700" />
+              <div className="text-center">
+                <p className="text-2xl font-bold text-emerald-400">{grouped.ready.length}</p>
+                <p className="text-zinc-500 text-xs mt-0.5">Ready</p>
+              </div>
+            </div>
+            <button
+              onClick={fetchOrders}
+              className="flex items-center gap-2 px-4 py-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 text-sm font-semibold rounded-xl transition"
+            >
+              ↻ Refresh
+            </button>
+          </div>
+
         </div>
-        <button
-          onClick={fetchOrders}
-          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
-        >
-          Refresh
-        </button>
       </div>
 
       {/* Error */}
@@ -94,7 +139,34 @@ export default function OrderQueueView() {
 
       {/* Loading */}
       {loading ? (
-        <div className="text-zinc-500 text-sm">Loading orders...</div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {(['pending', 'preparing', 'ready'] as const).map((status) => (
+            <div key={status} className="bg-zinc-900/30 rounded-3xl p-5 border border-zinc-800/50 flex flex-col h-[calc(100vh-12rem)]">
+              <div className="flex items-center justify-between mb-5 px-1">
+                 <div className="h-8 w-24 bg-zinc-800 rounded-full animate-pulse"></div>
+              </div>
+              <div className="space-y-4">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="bg-zinc-900/80 rounded-2xl p-5 border border-zinc-800/50 flex flex-col animate-pulse">
+                    <div className="flex justify-between mb-4">
+                      <div className="h-6 w-16 bg-zinc-800 rounded-md"></div>
+                      <div className="h-6 w-16 bg-zinc-800 rounded-md"></div>
+                    </div>
+                    <div className="h-4 w-32 bg-zinc-800 rounded-md mb-4"></div>
+                    <div className="space-y-2 mb-4">
+                       <div className="h-4 w-full bg-zinc-800 rounded-md"></div>
+                       <div className="h-4 w-2/3 bg-zinc-800 rounded-md"></div>
+                    </div>
+                    <div className="mt-2 pt-4 border-t border-zinc-800/50 flex justify-between">
+                       <div className="h-6 w-16 bg-zinc-800 rounded-md"></div>
+                       <div className="h-8 w-24 bg-zinc-800 rounded-xl"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : orders.length === 0 ? (
         <div className="text-center py-20">
           <p className="text-zinc-500 text-lg">No active orders</p>
@@ -117,7 +189,7 @@ export default function OrderQueueView() {
               </div>
 
               {/* Order cards */}
-              <div className="space-y-4 overflow-y-auto pr-2 pb-4 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent flex-1">
+              <div ref={refs[status]} className="space-y-4 overflow-y-auto pr-2 pb-4 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent flex-1">
                 {grouped[status].length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center text-zinc-600 p-8">
                     <div className="w-16 h-16 rounded-full bg-zinc-900/50 flex items-center justify-center mb-4">

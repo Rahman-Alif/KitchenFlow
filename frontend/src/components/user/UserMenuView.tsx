@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import {
   getUserMenu,
   placeOrder,
@@ -23,6 +24,10 @@ export default function UserMenuView() {
   const [orderError, setOrderError] = useState('');
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortOption>('default');
+  const [activeCategory, setActiveCategory] = useState<string>('All');
+  
+  const [menuContainerRef] = useAutoAnimate<HTMLDivElement>();
+  const [cartRef] = useAutoAnimate<HTMLDivElement>();
 
   useEffect(() => {
     fetchMenu();
@@ -102,47 +107,58 @@ export default function UserMenuView() {
     router.push(`/orders/${orderId}/confirmation`);
   }
 
-  // ─── Search + Sort logic ──────────────────────────────
+  // ─── Search + Sort + Filter logic ──────────────────────────────
   const filteredCategories = useMemo(() => {
-    // Flatten all items
-    let allItems: (UserMenuItem & { category_name: string })[] = [];
-    categories.forEach((cat) => {
-      cat.items.forEach((item) => {
-        allItems.push({ ...item, category_name: cat.category_name });
-      });
-    });
+    let result = categories;
 
-    // Search filter
-    if (search.trim()) {
-      allItems = allItems.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
-      );
+    // 1. Filter by Category
+    if (activeCategory !== 'All') {
+      result = result.filter(cat => cat.category_name === activeCategory);
     }
 
-    // Sort
-    if (sort === 'price_asc') {
-      allItems.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    } else if (sort === 'price_desc') {
-      allItems.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    }
-
-    // If search or sort is active — show flat list
+    // 2. Search and Sort require flattening
     if (search.trim() || sort !== 'default') {
+      let allItems: (UserMenuItem & { category_name: string })[] = [];
+      result.forEach((cat) => {
+        cat.items.forEach((item) => {
+          allItems.push({ ...item, category_name: cat.category_name });
+        });
+      });
+
+      // Search
+      if (search.trim()) {
+        allItems = allItems.filter((item) =>
+          item.name.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+
+      // Sort
+      if (sort === 'price_asc') {
+        allItems.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+      } else if (sort === 'price_desc') {
+        allItems.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+      }
+
       if (allItems.length === 0) return [];
+
+      let title = activeCategory !== 'All' ? activeCategory : 'All Items';
+      if (search.trim()) {
+        title = `Results for "${search}"`;
+      } else if (sort === 'price_asc') {
+        title = `${title} (Price: Low to High)`;
+      } else if (sort === 'price_desc') {
+        title = `${title} (Price: High to Low)`;
+      }
+
       return [{
         category_id: 0,
-        category_name: search.trim()
-          ? `Results for "${search}"`
-          : sort === 'price_asc'
-            ? 'Price: Low to High'
-            : 'Price: High to Low',
+        category_name: title,
         items: allItems,
       }];
     }
 
-    // Default — return original grouped categories
-    return categories;
-  }, [categories, search, sort]);
+    return result;
+  }, [categories, search, sort, activeCategory]);
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -151,57 +167,120 @@ export default function UserMenuView() {
         {/* Menu */}
         <div className="flex-1">
 
-          {/* Page Header */}
-          <div className="text-center py-8 mb-6 border-b border-zinc-800">
-            <p className="text-zinc-500 text-xs tracking-widest uppercase mb-1">
-              Betopia Limited
-            </p>
-            <h1 className="text-3xl font-bold text-white tracking-tight">
-              Kitchen<span className="text-orange-500">Flow</span>
-            </h1>
-            <p className="text-zinc-500 text-sm mt-2">Fresh meals, made to order</p>
+          {/* ── Hero Section ── */}
+          <div className="relative mb-8 rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border border-zinc-800/80">
+
+            {/* Decorative background glow */}
+            <div className="absolute -top-16 -right-16 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-orange-600/5 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative px-8 pt-10 pb-8">
+
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-3 py-1 mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+                <span className="text-orange-400 text-xs font-semibold uppercase tracking-widest">Betopia Kitchen · Live Menu</span>
+              </div>
+
+              <div className="flex items-end justify-between gap-6 flex-wrap">
+                {/* Text */}
+                <div>
+                  <h1 className="text-4xl font-extrabold text-white tracking-tight leading-tight mb-2">
+                    What are you
+                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
+                      craving today?
+                    </span>
+                  </h1>
+                  <p className="text-zinc-400 text-sm max-w-sm leading-relaxed">
+                    Browse our fresh menu, add items to your order, and we'll have it ready for you in no time.
+                  </p>
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center gap-6 shrink-0">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">{categories.reduce((s, c) => s + c.items.length, 0)}</p>
+                    <p className="text-zinc-500 text-xs mt-0.5">Menu Items</p>
+                  </div>
+                  <div className="w-px h-10 bg-zinc-700" />
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">{categories.length}</p>
+                    <p className="text-zinc-500 text-xs mt-0.5">Categories</p>
+                  </div>
+                  <div className="w-px h-10 bg-zinc-700" />
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-orange-400">{cart.length}</p>
+                    <p className="text-zinc-500 text-xs mt-0.5">In Cart</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Integrated Search Bar */}
+              <div className="mt-6 relative max-w-lg">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">🔍</span>
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search dishes, drinks, desserts..."
+                  className="w-full bg-zinc-800/80 border border-zinc-700/60 text-white placeholder-zinc-500 rounded-2xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 focus:bg-zinc-800 transition-all"
+                />
+                {search && (
+                  <button
+                    onClick={() => setSearch('')}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition text-xs"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+            </div>
           </div>
 
-          {/* Search + Filter bar */}
-          <div className="flex gap-3 mb-8">
-            <div className="flex-1 relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">
-                🔍
-              </span>
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search food by name..."
-                className="w-full bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition"
-              />
-              {search && (
-                <button
-                  onClick={() => setSearch('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition text-xs"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
+          {/* Category Filter Pills */}
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-none">
+            {['All', ...categories.map(c => c.category_name)].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border transition-all ${
+                  activeCategory === cat
+                    ? 'bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/20'
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:text-white hover:bg-zinc-800'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
+          {/* Sort + Clear toolbar */}
+          <div className="flex items-center gap-3 mb-6">
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
-              className="bg-zinc-900 border border-zinc-700 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer"
+              className="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer"
             >
-              <option value="default">Sort by</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
+              <option value="default">Sort by price</option>
+              <option value="price_asc">Price: Low → High</option>
+              <option value="price_desc">Price: High → Low</option>
             </select>
 
-            {(search || sort !== 'default') && (
+            {(search || sort !== 'default' || activeCategory !== 'All') && (
               <button
-                onClick={() => { setSearch(''); setSort('default'); }}
-                className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
+                onClick={() => { setSearch(''); setSort('default'); setActiveCategory('All'); }}
+                className="flex items-center gap-1.5 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-sm rounded-xl border border-zinc-700/50 transition"
               >
-                Clear
+                ✕ Clear filters
               </button>
+            )}
+
+            {(search || activeCategory !== 'All') && (
+              <p className="text-zinc-500 text-sm ml-auto">
+                {search && <span>Results for <span className="text-white font-medium">"{search}"</span></span>}
+                {!search && activeCategory !== 'All' && <span>Showing <span className="text-white font-medium">{activeCategory}</span></span>}
+              </p>
             )}
           </div>
 
@@ -212,20 +291,39 @@ export default function UserMenuView() {
           )}
 
           {loading ? (
-            <div className="text-center py-20 text-zinc-500 text-sm">Loading menu...</div>
+            <div className="space-y-12">
+              {[1, 2].map((group) => (
+                <div key={group}>
+                  <div className="flex justify-center mb-6">
+                    <div className="h-6 w-32 bg-zinc-800 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                    {[1, 2, 3].map(item => (
+                      <div key={item} className="flex flex-col items-center">
+                         <div className="w-full aspect-square rounded-lg bg-zinc-800 animate-pulse mb-3"></div>
+                         <div className="h-4 w-24 bg-zinc-800 rounded-md animate-pulse mb-2"></div>
+                         <div className="h-3 w-32 bg-zinc-800 rounded-md animate-pulse mb-3"></div>
+                         <div className="h-5 w-16 bg-zinc-800 rounded-md animate-pulse mb-3"></div>
+                         <div className="h-8 w-28 bg-zinc-800 rounded-full animate-pulse"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : filteredCategories.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-zinc-500 text-lg">No items found</p>
               <p className="text-zinc-600 text-sm mt-1">Try a different search term</p>
               <button
-                onClick={() => { setSearch(''); setSort('default'); }}
+                onClick={() => { setSearch(''); setSort('default'); setActiveCategory('All'); }}
                 className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
               >
                 Clear search
               </button>
             </div>
           ) : (
-            <div>
+            <div ref={menuContainerRef}>
               {filteredCategories.map((cat) => (
                 <div key={cat.category_id} className="mb-12">
 
@@ -323,7 +421,7 @@ export default function UserMenuView() {
               <p className="text-zinc-500 text-sm">No items added yet.</p>
             ) : (
               <>
-                <div className="space-y-3 mb-4">
+                <div ref={cartRef} className="space-y-3 mb-4">
                   {cart.map((item) => (
                     <div key={item.menu_item_id} className="flex justify-between items-center">
                       <div>
