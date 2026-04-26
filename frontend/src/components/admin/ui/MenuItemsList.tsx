@@ -10,6 +10,7 @@ import {
   restockMenuItem,
   updateMenuItemAvailability,
 } from '@/lib/services/menuItems';
+import { Utensils, Folder, DollarSign, Package, Activity, Settings } from 'lucide-react';
 
 type SortKey       = 'name' | 'category' | 'price' | 'stock' | 'status';
 type SortDirection = 'asc' | 'desc';
@@ -203,30 +204,30 @@ export default function MenuItemsList() {
             <tr>
               <th>
                 <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('name')}>
-                  Name {sortKey === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><Utensils size={14} className="adm-icon" /> Name</span> {sortKey === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
               <th>
                 <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('category')}>
-                  Category {sortKey === 'category' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><Folder size={14} className="adm-icon" /> Category</span> {sortKey === 'category' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
               <th>
                 <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('price')}>
-                  Price {sortKey === 'price' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><DollarSign size={14} className="adm-icon" /> Price</span> {sortKey === 'price' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
               <th>
                 <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('stock')}>
-                  Stock {sortKey === 'stock' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><Package size={14} className="adm-icon" /> Stock</span> {sortKey === 'stock' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
               <th>
                 <button type="button" className="adm-menu-sort-btn" onClick={() => toggleSort('status')}>
-                  Status {sortKey === 'status' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><Activity size={14} className="adm-icon" /> Status</span> {sortKey === 'status' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
-              <th>Actions</th>
+              <th><span className="adm-icon-wrapper"><Settings size={14} className="adm-icon" /> Actions</span></th>
             </tr>
           </thead>
           <tbody>

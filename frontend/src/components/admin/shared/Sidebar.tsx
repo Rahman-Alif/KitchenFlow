@@ -2,9 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { getUser } from '@/lib/auth';
-import { useEffect, useState } from 'react';
-import { AuthUser } from '@/lib/auth';
+
 
 const navItems = [
   { href: '/dashboard',      label: 'Dashboard',     icon: '▦' },
@@ -17,15 +15,6 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [user, setUser] = useState<AuthUser | null>(null);
-
-  useEffect(() => {
-    setUser(getUser());
-  }, []);
-
-  const initials = user?.name
-    ? user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
-    : 'A';
 
   return (
     <aside className="adm-sidebar">
@@ -50,14 +39,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Sidebar footer */}
-      <div className="adm-sidebar-footer">
-        <div className="adm-sidebar-avatar">{initials}</div>
-        <div>
-          <div className="adm-sidebar-user-name">{user?.name ?? 'Admin'}</div>
-          <div className="adm-sidebar-user-role">Administrator</div>
-        </div>
-      </div>
+
     </aside>
   );
 }

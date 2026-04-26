@@ -9,6 +9,7 @@ import {
   PaginatedMessages 
 } from '@/lib/services/messages';
 import { getUsers, AdminUser } from '@/lib/services/users';
+import { Calendar, User as UserIcon, MessageSquare, Tag } from 'lucide-react';
 import { getUser, AuthUser } from '@/lib/auth';
 
 function formatDateTime(dt: string): string {
@@ -153,11 +154,11 @@ export default function MessagesPortal() {
         <table className="adm-msg-table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Title</th>
-              <th>Tags</th>
+              <th><span className="adm-icon-wrapper"><Calendar size={14} className="adm-icon" /> Date</span></th>
+              <th><span className="adm-icon-wrapper"><UserIcon size={14} className="adm-icon" /> From</span></th>
+              <th><span className="adm-icon-wrapper"><UserIcon size={14} className="adm-icon" /> To</span></th>
+              <th><span className="adm-icon-wrapper"><MessageSquare size={14} className="adm-icon" /> Title</span></th>
+              <th><span className="adm-icon-wrapper"><Tag size={14} className="adm-icon" /> Tags</span></th>
             </tr>
           </thead>
           <tbody>

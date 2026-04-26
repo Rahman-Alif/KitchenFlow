@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest } from '@/lib/api';
 import { clearAuth, getUser } from '@/lib/auth';
+import { CreditCard, LogOut } from 'lucide-react';
 
 interface TopbarProps {
   title: string;
@@ -28,8 +29,10 @@ export default function Topbar({ title }: TopbarProps) {
   const [tenantError,   setTenantError]   = useState<string | null>(null);
   const [tenantLoading, setTenantLoading] = useState(false);
   const [userName,      setUserName]      = useState<string>('Admin');
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const u = getUser();
@@ -41,10 +44,13 @@ export default function Topbar({ title }: TopbarProps) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
       }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target as Node)) {
+        setUserDropdownOpen(false);
+      }
     }
-    if (dropdownOpen) document.addEventListener('mousedown', handleClickOutside);
+    if (dropdownOpen || userDropdownOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [dropdownOpen]);
+  }, [dropdownOpen, userDropdownOpen]);
 
   async function handleSubscriptionClick() {
     if (dropdownOpen) {
@@ -81,14 +87,6 @@ export default function Topbar({ title }: TopbarProps) {
       <h1>{title}</h1>
 
       <div className="adm-user-area">
-        {/* User chip */}
-        <div className="adm-user-chip">
-          <div className="adm-user-chip-avatar">
-            {userName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
-          </div>
-          {userName}
-        </div>
-
         {/* Subscription button + dropdown */}
         <div className="adm-subscription-wrapper" ref={dropdownRef}>
           <button
@@ -96,7 +94,7 @@ export default function Topbar({ title }: TopbarProps) {
             className={`adm-subscription-btn${dropdownOpen ? ' adm-subscription-btn--active' : ''}`}
             onClick={handleSubscriptionClick}
           >
-            Subscription
+            <span className="adm-icon-wrapper"><CreditCard size={14} className="adm-icon" /> Subscription</span>
           </button>
 
           {dropdownOpen && (
@@ -141,15 +139,35 @@ export default function Topbar({ title }: TopbarProps) {
           )}
         </div>
 
-        <button
-          type="button"
-          className="adm-logout-btn"
-          onClick={handleLogout}
-          disabled={logoutLoading}
-        >
-          {logoutLoading ? 'Signing out...' : 'Logout'}
-        </button>
+        {/* User chip + dropdown */}
+        <div className="adm-user-dropdown-wrapper" ref={userDropdownRef}>
+          <button 
+            type="button" 
+            className={`adm-user-chip ${userDropdownOpen ? 'adm-user-chip--active' : ''}`}
+            onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+          >
+            <div className="adm-user-chip-avatar">
+              {userName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+            </div>
+            {userName}
+          </button>
+
+          {userDropdownOpen && (
+            <div className="adm-user-dropdown">
+              <button
+                type="button"
+                className="adm-user-dropdown-item adm-user-dropdown-item--danger"
+                onClick={handleLogout}
+                disabled={logoutLoading}
+              >
+                <LogOut size={14} className="adm-icon" />
+                {logoutLoading ? 'Signing out...' : 'Logout'}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+
     </header>
   );
 }

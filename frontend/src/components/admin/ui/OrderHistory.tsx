@@ -10,6 +10,7 @@ import {
   OrderStatus,
   getOrders,
 } from '@/lib/services/orders';
+import { Hash, User as UserIcon, Activity, DollarSign, Calendar } from 'lucide-react';
 
 // ── Helpers ───────────────────────────────────────────────────
 
@@ -224,11 +225,11 @@ export default function OrderHistory() {
             <table className="adm-oh-table">
               <thead>
                 <tr>
-                  <th>Order ID</th>
-                  <th>Placed By</th>
-                  <th>Status</th>
-                  <th>Total</th>
-                  <th>Date</th>
+                  <th><span className="adm-icon-wrapper"><Hash size={14} className="adm-icon" /> Order ID</span></th>
+                  <th><span className="adm-icon-wrapper"><UserIcon size={14} className="adm-icon" /> Placed By</span></th>
+                  <th><span className="adm-icon-wrapper"><Activity size={14} className="adm-icon" /> Status</span></th>
+                  <th><span className="adm-icon-wrapper"><DollarSign size={14} className="adm-icon" /> Total</span></th>
+                  <th><span className="adm-icon-wrapper"><Calendar size={14} className="adm-icon" /> Date</span></th>
                 </tr>
               </thead>
               <tbody>

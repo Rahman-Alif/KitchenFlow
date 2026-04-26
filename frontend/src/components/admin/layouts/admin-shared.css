@@ -550,3 +550,14 @@
   align-items: center;
   gap: 10px;
 }
+
+/* ── Icons ────────────────────────────────────────────────── */
+.adm-icon {
+  color: var(--adm-primary);
+  flex-shrink: 0;
+}
+.adm-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

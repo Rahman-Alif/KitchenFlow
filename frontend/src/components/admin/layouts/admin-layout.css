@@ -239,7 +239,18 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--adm-text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
+  outline: none;
 }
+
+.adm-user-chip:hover,
+.adm-user-chip--active {
+  background: var(--adm-surface2);
+  border-color: var(--adm-border2);
+}
+
 
 .adm-user-chip-avatar {
   width: 26px;
@@ -253,6 +264,55 @@
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
+}
+
+/* User dropdown */
+.adm-user-dropdown-wrapper {
+  position: relative;
+}
+
+.adm-user-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 180px;
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-lg);
+  box-shadow: var(--adm-shadow-md);
+  padding: 8px;
+  z-index: 100;
+  animation: adm-dropdown-in 0.15s ease;
+}
+
+.adm-user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: var(--adm-radius);
+  color: var(--adm-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  text-align: left;
+  font-family: inherit;
+}
+
+.adm-user-dropdown-item:hover {
+  background: var(--adm-surface2);
+}
+
+.adm-user-dropdown-item--danger {
+  color: var(--adm-danger);
+}
+
+.adm-user-dropdown-item--danger:hover {
+  background: rgba(220, 38, 38, 0.08);
 }
 
 /* Subscription button */
@@ -360,25 +420,7 @@
   color: var(--adm-danger);
 }
 
-/* Logout button */
-.adm-logout-btn {
-  border: 1px solid var(--adm-border);
-  background: var(--adm-surface);
-  color: var(--adm-text-sub);
-  border-radius: var(--adm-radius);
-  padding: 7px 16px;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.15s ease, color 0.15s ease;
-}
 
-.adm-logout-btn:hover {
-  background: rgba(220, 38, 38, 0.07);
-  color: var(--adm-danger);
-  border-color: rgba(220, 38, 38, 0.20);
-}
 
 /* ── Page main area ─────────────────────────────────────────────── */
 .adm-main {

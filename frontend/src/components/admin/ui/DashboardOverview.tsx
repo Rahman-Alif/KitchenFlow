@@ -8,6 +8,7 @@ import {
   getRevenueWeekData,
 } from '@/lib/services/dashboard';
 import { LowStockItem, getLowStockItems, restockItem } from '@/lib/services/lowStock';
+import { ShoppingCart, DollarSign, PieChart, TrendingUp, BarChart3, AlertTriangle } from 'lucide-react';
 
 const POLL_INTERVAL_DASHBOARD = 30_000;
 const POLL_INTERVAL_LOWSTOCK  = 60_000;
@@ -388,7 +389,9 @@ export default function DashboardOverview() {
       {/* Stat cards */}
       <div className="adm-dash-grid">
         <article className="adm-dash-card">
-          <p className="adm-dash-card-label">Total Orders</p>
+          <p className="adm-dash-card-label">
+            <span className="adm-icon-wrapper"><ShoppingCart size={14} className="adm-icon" /> Total Orders</span>
+          </p>
           {loading
             ? <h3 className="adm-dash-card-value">...</h3>
             : <AnimatedValue value={data?.totalOrders ?? 0} />
@@ -396,7 +399,9 @@ export default function DashboardOverview() {
         </article>
 
         <article className="adm-dash-card">
-          <p className="adm-dash-card-label">Total Revenue</p>
+          <p className="adm-dash-card-label">
+            <span className="adm-icon-wrapper"><DollarSign size={14} className="adm-icon" /> Total Revenue</span>
+          </p>
           {loading
             ? <h3 className="adm-dash-card-value">...</h3>
             : <AnimatedValue value={data?.totalRevenue ?? 0} format="currency" />
@@ -408,7 +413,9 @@ export default function DashboardOverview() {
       <div className="adm-dash-grid adm-dash-grid--split">
         <article className="adm-dash-card">
           <div className="adm-dash-card-head">
-            <h3>Orders by Status</h3>
+            <h3>
+              <span className="adm-icon-wrapper"><PieChart size={16} className="adm-icon" /> Orders by Status</span>
+            </h3>
             {!loading && <span>{totalStatusCount} total</span>}
           </div>
           {loading ? (
@@ -422,7 +429,9 @@ export default function DashboardOverview() {
 
         <article className="adm-dash-card">
           <div className="adm-dash-card-head">
-            <h3>Top 5 Items</h3>
+            <h3>
+              <span className="adm-icon-wrapper"><TrendingUp size={16} className="adm-icon" /> Top 5 Items</span>
+            </h3>
           </div>
           {loading ? (
             <p className="adm-dash-muted">Loading item data...</p>
@@ -444,7 +453,9 @@ export default function DashboardOverview() {
       <div className="adm-dash-grid adm-dash-grid--split">
         <article className="adm-dash-card">
         <div className="adm-dash-card-head">
-          <h3>Revenue (Past 7 Days)</h3>
+          <h3>
+            <span className="adm-icon-wrapper"><BarChart3 size={16} className="adm-icon" /> Revenue (Past 7 Days)</span>
+          </h3>
         </div>
         {revenueWeekError ? (
           <p className="adm-dash-muted">{revenueWeekError}</p>
@@ -458,7 +469,9 @@ export default function DashboardOverview() {
       {/* Low stock */}
       <article className="adm-dash-card">
         <div className="adm-dash-card-head">
-          <h3>Low Stock Alerts</h3>
+          <h3>
+            <span className="adm-icon-wrapper"><AlertTriangle size={16} className="adm-icon" /> Low Stock Alerts</span>
+          </h3>
           {!lowStockLoad && lowStock && (
             <span>{lowStock.length} item{lowStock.length !== 1 ? 's' : ''}</span>
           )}

@@ -8,6 +8,7 @@ import {
   deleteCategory,
   getCategories,
 } from '@/lib/services/categories';
+import { Folder, Calendar, Settings } from 'lucide-react';
 
 type SortKey = 'name' | 'created';
 type SortDirection = 'asc' | 'desc';
@@ -149,11 +150,11 @@ export default function CategoriesPanel() {
             <tr>
               <th>
                 <button type="button" className="adm-cat-sort-btn" onClick={() => toggleSort('name')}>
-                  Name {sortKey === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><Folder size={14} className="adm-icon" /> Name</span> {sortKey === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
-              <th>Created</th>
-              <th>Action</th>
+              <th><span className="adm-icon-wrapper"><Calendar size={14} className="adm-icon" /> Created</span></th>
+              <th><span className="adm-icon-wrapper"><Settings size={14} className="adm-icon" /> Action</span></th>
             </tr>
           </thead>
             <tbody>

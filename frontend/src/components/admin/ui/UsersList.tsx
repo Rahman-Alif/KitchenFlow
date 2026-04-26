@@ -11,6 +11,7 @@ import {
   deleteUser,
   getUsers,
 } from '@/lib/services/users';
+import { User as UserIcon, Mail, Shield, Activity, Settings } from 'lucide-react';
 
 type StatusFilter = 'all' | 'active' | 'inactive';
 type RoleFilter   = 'all' | 'admin' | 'kitchen_staff' | 'user';
@@ -217,21 +218,25 @@ export default function UsersList() {
             <tr>
               <th>
                 <button type="button" className="adm-users-sort-btn" onClick={() => handleSortClick('name')}>
-                  Name {sortKey === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><UserIcon size={14} className="adm-icon" /> Name</span> {sortKey === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
-              <th>Email</th>
+              <th>
+                <span className="adm-icon-wrapper"><Mail size={14} className="adm-icon" /> Email</span>
+              </th>
               <th>
                 <button type="button" className="adm-users-sort-btn" onClick={() => handleSortClick('role')}>
-                  Role {sortKey === 'role' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><Shield size={14} className="adm-icon" /> Role</span> {sortKey === 'role' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
               <th>
                 <button type="button" className="adm-users-sort-btn" onClick={() => handleSortClick('status')}>
-                  Status {sortKey === 'status' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
+                  <span className="adm-icon-wrapper"><Activity size={14} className="adm-icon" /> Status</span> {sortKey === 'status' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
-              <th colSpan={3}>Actions</th>
+              <th colSpan={3}>
+                <span className="adm-icon-wrapper"><Settings size={14} className="adm-icon" /> Actions</span>
+              </th>
             </tr>
           </thead>
           <tbody>
