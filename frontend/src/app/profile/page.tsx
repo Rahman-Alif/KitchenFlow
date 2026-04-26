@@ -61,10 +61,10 @@ export default function ProfilePage() {
   const isAdmin = user.role === "admin";
 
   const profileContent = (
-    <div className={`max-w-5xl mx-auto p-4 md:p-8 ${isAdmin ? 'text-zinc-900' : 'text-white'}`}>
+    <div className="max-w-5xl mx-auto p-4 md:p-8 text-slate-900">
       <div className="mb-10 text-center md:text-left">
-        <h1 className={`text-3xl md:text-4xl font-extrabold tracking-tight mb-2 ${isAdmin ? 'text-zinc-900' : 'text-white'}`}>Account Settings</h1>
-        <p className={isAdmin ? 'text-zinc-500' : 'text-zinc-400'}>Manage your profile details and security preferences.</p>
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2 text-slate-900">Account Settings</h1>
+        <p className="text-slate-500">Manage your profile details and security preferences.</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
@@ -77,13 +77,11 @@ export default function ProfilePage() {
                 activeTab === "general"
                   ? isAdmin 
                     ? "bg-blue-50 text-blue-600 shadow-[inset_0_0_0_1px_rgba(37,99,235,0.2)]" 
-                    : "bg-orange-500/10 text-orange-500 shadow-[inset_0_0_0_1px_rgba(249,115,22,0.2)]"
-                  : isAdmin 
-                    ? "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900" 
-                    : "text-zinc-400 hover:bg-zinc-800/50 hover:text-white"
+                    : "bg-orange-50 text-orange-600 shadow-[inset_0_0_0_1px_rgba(249,115,22,0.2)]"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
               }`}
             >
-              <svg className={`w-5 h-5 transition-colors ${activeTab === 'general' ? (isAdmin ? 'text-blue-600' : 'text-orange-500') : 'text-zinc-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+              <svg className={`w-5 h-5 transition-colors ${activeTab === 'general' ? (isAdmin ? 'text-blue-600' : 'text-orange-600') : 'text-slate-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
               General Information
             </button>
             <button
@@ -92,13 +90,11 @@ export default function ProfilePage() {
                 activeTab === "security"
                   ? isAdmin
                     ? "bg-rose-50 text-rose-600 shadow-[inset_0_0_0_1px_rgba(225,29,72,0.2)]"
-                    : "bg-rose-500/10 text-rose-500 shadow-[inset_0_0_0_1px_rgba(243,24,96,0.2)]"
-                  : isAdmin
-                    ? "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
-                    : "text-zinc-400 hover:bg-zinc-800/50 hover:text-white"
+                    : "bg-rose-50 text-rose-600 shadow-[inset_0_0_0_1px_rgba(225,29,72,0.2)]"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
               }`}
             >
-              <svg className={`w-5 h-5 transition-colors ${activeTab === 'security' ? (isAdmin ? 'text-rose-600' : 'text-rose-500') : 'text-zinc-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <svg className={`w-5 h-5 transition-colors ${activeTab === 'security' ? 'text-rose-600' : 'text-slate-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
               Security
             </button>
           </nav>

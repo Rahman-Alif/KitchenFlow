@@ -168,7 +168,7 @@ export default function UserMenuView() {
         <div className="flex-1">
 
           {/* ── Hero Section ── */}
-          <div className="relative mb-8 rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border border-zinc-800/80">
+          <div className="relative mb-8 rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
 
             {/* Decorative background glow */}
             <div className="absolute -top-16 -right-16 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -185,13 +185,13 @@ export default function UserMenuView() {
               <div className="flex items-end justify-between gap-6 flex-wrap">
                 {/* Text */}
                 <div>
-                  <h1 className="text-4xl font-extrabold text-white tracking-tight leading-tight mb-2">
+                  <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-2">
                     What are you
                     <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
                       craving today?
                     </span>
                   </h1>
-                  <p className="text-zinc-400 text-sm max-w-sm leading-relaxed">
+                  <p className="text-slate-500 text-sm max-w-sm leading-relaxed">
                     Browse our fresh menu, add items to your order, and we'll have it ready for you in no time.
                   </p>
                 </div>
@@ -199,36 +199,36 @@ export default function UserMenuView() {
                 {/* Stats */}
                 <div className="flex items-center gap-6 shrink-0">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-white">{categories.reduce((s, c) => s + c.items.length, 0)}</p>
-                    <p className="text-zinc-500 text-xs mt-0.5">Menu Items</p>
+                    <p className="text-2xl font-bold text-slate-900">{categories.reduce((s, c) => s + c.items.length, 0)}</p>
+                    <p className="text-slate-500 text-xs mt-0.5">Menu Items</p>
                   </div>
-                  <div className="w-px h-10 bg-zinc-700" />
+                  <div className="w-px h-10 bg-slate-200" />
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-white">{categories.length}</p>
-                    <p className="text-zinc-500 text-xs mt-0.5">Categories</p>
+                    <p className="text-2xl font-bold text-slate-900">{categories.length}</p>
+                    <p className="text-slate-500 text-xs mt-0.5">Categories</p>
                   </div>
-                  <div className="w-px h-10 bg-zinc-700" />
+                  <div className="w-px h-10 bg-slate-200" />
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-orange-400">{cart.length}</p>
-                    <p className="text-zinc-500 text-xs mt-0.5">In Cart</p>
+                    <p className="text-2xl font-bold text-orange-500">{cart.length}</p>
+                    <p className="text-slate-500 text-xs mt-0.5">In Cart</p>
                   </div>
                 </div>
               </div>
 
               {/* Integrated Search Bar */}
               <div className="mt-6 relative max-w-lg">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">🔍</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search dishes, drinks, desserts..."
-                  className="w-full bg-zinc-800/80 border border-zinc-700/60 text-white placeholder-zinc-500 rounded-2xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 focus:bg-zinc-800 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-2xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 focus:bg-white transition-all shadow-sm"
                 />
                 {search && (
                   <button
                     onClick={() => setSearch('')}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition text-xs"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition text-xs"
                   >
                     ✕
                   </button>
@@ -247,7 +247,7 @@ export default function UserMenuView() {
                 className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border transition-all ${
                   activeCategory === cat
                     ? 'bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/20'
-                    : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:text-white hover:bg-zinc-800'
+                    : 'bg-white border-slate-200 text-slate-600 hover:border-orange-200 hover:text-orange-600 hover:bg-orange-50 shadow-sm'
                 }`}
               >
                 {cat}
@@ -260,7 +260,7 @@ export default function UserMenuView() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
-              className="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer"
+              className="bg-white border border-slate-200 text-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer shadow-sm"
             >
               <option value="default">Sort by price</option>
               <option value="price_asc">Price: Low → High</option>
@@ -270,16 +270,16 @@ export default function UserMenuView() {
             {(search || sort !== 'default' || activeCategory !== 'All') && (
               <button
                 onClick={() => { setSearch(''); setSort('default'); setActiveCategory('All'); }}
-                className="flex items-center gap-1.5 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-sm rounded-xl border border-zinc-700/50 transition"
+                className="flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 text-sm rounded-xl border border-slate-200 transition shadow-sm"
               >
                 ✕ Clear filters
               </button>
             )}
 
             {(search || activeCategory !== 'All') && (
-              <p className="text-zinc-500 text-sm ml-auto">
-                {search && <span>Results for <span className="text-white font-medium">"{search}"</span></span>}
-                {!search && activeCategory !== 'All' && <span>Showing <span className="text-white font-medium">{activeCategory}</span></span>}
+              <p className="text-slate-500 text-sm ml-auto">
+                {search && <span>Results for <span className="text-slate-900 font-medium">"{search}"</span></span>}
+                {!search && activeCategory !== 'All' && <span>Showing <span className="text-slate-900 font-medium">{activeCategory}</span></span>}
               </p>
             )}
           </div>
@@ -295,16 +295,16 @@ export default function UserMenuView() {
               {[1, 2].map((group) => (
                 <div key={group}>
                   <div className="flex justify-center mb-6">
-                    <div className="h-6 w-32 bg-zinc-800 rounded-full animate-pulse"></div>
+                    <div className="h-6 w-32 bg-slate-200 rounded-full animate-pulse"></div>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                     {[1, 2, 3].map(item => (
                       <div key={item} className="flex flex-col items-center">
-                         <div className="w-full aspect-square rounded-lg bg-zinc-800 animate-pulse mb-3"></div>
-                         <div className="h-4 w-24 bg-zinc-800 rounded-md animate-pulse mb-2"></div>
-                         <div className="h-3 w-32 bg-zinc-800 rounded-md animate-pulse mb-3"></div>
-                         <div className="h-5 w-16 bg-zinc-800 rounded-md animate-pulse mb-3"></div>
-                         <div className="h-8 w-28 bg-zinc-800 rounded-full animate-pulse"></div>
+                         <div className="w-full aspect-square rounded-lg bg-slate-200 animate-pulse mb-3"></div>
+                         <div className="h-4 w-24 bg-slate-200 rounded-md animate-pulse mb-2"></div>
+                         <div className="h-3 w-32 bg-slate-200 rounded-md animate-pulse mb-3"></div>
+                         <div className="h-5 w-16 bg-slate-200 rounded-md animate-pulse mb-3"></div>
+                         <div className="h-8 w-28 bg-slate-200 rounded-full animate-pulse"></div>
                       </div>
                     ))}
                   </div>
@@ -312,12 +312,12 @@ export default function UserMenuView() {
               ))}
             </div>
           ) : filteredCategories.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-zinc-500 text-lg">No items found</p>
-              <p className="text-zinc-600 text-sm mt-1">Try a different search term</p>
+            <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
+              <p className="text-slate-500 text-lg">No items found</p>
+              <p className="text-slate-400 text-sm mt-1">Try a different search term</p>
               <button
                 onClick={() => { setSearch(''); setSort('default'); setActiveCategory('All'); }}
-                className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
+                className="mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm rounded-lg transition"
               >
                 Clear search
               </button>
@@ -329,11 +329,11 @@ export default function UserMenuView() {
 
                   {/* Category header */}
                   <div className="text-center mb-6">
-                    <p className="text-zinc-600 text-lg">···</p>
-                    <h2 className="text-xl font-bold text-white uppercase tracking-widest mt-1">
+                    <p className="text-slate-300 text-lg">···</p>
+                    <h2 className="text-xl font-bold text-slate-900 uppercase tracking-widest mt-1">
                       {cat.category_name}
                     </h2>
-                    <p className="text-zinc-600 text-lg">···</p>
+                    <p className="text-slate-300 text-lg">···</p>
                   </div>
 
                   {/* Items grid */}
@@ -344,7 +344,7 @@ export default function UserMenuView() {
                         <div key={item.id} className="flex flex-col items-center text-center">
 
                           {/* Image */}
-                          <div className="w-full aspect-square rounded-lg overflow-hidden mb-3 bg-zinc-800">
+                          <div className="w-full aspect-square rounded-lg overflow-hidden mb-3 bg-slate-100 border border-slate-200/50">
                             {item.image_path ? (
                               <img
                                 src={item.image_path}
@@ -352,26 +352,26 @@ export default function UserMenuView() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-zinc-600 text-sm">
+                              <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">
                                 No image
                               </div>
                             )}
                           </div>
 
                           {/* Name */}
-                          <p className="text-white font-semibold text-sm leading-tight mb-1">
+                          <p className="text-slate-900 font-semibold text-sm leading-tight mb-1">
                             {item.name}
                           </p>
 
                           {/* Description */}
                           {item.description && (
-                            <p className="text-zinc-500 text-xs leading-relaxed mb-2 line-clamp-2 px-1">
+                            <p className="text-slate-500 text-xs leading-relaxed mb-2 line-clamp-2 px-1">
                               {item.description}
                             </p>
                           )}
 
                           {/* Price */}
-                          <p className="text-orange-400 font-bold text-base mb-3">
+                          <p className="text-orange-500 font-bold text-base mb-3">
                             ৳{item.price}
                           </p>
 
@@ -387,16 +387,16 @@ export default function UserMenuView() {
                             <div className="flex items-center gap-3">
                               <button
                                 onClick={() => removeFromCart(item.id)}
-                                className="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white flex items-center justify-center transition"
+                                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition border border-slate-200"
                               >
                                 −
                               </button>
-                              <span className="text-white font-semibold text-sm w-4 text-center">
+                              <span className="text-slate-900 font-semibold text-sm w-4 text-center">
                                 {qty}
                               </span>
                               <button
                                 onClick={() => addToCart(item)}
-                                className="w-7 h-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition"
+                                className="w-7 h-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition shadow-sm"
                               >
                                 +
                               </button>
@@ -414,35 +414,35 @@ export default function UserMenuView() {
 
         {/* Cart — right side */}
         <div className="w-80 shrink-0">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 sticky top-6">
-            <h3 className="text-white font-bold text-lg mb-4">Your Order</h3>
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 sticky top-24 shadow-sm">
+            <h3 className="text-slate-900 font-bold text-lg mb-4">Your Order</h3>
 
             {cart.length === 0 ? (
-              <p className="text-zinc-500 text-sm">No items added yet.</p>
+              <p className="text-slate-500 text-sm">No items added yet.</p>
             ) : (
               <>
                 <div ref={cartRef} className="space-y-3 mb-4">
                   {cart.map((item) => (
                     <div key={item.menu_item_id} className="flex justify-between items-center">
                       <div>
-                        <p className="text-white text-sm font-medium">{item.name}</p>
-                        <p className="text-zinc-500 text-xs">
+                        <p className="text-slate-900 text-sm font-medium">{item.name}</p>
+                        <p className="text-slate-500 text-xs">
                           ৳{item.price} x {item.quantity}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => removeFromCart(item.menu_item_id)}
-                          className="w-6 h-6 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white text-xs flex items-center justify-center transition"
+                          className="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-600 text-xs flex items-center justify-center transition"
                         >
                           −
                         </button>
-                        <span className="text-white text-sm font-semibold w-4 text-center">
+                        <span className="text-slate-900 text-sm font-semibold w-4 text-center">
                           {item.quantity}
                         </span>
                         <button
                           onClick={() => addToCart({ id: item.menu_item_id, name: item.name, price: item.price })}
-                          className="w-6 h-6 rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs flex items-center justify-center transition"
+                          className="w-6 h-6 rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs flex items-center justify-center transition shadow-sm"
                         >
                           +
                         </button>
@@ -451,15 +451,15 @@ export default function UserMenuView() {
                   ))}
                 </div>
 
-                <div className="border-t border-zinc-800 pt-4 mb-4">
+                <div className="border-t border-slate-200 pt-4 mb-4">
                   <div className="flex justify-between">
-                    <span className="text-zinc-400 text-sm">Total</span>
-                    <span className="text-white font-bold">৳{cartTotal.toFixed(2)}</span>
+                    <span className="text-slate-500 text-sm">Total</span>
+                    <span className="text-slate-900 font-bold">৳{cartTotal.toFixed(2)}</span>
                   </div>
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Notes (optional)
                   </label>
                   <textarea
@@ -467,7 +467,7 @@ export default function UserMenuView() {
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="e.g. Less spicy please"
                     rows={2}
-                    className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition resize-none"
+                    className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition resize-none"
                   />
                 </div>
 

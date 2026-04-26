@@ -79,7 +79,7 @@ export default function KitchenMenuView() {
     <div className="max-w-4xl mx-auto">
 
       {/* ── Staff Hero ── */}
-      <div className="relative mb-8 rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border border-zinc-800/80">
+      <div className="relative mb-8 rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
 
         {/* Decorative glow — emerald for menu management */}
         <div className="absolute -top-16 -right-16 w-64 h-64 bg-emerald-500/8 rounded-full blur-3xl pointer-events-none" />
@@ -93,39 +93,39 @@ export default function KitchenMenuView() {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-emerald-400 text-xs font-semibold uppercase tracking-widest">Kitchen Staff · Menu Control</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
               Menu <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Availability</span>
             </h1>
-            <p className="text-zinc-400 text-sm mt-1">Enable or disable items and request restocks instantly.</p>
+            <p className="text-slate-500 text-sm mt-1">Enable or disable items and request restocks instantly.</p>
           </div>
 
           {/* Right: stats + refresh */}
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-6">
               <div className="text-center">
-                <p className="text-2xl font-bold text-emerald-400">
+                <p className="text-2xl font-bold text-emerald-500">
                   {items.filter(i => i.is_available).length}
                 </p>
-                <p className="text-zinc-500 text-xs mt-0.5">Available</p>
+                <p className="text-slate-500 text-xs mt-0.5">Available</p>
               </div>
-              <div className="w-px h-10 bg-zinc-700" />
+              <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <p className="text-2xl font-bold text-red-400">
+                <p className="text-2xl font-bold text-red-500">
                   {items.filter(i => !i.is_available).length}
                 </p>
-                <p className="text-zinc-500 text-xs mt-0.5">Unavailable</p>
+                <p className="text-slate-500 text-xs mt-0.5">Unavailable</p>
               </div>
-              <div className="w-px h-10 bg-zinc-700" />
+              <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <p className="text-2xl font-bold text-orange-400">
+                <p className="text-2xl font-bold text-orange-500">
                   {items.filter(i => i.is_low_stock).length}
                 </p>
-                <p className="text-zinc-500 text-xs mt-0.5">Low Stock</p>
+                <p className="text-slate-500 text-xs mt-0.5">Low Stock</p>
               </div>
             </div>
             <button
               onClick={fetchMenu}
-              className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-sm font-semibold rounded-xl transition"
+              className="flex items-center gap-2 px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 text-sm font-semibold rounded-xl transition"
             >
               ↻ Refresh
             </button>
@@ -144,16 +144,16 @@ export default function KitchenMenuView() {
         <div className="space-y-8">
           {[1, 2].map(group => (
             <div key={group}>
-              <div className="h-4 w-28 bg-zinc-800 rounded-full animate-pulse mb-4"></div>
+              <div className="h-4 w-28 bg-slate-200 rounded-full animate-pulse mb-4"></div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-800 animate-pulse">
-                    <div className="w-full h-40 bg-zinc-800"></div>
+                  <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-200 animate-pulse shadow-sm">
+                    <div className="w-full h-40 bg-slate-100"></div>
                     <div className="p-5">
-                      <div className="h-5 w-32 bg-zinc-700 rounded-md mb-3"></div>
-                      <div className="h-3 w-full bg-zinc-800 rounded-md mb-2"></div>
-                      <div className="h-3 w-2/3 bg-zinc-800 rounded-md mb-4"></div>
-                      <div className="h-10 w-full bg-zinc-800 rounded-xl"></div>
+                      <div className="h-5 w-32 bg-slate-200 rounded-md mb-3"></div>
+                      <div className="h-3 w-full bg-slate-100 rounded-md mb-2"></div>
+                      <div className="h-3 w-2/3 bg-slate-100 rounded-md mb-4"></div>
+                      <div className="h-10 w-full bg-slate-200 rounded-xl"></div>
                     </div>
                   </div>
                 ))}
@@ -165,14 +165,14 @@ export default function KitchenMenuView() {
         <div ref={menuRef} className="space-y-8">
           {Object.entries(grouped).map(([category, categoryItems]) => (
             <div key={category}>
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
                 {category}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {categoryItems.map((item) => (
                   <div
                     key={item.id}
-                    className={`bg-zinc-900/50 backdrop-blur-md border rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/50 ${item.is_available ? 'border-zinc-800 hover:border-zinc-700' : 'border-zinc-800 opacity-60 grayscale-[0.5]'
+                    className={`bg-white border rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/50 shadow-sm ${item.is_available ? 'border-slate-200 hover:border-slate-300' : 'border-slate-200 opacity-60 grayscale-[0.5]'
                       }`}
                   >
                     {/* Image */}
@@ -183,10 +183,10 @@ export default function KitchenMenuView() {
                           alt={item.name}
                           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
                         <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-                          <p className="text-zinc-100 font-bold text-lg drop-shadow-md">৳{item.price}</p>
-                          <p className="text-zinc-300 text-sm font-medium bg-black/40 px-2 py-1 rounded-md backdrop-blur-sm">Stock: {item.stock_quantity}</p>
+                          <p className="text-white font-bold text-lg drop-shadow-md">৳{item.price}</p>
+                          <p className="text-slate-100 text-sm font-medium bg-black/40 px-2 py-1 rounded-md backdrop-blur-sm">Stock: {item.stock_quantity}</p>
                         </div>
                       </div>
                     )}
@@ -195,30 +195,30 @@ export default function KitchenMenuView() {
                     <div className="flex-1 p-5 flex flex-col justify-between">
                       <div className="mb-4">
                         <div className="flex items-start justify-between gap-2 mb-2">
-                          <p className="text-white font-semibold text-lg leading-tight">{item.name}</p>
+                          <p className="text-slate-900 font-semibold text-lg leading-tight">{item.name}</p>
                           <div className="flex flex-col gap-1 shrink-0 items-end">
                             {item.is_low_stock && item.is_available && (
-                              <span className="px-2 py-0.5 bg-orange-500/20 text-orange-400 text-[10px] font-bold uppercase tracking-wide rounded-full">
+                              <span className="px-2 py-0.5 bg-orange-50 text-orange-600 border border-orange-200 text-[10px] font-bold uppercase tracking-wide rounded-full">
                                 Low Stock
                               </span>
                             )}
                             {!item.is_available && (
-                              <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-[10px] font-bold uppercase tracking-wide rounded-full">
+                              <span className="px-2 py-0.5 bg-red-50 text-red-600 border border-red-200 text-[10px] font-bold uppercase tracking-wide rounded-full">
                                 Unavailable
                               </span>
                             )}
                           </div>
                         </div>
                         {(item as any).description && (
-                          <p className="text-zinc-400 text-sm line-clamp-2">
+                          <p className="text-slate-500 text-sm line-clamp-2">
                             {(item as any).description}
                           </p>
                         )}
                         {/* Fallback for no image */}
                         {!(item as any).image_path && (
                            <div className="flex items-center justify-between mt-3">
-                             <p className="text-zinc-100 font-bold text-lg">৳{item.price}</p>
-                             <p className="text-zinc-400 text-sm">Stock: {item.stock_quantity}</p>
+                             <p className="text-slate-900 font-bold text-lg">৳{item.price}</p>
+                             <p className="text-slate-500 text-sm">Stock: {item.stock_quantity}</p>
                            </div>
                         )}
                       </div>
@@ -229,8 +229,8 @@ export default function KitchenMenuView() {
                           onClick={() => handleToggle(item)}
                           disabled={toggling === item.id}
                           className={`w-full py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 ${item.is_available
-                            ? 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20'
-                            : 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white border border-emerald-500/20'
+                            ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200'
+                            : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-200'
                             } ${toggling === item.id ? 'opacity-50 cursor-wait' : ''}`}
                         >
                           {toggling === item.id ? (
@@ -250,8 +250,8 @@ export default function KitchenMenuView() {
                             disabled={item.needs_restock || restocking === item.id}
                             className={`w-full py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 ${
                               item.needs_restock
-                                ? 'bg-zinc-800 text-zinc-500 border border-zinc-700 cursor-not-allowed'
-                                : 'bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white border border-blue-500/20 active:scale-95'
+                                ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
+                                : 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-200 active:scale-95'
                             } ${restocking === item.id ? 'opacity-50 cursor-wait' : ''}`}
                           >
                             {restocking === item.id ? (

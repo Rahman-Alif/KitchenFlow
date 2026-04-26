@@ -10,8 +10,8 @@ const STATUS_COLORS: Record<string, string> = {
   pending:   'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
   preparing: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
   ready:     'bg-green-500/10 text-green-400 border-green-500/20',
-  served:    'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-  canceled:  'bg-red-500/10 text-red-400 border-red-500/20',
+  served:    'bg-slate-100 text-slate-500 border-slate-200',
+  canceled:  'bg-red-50 text-red-600 border-red-200',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -150,7 +150,7 @@ export default function UserOrderHistory() {
   return (
     <div className="max-w-3xl mx-auto">
       {/* ── Hero Section ── */}
-      <div className="relative mb-8 rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border border-zinc-800/80">
+      <div className="relative mb-8 rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
 
         {/* Decorative glow */}
         <div className="absolute -top-16 -right-16 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -167,13 +167,13 @@ export default function UserOrderHistory() {
           {/* Title + Stats */}
           <div className="flex items-end justify-between gap-6 flex-wrap">
             <div>
-              <h1 className="text-4xl font-extrabold text-white tracking-tight leading-tight mb-2">
+              <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-2">
                 Your
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
                   Orders
                 </span>
               </h1>
-              <p className="text-zinc-400 text-sm max-w-sm leading-relaxed">
+              <p className="text-slate-500 text-sm max-w-sm leading-relaxed">
                 Track the status of your current and past orders all in one place.
               </p>
             </div>
@@ -181,37 +181,37 @@ export default function UserOrderHistory() {
             {/* Stats */}
             <div className="flex items-center gap-6 shrink-0">
               <div className="text-center">
-                <p className="text-2xl font-bold text-white">{orders.length}</p>
-                <p className="text-zinc-500 text-xs mt-0.5">Total Orders</p>
+                <p className="text-2xl font-bold text-slate-900">{orders.length}</p>
+                <p className="text-slate-500 text-xs mt-0.5">Total Orders</p>
               </div>
-              <div className="w-px h-10 bg-zinc-700" />
+              <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <p className="text-2xl font-bold text-orange-400">{activeOrders.length}</p>
-                <p className="text-zinc-500 text-xs mt-0.5">Active Now</p>
+                <p className="text-2xl font-bold text-orange-500">{activeOrders.length}</p>
+                <p className="text-slate-500 text-xs mt-0.5">Active Now</p>
               </div>
-              <div className="w-px h-10 bg-zinc-700" />
+              <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <p className="text-2xl font-bold text-emerald-400">
+                <p className="text-2xl font-bold text-emerald-500">
                   {orders.filter(o => o.status === 'served').length}
                 </p>
-                <p className="text-zinc-500 text-xs mt-0.5">Completed</p>
+                <p className="text-slate-500 text-xs mt-0.5">Completed</p>
               </div>
             </div>
           </div>
 
           {/* Active order alert */}
           {activeOrders.length > 0 && (
-            <div className="mt-6 flex items-center gap-3 bg-orange-500/10 border border-orange-500/20 rounded-2xl px-4 py-3">
+            <div className="mt-6 flex items-center gap-3 bg-orange-50 border border-orange-200 rounded-2xl px-4 py-3 shadow-sm">
               <span className="text-xl">🔥</span>
               <div>
-                <p className="text-orange-400 font-semibold text-sm">
+                <p className="text-orange-600 font-semibold text-sm">
                   {activeOrders.length} order{activeOrders.length > 1 ? 's' : ''} currently being processed
                 </p>
-                <p className="text-zinc-400 text-xs mt-0.5">The kitchen is working on it — we'll have it ready soon!</p>
+                <p className="text-orange-400/80 text-xs mt-0.5">The kitchen is working on it — we'll have it ready soon!</p>
               </div>
               <button
                 onClick={fetchOrders}
-                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 text-xs font-semibold rounded-xl border border-orange-500/20 transition"
+                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-orange-100 text-orange-500 text-xs font-semibold rounded-xl border border-orange-200 transition shadow-sm"
               >
                 ↻ Refresh
               </button>
@@ -227,7 +227,7 @@ export default function UserOrderHistory() {
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all capitalize ${
                   filter === status
                     ? 'bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/20'
-                    : 'bg-zinc-900/60 border-zinc-700/60 text-zinc-400 hover:border-zinc-500 hover:text-white'
+                    : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700 shadow-sm'
                 }`}
               >
                 {status === 'all' ? `All (${orders.length})` : STATUS_LABELS[status]}
@@ -247,29 +247,29 @@ export default function UserOrderHistory() {
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 animate-pulse">
+            <div key={i} className="bg-white border border-slate-200 rounded-2xl p-5 animate-pulse shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <div className="h-5 w-28 bg-zinc-800 rounded-md mb-2"></div>
-                  <div className="h-3 w-40 bg-zinc-800 rounded-md"></div>
+                  <div className="h-5 w-28 bg-slate-200 rounded-md mb-2"></div>
+                  <div className="h-3 w-40 bg-slate-200 rounded-md"></div>
                 </div>
-                <div className="h-6 w-20 bg-zinc-800 rounded-full"></div>
+                <div className="h-6 w-20 bg-slate-200 rounded-full"></div>
               </div>
               <div className="space-y-2 mb-4">
-                <div className="h-4 w-full bg-zinc-800 rounded-md"></div>
-                <div className="h-4 w-3/4 bg-zinc-800 rounded-md"></div>
+                <div className="h-4 w-full bg-slate-200 rounded-md"></div>
+                <div className="h-4 w-3/4 bg-slate-200 rounded-md"></div>
               </div>
-              <div className="flex justify-between pt-4 border-t border-zinc-800">
-                <div className="h-4 w-12 bg-zinc-800 rounded-md"></div>
-                <div className="h-4 w-16 bg-zinc-800 rounded-md"></div>
+              <div className="flex justify-between pt-4 border-t border-slate-200">
+                <div className="h-4 w-12 bg-slate-200 rounded-md"></div>
+                <div className="h-4 w-16 bg-slate-200 rounded-md"></div>
               </div>
             </div>
           ))}
         </div>
       ) : filteredOrders.length === 0 ? (
-        <div className="text-center py-20">
-          <p className="text-zinc-500 text-lg">No orders found</p>
-          <p className="text-zinc-600 text-sm mt-1">
+        <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
+          <p className="text-slate-500 text-lg">No orders found</p>
+          <p className="text-slate-400 text-sm mt-1">
             {filter === 'all' ? 'Place your first order from the menu.' : 'No orders with this status.'}
           </p>
           {filter === 'all' && (
@@ -286,27 +286,27 @@ export default function UserOrderHistory() {
           {filteredOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
+              className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
             >
               {/* Order header */}
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-white font-semibold">Order #{order.id}</p>
-                  <p className="text-zinc-500 text-xs mt-0.5">{formatDate(order.created_at)}</p>
+                  <p className="text-slate-900 font-semibold">Order #{order.id}</p>
+                  <p className="text-slate-500 text-xs mt-0.5">{formatDate(order.created_at)}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {order.status === 'pending' && editing?.orderId !== order.id && (
                     <>
                       <button
                         onClick={() => startEdit(order)}
-                        className="px-3 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs rounded-lg transition"
+                        className="px-3 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-600 text-xs rounded-lg transition"
                       >
                         ✏️ Edit
                       </button>
                       <button
                         onClick={() => handleCancel(order.id)}
                         disabled={canceling === order.id}
-                        className="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 text-xs rounded-lg transition disabled:opacity-50"
+                        className="px-3 py-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs rounded-lg transition disabled:opacity-50"
                       >
                         {canceling === order.id ? 'Canceling...' : '✕ Cancel'}
                       </button>
@@ -321,7 +321,7 @@ export default function UserOrderHistory() {
               {/* Edit mode */}
               {editing?.orderId === order.id ? (
                 <div>
-                  <p className="text-zinc-400 text-xs mb-3">
+                  <p className="text-slate-500 text-xs mb-3">
                     Adjust quantities. Set to 0 to remove an item.
                   </p>
 
@@ -329,24 +329,24 @@ export default function UserOrderHistory() {
                     {editing.items.map((item) => (
                       <div key={item.order_item_id} className="flex items-center justify-between">
                         <div>
-                          <p className={`text-sm font-medium ${item.quantity === 0 ? 'text-zinc-600 line-through' : 'text-white'}`}>
+                          <p className={`text-sm font-medium ${item.quantity === 0 ? 'text-slate-400 line-through' : 'text-slate-900'}`}>
                             {item.name}
                           </p>
-                          <p className="text-zinc-500 text-xs">৳{item.unit_price} each</p>
+                          <p className="text-slate-500 text-xs">৳{item.unit_price} each</p>
                         </div>
                         <div className="flex items-center gap-3">
                           <button
                             onClick={() => updateEditQuantity(item.order_item_id, Math.max(0, item.quantity - 1))}
-                            className="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white flex items-center justify-center transition"
+                            className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-600 flex items-center justify-center transition"
                           >
                             −
                           </button>
-                          <span className={`text-sm font-semibold w-4 text-center ${item.quantity === 0 ? 'text-zinc-600' : 'text-white'}`}>
+                          <span className={`text-sm font-semibold w-4 text-center ${item.quantity === 0 ? 'text-slate-400' : 'text-slate-900'}`}>
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateEditQuantity(item.order_item_id, item.quantity + 1)}
-                            className="w-7 h-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition"
+                            className="w-7 h-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition shadow-sm"
                           >
                             +
                           </button>
@@ -357,7 +357,7 @@ export default function UserOrderHistory() {
 
                   {/* Notes */}
                   <div className="mb-4">
-                    <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+                    <label className="block text-xs font-medium text-slate-500 mb-1.5">
                       Notes
                     </label>
                     <textarea
@@ -365,14 +365,14 @@ export default function UserOrderHistory() {
                       onChange={(e) => setEditing({ ...editing, notes: e.target.value })}
                       placeholder="e.g. Less spicy please"
                       rows={2}
-                      className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 transition resize-none"
+                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 transition resize-none"
                     />
                   </div>
 
                   {/* New total */}
-                  <div className="flex justify-between text-sm mb-4 bg-zinc-800 rounded-lg px-4 py-3">
-                    <span className="text-zinc-400">New Total</span>
-                    <span className="text-white font-bold">৳{editTotal.toFixed(2)}</span>
+                  <div className="flex justify-between text-sm mb-4 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                    <span className="text-slate-500">New Total</span>
+                    <span className="text-slate-900 font-bold">৳{editTotal.toFixed(2)}</span>
                   </div>
 
                   {editError && (
@@ -391,7 +391,7 @@ export default function UserOrderHistory() {
                     </button>
                     <button
                       onClick={() => setEditing(null)}
-                      className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
+                      className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-sm rounded-lg transition"
                     >
                       Cancel
                     </button>
@@ -403,11 +403,11 @@ export default function UserOrderHistory() {
                   <div className="space-y-2 mb-4">
                     {order.items.map((item) => (
                       <div key={item.id} className="flex justify-between text-sm">
-                        <span className="text-zinc-300">
+                        <span className="text-slate-700">
                           {item.name}
-                          <span className="text-zinc-500 ml-1">x{item.quantity}</span>
+                          <span className="text-slate-500 ml-1 font-medium">x{item.quantity}</span>
                         </span>
-                        <span className="text-zinc-400">
+                        <span className="text-slate-600 font-medium">
                           ৳{(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
                         </span>
                       </div>
@@ -415,14 +415,14 @@ export default function UserOrderHistory() {
                   </div>
 
                   {order.notes && (
-                    <div className="bg-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-400 mb-4">
+                    <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-500 mb-4">
                       📝 {order.notes}
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
-                    <span className="text-zinc-400 text-sm font-medium">Total</span>
-                    <span className="text-white font-bold">৳{order.total_amount}</span>
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                    <span className="text-slate-500 text-sm font-medium">Total</span>
+                    <span className="text-slate-900 font-bold">৳{order.total_amount}</span>
                   </div>
 
                   {order.status === 'ready' && (

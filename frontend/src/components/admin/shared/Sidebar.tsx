@@ -5,12 +5,13 @@ import { usePathname } from 'next/navigation';
 
 
 const navItems = [
-  { href: '/dashboard',      label: 'Dashboard',     icon: '▦' },
-  { href: '/users',          label: 'Users',          icon: '◉' },
-  { href: '/categories',     label: 'Categories',     icon: '⊞' },
-  { href: '/menu',           label: 'Menu Items',     icon: '◈' },
-  { href: '/orders-history', label: 'Order History',  icon: '◷' },
-  { href: '/messages',       label: 'Messages',       icon: '◻' },
+  { href: '/dashboard', label: 'Dashboard', icon: '▦' },
+  { href: '/users', label: 'Users', icon: '◉' },
+  { href: '/categories', label: 'Categories', icon: '⊞' },
+  { href: '/menu', label: 'Menu Items', icon: '◈' },
+  { href: '/orders-history', label: 'Order History', icon: '◷' },
+  { href: '/messages', label: 'Messages', icon: '◻' },
+  { href: '/profile', label: 'Profile', icon: '◉' },
 ];
 
 export default function Sidebar() {

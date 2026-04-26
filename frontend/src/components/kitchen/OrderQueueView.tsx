@@ -81,7 +81,7 @@ export default function OrderQueueView() {
     <div className="max-w-7xl mx-auto">
 
       {/* ── Staff Hero ── */}
-      <div className="relative mb-6 rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border border-zinc-800/80">
+      <div className="relative mb-6 rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
 
         {/* Decorative glow — blue for staff */}
         <div className="absolute -top-16 -right-16 w-64 h-64 bg-blue-500/8 rounded-full blur-3xl pointer-events-none" />
@@ -95,33 +95,33 @@ export default function OrderQueueView() {
               <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
               <span className="text-blue-400 text-xs font-semibold uppercase tracking-widest">Kitchen Staff · Live Queue</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
               Order <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Queue</span>
             </h1>
-            <p className="text-zinc-400 text-sm mt-1">Manage incoming orders and update their status in real time.</p>
+            <p className="text-slate-500 text-sm mt-1">Manage incoming orders and update their status in real time.</p>
           </div>
 
           {/* Right: stats + refresh */}
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-6">
               <div className="text-center">
-                <p className="text-2xl font-bold text-yellow-400">{grouped.pending.length}</p>
-                <p className="text-zinc-500 text-xs mt-0.5">Pending</p>
+                <p className="text-2xl font-bold text-yellow-500">{grouped.pending.length}</p>
+                <p className="text-slate-500 text-xs mt-0.5">Pending</p>
               </div>
-              <div className="w-px h-10 bg-zinc-700" />
+              <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <p className="text-2xl font-bold text-blue-400">{grouped.preparing.length}</p>
-                <p className="text-zinc-500 text-xs mt-0.5">Preparing</p>
+                <p className="text-2xl font-bold text-blue-500">{grouped.preparing.length}</p>
+                <p className="text-slate-500 text-xs mt-0.5">Preparing</p>
               </div>
-              <div className="w-px h-10 bg-zinc-700" />
+              <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <p className="text-2xl font-bold text-emerald-400">{grouped.ready.length}</p>
-                <p className="text-zinc-500 text-xs mt-0.5">Ready</p>
+                <p className="text-2xl font-bold text-emerald-500">{grouped.ready.length}</p>
+                <p className="text-slate-500 text-xs mt-0.5">Ready</p>
               </div>
             </div>
             <button
               onClick={fetchOrders}
-              className="flex items-center gap-2 px-4 py-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 text-sm font-semibold rounded-xl transition"
+              className="flex items-center gap-2 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 text-sm font-semibold rounded-xl transition"
             >
               ↻ Refresh
             </button>
@@ -141,25 +141,25 @@ export default function OrderQueueView() {
       {loading ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {(['pending', 'preparing', 'ready'] as const).map((status) => (
-            <div key={status} className="bg-zinc-900/30 rounded-3xl p-5 border border-zinc-800/50 flex flex-col h-[calc(100vh-12rem)]">
+            <div key={status} className="bg-slate-50 rounded-3xl p-5 border border-slate-200 flex flex-col h-[calc(100vh-12rem)]">
               <div className="flex items-center justify-between mb-5 px-1">
-                 <div className="h-8 w-24 bg-zinc-800 rounded-full animate-pulse"></div>
+                 <div className="h-8 w-24 bg-slate-200 rounded-full animate-pulse"></div>
               </div>
               <div className="space-y-4">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="bg-zinc-900/80 rounded-2xl p-5 border border-zinc-800/50 flex flex-col animate-pulse">
+                  <div key={i} className="bg-white rounded-2xl p-5 border border-slate-200 flex flex-col animate-pulse shadow-sm">
                     <div className="flex justify-between mb-4">
-                      <div className="h-6 w-16 bg-zinc-800 rounded-md"></div>
-                      <div className="h-6 w-16 bg-zinc-800 rounded-md"></div>
+                      <div className="h-6 w-16 bg-slate-200 rounded-md"></div>
+                      <div className="h-6 w-16 bg-slate-200 rounded-md"></div>
                     </div>
-                    <div className="h-4 w-32 bg-zinc-800 rounded-md mb-4"></div>
+                    <div className="h-4 w-32 bg-slate-200 rounded-md mb-4"></div>
                     <div className="space-y-2 mb-4">
-                       <div className="h-4 w-full bg-zinc-800 rounded-md"></div>
-                       <div className="h-4 w-2/3 bg-zinc-800 rounded-md"></div>
+                       <div className="h-4 w-full bg-slate-200 rounded-md"></div>
+                       <div className="h-4 w-2/3 bg-slate-200 rounded-md"></div>
                     </div>
-                    <div className="mt-2 pt-4 border-t border-zinc-800/50 flex justify-between">
-                       <div className="h-6 w-16 bg-zinc-800 rounded-md"></div>
-                       <div className="h-8 w-24 bg-zinc-800 rounded-xl"></div>
+                    <div className="mt-2 pt-4 border-t border-slate-200 flex justify-between">
+                       <div className="h-6 w-16 bg-slate-200 rounded-md"></div>
+                       <div className="h-8 w-24 bg-slate-200 rounded-xl"></div>
                     </div>
                   </div>
                 ))}
@@ -168,32 +168,32 @@ export default function OrderQueueView() {
           ))}
         </div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20">
-          <p className="text-zinc-500 text-lg">No active orders</p>
-          <p className="text-zinc-600 text-sm mt-1">New orders will appear here automatically</p>
+        <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
+          <p className="text-slate-500 text-lg">No active orders</p>
+          <p className="text-slate-400 text-sm mt-1">New orders will appear here automatically</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {(['pending', 'preparing', 'ready'] as const).map((status) => (
-            <div key={status} className="bg-zinc-900/30 rounded-3xl p-5 border border-zinc-800/50 flex flex-col h-[calc(100vh-12rem)]">
+            <div key={status} className="bg-slate-50 rounded-3xl p-5 border border-slate-200 flex flex-col h-[calc(100vh-12rem)]">
               {/* Column header */}
               <div className="flex items-center justify-between mb-5 px-1">
                 <div className="flex items-center gap-3">
                   <span className={`px-4 py-1.5 rounded-full text-sm font-bold border shadow-sm ${STATUS_COLORS[status]}`}>
                     {STATUS_LABELS[status]}
                   </span>
-                  <span className="text-zinc-500 font-bold bg-zinc-900 px-2 py-1 rounded-lg border border-zinc-800">
+                  <span className="text-slate-500 font-bold bg-white px-2 py-1 rounded-lg border border-slate-200">
                     {grouped[status].length}
                   </span>
                 </div>
               </div>
 
               {/* Order cards */}
-              <div ref={refs[status]} className="space-y-4 overflow-y-auto pr-2 pb-4 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent flex-1">
+              <div ref={refs[status]} className="space-y-4 overflow-y-auto pr-2 pb-4 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent flex-1">
                 {grouped[status].length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center text-zinc-600 p-8">
-                    <div className="w-16 h-16 rounded-full bg-zinc-900/50 flex items-center justify-center mb-4">
-                      <svg className="w-8 h-8 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="h-full flex flex-col items-center justify-center text-center text-slate-400 p-8">
+                    <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                      <svg className="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                       </svg>
                     </div>
@@ -203,37 +203,37 @@ export default function OrderQueueView() {
                   grouped[status].map((order) => (
                     <div
                       key={order.id}
-                      className="bg-zinc-900/80 backdrop-blur-md border border-zinc-700/50 hover:border-zinc-500 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-black/40 group flex flex-col"
+                      className="bg-white border border-slate-200 hover:border-slate-300 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-slate-200 group flex flex-col"
                     >
                       <div 
                         className="p-5 cursor-pointer flex-1"
                         onClick={() => router.push(`/orders/${order.id}`)}
                       >
                         <div className="flex items-center justify-between mb-4">
-                          <span className="text-white font-bold text-lg drop-shadow-sm">
+                          <span className="text-slate-900 font-bold text-lg drop-shadow-sm">
                             #{order.id}
                           </span>
-                          <span className="text-zinc-400 font-medium text-sm bg-zinc-800/50 px-2.5 py-1 rounded-lg">
+                          <span className="text-slate-500 font-medium text-sm bg-slate-100 px-2.5 py-1 rounded-lg">
                             {timeAgo(order.created_at)}
                           </span>
                         </div>
 
-                        <p className="text-zinc-300 text-sm font-medium mb-4 flex items-center gap-2">
-                          <svg className="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        <p className="text-slate-600 text-sm font-medium mb-4 flex items-center gap-2">
+                          <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                           {order.placed_by.name}
                         </p>
 
-                        <div className="space-y-2 mb-4 bg-zinc-950/40 p-3 rounded-xl border border-zinc-800/30">
+                        <div className="space-y-2 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
                           {order.items.map((item) => (
                             <div key={item.id} className="flex justify-between items-start text-sm">
-                              <span className="text-zinc-200 font-medium pr-4">{item.name}</span>
-                              <span className="text-zinc-500 font-bold bg-zinc-800/60 px-2 py-0.5 rounded-md">x{item.quantity}</span>
+                              <span className="text-slate-700 font-medium pr-4">{item.name}</span>
+                              <span className="text-slate-500 font-bold bg-slate-200/60 px-2 py-0.5 rounded-md">x{item.quantity}</span>
                             </div>
                           ))}
                         </div>
 
                         {order.notes && (
-                          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 text-sm text-yellow-200/80 mb-2 flex gap-2 items-start">
+                          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-sm text-yellow-700 mb-2 flex gap-2 items-start">
                             <span>📝</span>
                             <p className="leading-snug">{order.notes}</p>
                           </div>
@@ -241,8 +241,8 @@ export default function OrderQueueView() {
                       </div>
 
                       {/* Quick Actions Footer */}
-                      <div className="px-5 pb-5 pt-2 border-t border-zinc-800/50 bg-zinc-900/50 flex items-center justify-between">
-                        <span className="text-white font-bold tracking-tight">
+                      <div className="px-5 pb-5 pt-2 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                        <span className="text-slate-900 font-bold tracking-tight">
                           ৳{order.total_amount}
                         </span>
                         
