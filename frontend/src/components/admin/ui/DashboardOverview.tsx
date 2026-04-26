@@ -413,9 +413,9 @@ export default function DashboardOverview() {
       <div className="adm-dash-grid adm-dash-grid--split">
         <article className="adm-dash-card">
           <div className="adm-dash-card-head">
-            <h3>
+            <p className="adm-dash-card-label">
               <span className="adm-icon-wrapper"><PieChart size={16} className="adm-icon" /> Orders by Status</span>
-            </h3>
+            </p>
             {!loading && <span>{totalStatusCount} total</span>}
           </div>
           {loading ? (
@@ -429,9 +429,9 @@ export default function DashboardOverview() {
 
         <article className="adm-dash-card">
           <div className="adm-dash-card-head">
-            <h3>
-              <span className="adm-icon-wrapper"><TrendingUp size={16} className="adm-icon" /> Top 5 Items</span>
-            </h3>
+              <p className="adm-dash-card-label">
+                <span className="adm-icon-wrapper"><TrendingUp size={16} className="adm-icon" /> Top 5 Items</span>
+              </p>
           </div>
           {loading ? (
             <p className="adm-dash-muted">Loading item data...</p>
@@ -453,9 +453,9 @@ export default function DashboardOverview() {
       <div className="adm-dash-grid adm-dash-grid--split">
         <article className="adm-dash-card">
         <div className="adm-dash-card-head">
-          <h3>
+          <p className="adm-dash-card-label">
             <span className="adm-icon-wrapper"><BarChart3 size={16} className="adm-icon" /> Revenue (Past 7 Days)</span>
-          </h3>
+          </p>
         </div>
         {revenueWeekError ? (
           <p className="adm-dash-muted">{revenueWeekError}</p>
@@ -469,9 +469,9 @@ export default function DashboardOverview() {
       {/* Low stock */}
       <article className="adm-dash-card">
         <div className="adm-dash-card-head">
-          <h3>
+          <p className="adm-dash-card-label">
             <span className="adm-icon-wrapper"><AlertTriangle size={16} className="adm-icon" /> Low Stock Alerts</span>
-          </h3>
+          </p>
           {!lowStockLoad && lowStock && (
             <span>{lowStock.length} item{lowStock.length !== 1 ? 's' : ''}</span>
           )}
@@ -482,20 +482,26 @@ export default function DashboardOverview() {
           <p className="adm-dash-muted">{lowStockError}</p>
         ) : lowStock && lowStock.length > 0 ? (
           <ul className="adm-dash-list">
-            {lowStock.map((item) => (
+            {lowStock.slice(0, 3).map((item) => (
               <LowStockRow
-              key={item.id}
-              item={item}
-              onRestocked={(id) =>
-                setLowStock((prev) => prev?.filter((i) => i.id !== id) ?? null)
-              }
-              onStockUpdated={(id, newQty) =>
-                setLowStock((prev) =>
-                  prev?.map((i) => i.id === id ? { ...i, stock_quantity: newQty } : i) ?? null
-                )
-              }
-            />
+                key={item.id}
+                item={item}
+                onRestocked={async (id) => {
+                  setLowStock((prev) => prev?.filter((i) => i.id !== id) ?? null);
+                  // Refresh to bring in potential 4th/5th items
+                  await loadLowStock(true);
+                }}
+                onStockUpdated={async (id, newQty) => {
+                  setLowStock((prev) =>
+                    prev?.map((i) => i.id === id ? { ...i, stock_quantity: newQty } : i) ?? null
+                  );
+                  // If quantity increased but still below threshold, we might want to refresh 
+                  // or just wait for the next poll. But let's refresh to be sure.
+                  await loadLowStock(true);
+                }}
+              />
             ))}
+
           </ul>
         ) : (
           <p className="adm-dash-muted">All items are sufficiently stocked.</p>

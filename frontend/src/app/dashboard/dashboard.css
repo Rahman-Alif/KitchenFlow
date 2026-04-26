@@ -77,12 +77,13 @@
 
 .adm-dash-card-label {
   margin: 0;
-  color: var(--adm-muted);
-  font-size: 11px;
-  font-weight: 700;
+  color: var(--adm-text);
+  font-size: 13px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.05em;
 }
+
 
 .adm-dash-card-value {
   margin: 10px 0 0;
@@ -101,15 +102,18 @@
 
 .adm-dash-card-head h3 {
   margin: 0;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--adm-text);
 }
 
-.adm-dash-card-head span {
+
+.adm-dash-card-head > span:not(.adm-icon-wrapper) {
   color: var(--adm-muted);
   font-size: 12px;
 }
+
 
 /* List inside card */
 .adm-dash-list {

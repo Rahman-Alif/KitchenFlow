@@ -83,16 +83,17 @@
 
 .adm-msg-table thead { background: var(--adm-surface2); }
 .adm-msg-table thead th {
-  padding: 11px 16px;
+  padding: 12px 16px;
   text-align: left;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--adm-muted);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--adm-text);
   border-bottom: 1px solid var(--adm-border);
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
 }
+
 
 .adm-msg-table tbody td {
   padding: 13px 16px;
@@ -235,7 +236,14 @@
   to   { opacity: 1; transform: scale(1)    translateY(0); }
 }
 
-.adm-msg-modal-title { margin: 0 0 20px; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
+.adm-msg-modal-title {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--adm-text);
+}
+
 
 .adm-msg-form-group { margin-bottom: 14px; }
 
