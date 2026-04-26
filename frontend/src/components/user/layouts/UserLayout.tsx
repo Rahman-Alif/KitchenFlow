@@ -29,6 +29,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   const navItems = [
     { href: '/menu',   label: 'Menu'   },
     { href: '/orders', label: 'Orders' },
+    { href: '/profile', label: 'Profile' },
   ];
 
   return (

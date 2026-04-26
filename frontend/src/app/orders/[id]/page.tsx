@@ -193,16 +193,33 @@ export default function OrderDetailPage() {
           </h3>
           <div className="space-y-3">
             {order.items.map((item) => (
-              <div key={item.id} className="flex justify-between items-center">
-                <div>
-                  <p className="text-white text-sm font-medium">{item.name}</p>
-                  <p className="text-zinc-500 text-xs">৳{item.unit_price} each</p>
+              <div key={item.id} className="flex gap-4 p-3 bg-zinc-800/50 rounded-xl border border-zinc-800/50">
+                {/* Image */}
+                <div className="w-16 h-16 rounded-lg bg-zinc-800 shrink-0 overflow-hidden border border-zinc-700/50">
+                  {item.image_url ? (
+                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-zinc-600 text-xs">No img</div>
+                  )}
                 </div>
-                <div className="text-right">
-                  <p className="text-white text-sm">x{item.quantity}</p>
-                  <p className="text-zinc-400 text-xs">
-                    ৳{(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
-                  </p>
+
+                {/* Details */}
+                <div className="flex-1 flex flex-col justify-center">
+                  <div className="flex justify-between items-start mb-1">
+                    <p className="text-white text-sm font-bold">{item.name}</p>
+                    <p className="text-white text-sm font-bold bg-zinc-800 px-2 py-0.5 rounded-md">x{item.quantity}</p>
+                  </div>
+                  
+                  {item.description && (
+                    <p className="text-zinc-400 text-xs line-clamp-2 mb-2 pr-4">{item.description}</p>
+                  )}
+                  
+                  <div className="flex justify-between items-center mt-auto">
+                    <p className="text-zinc-500 text-xs">৳{item.unit_price} each</p>
+                    <p className="text-orange-400 text-sm font-bold">
+                      ৳{(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}

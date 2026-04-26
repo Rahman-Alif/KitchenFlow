@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { getUserOrders, updateUserOrder, cancelUserOrder, Order, OrderItem } from '@/lib/services/orders';
 
 
@@ -49,6 +50,7 @@ export default function UserOrderHistory() {
   const [saving, setSaving]     = useState(false);
   const [editError, setEditError] = useState('');
   const [canceling, setCanceling] = useState<number | null>(null);
+  const [ordersRef] = useAutoAnimate<HTMLDivElement>();
 
   useEffect(() => {
     fetchOrders();
@@ -147,50 +149,93 @@ export default function UserOrderHistory() {
 
   return (
     <div className="max-w-3xl mx-auto">
+      {/* ── Hero Section ── */}
+      <div className="relative mb-8 rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border border-zinc-800/80">
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white">My Orders</h2>
-          <p className="text-zinc-400 text-sm mt-1">
-            {orders.length} {orders.length === 1 ? 'order' : 'orders'} total
-          </p>
+        {/* Decorative glow */}
+        <div className="absolute -top-16 -right-16 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-orange-600/5 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative px-8 pt-10 pb-8">
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-3 py-1 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+            <span className="text-orange-400 text-xs font-semibold uppercase tracking-widest">Betopia Kitchen · Order History</span>
+          </div>
+
+          {/* Title + Stats */}
+          <div className="flex items-end justify-between gap-6 flex-wrap">
+            <div>
+              <h1 className="text-4xl font-extrabold text-white tracking-tight leading-tight mb-2">
+                Your
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
+                  Orders
+                </span>
+              </h1>
+              <p className="text-zinc-400 text-sm max-w-sm leading-relaxed">
+                Track the status of your current and past orders all in one place.
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="flex items-center gap-6 shrink-0">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-white">{orders.length}</p>
+                <p className="text-zinc-500 text-xs mt-0.5">Total Orders</p>
+              </div>
+              <div className="w-px h-10 bg-zinc-700" />
+              <div className="text-center">
+                <p className="text-2xl font-bold text-orange-400">{activeOrders.length}</p>
+                <p className="text-zinc-500 text-xs mt-0.5">Active Now</p>
+              </div>
+              <div className="w-px h-10 bg-zinc-700" />
+              <div className="text-center">
+                <p className="text-2xl font-bold text-emerald-400">
+                  {orders.filter(o => o.status === 'served').length}
+                </p>
+                <p className="text-zinc-500 text-xs mt-0.5">Completed</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Active order alert */}
+          {activeOrders.length > 0 && (
+            <div className="mt-6 flex items-center gap-3 bg-orange-500/10 border border-orange-500/20 rounded-2xl px-4 py-3">
+              <span className="text-xl">🔥</span>
+              <div>
+                <p className="text-orange-400 font-semibold text-sm">
+                  {activeOrders.length} order{activeOrders.length > 1 ? 's' : ''} currently being processed
+                </p>
+                <p className="text-zinc-400 text-xs mt-0.5">The kitchen is working on it — we'll have it ready soon!</p>
+              </div>
+              <button
+                onClick={fetchOrders}
+                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 text-xs font-semibold rounded-xl border border-orange-500/20 transition"
+              >
+                ↻ Refresh
+              </button>
+            </div>
+          )}
+
+          {/* Filter pills */}
+          <div className="flex gap-2 mt-6 flex-wrap">
+            {['all', 'pending', 'preparing', 'ready', 'served', 'canceled'].map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all capitalize ${
+                  filter === status
+                    ? 'bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/20'
+                    : 'bg-zinc-900/60 border-zinc-700/60 text-zinc-400 hover:border-zinc-500 hover:text-white'
+                }`}
+              >
+                {status === 'all' ? `All (${orders.length})` : STATUS_LABELS[status]}
+              </button>
+            ))}
+          </div>
+
         </div>
-        <button
-          onClick={fetchOrders}
-          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
-        >
-          Refresh
-        </button>
-      </div>
-
-      {/* Active orders banner */}
-      {activeOrders.length > 0 && (
-        <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl px-5 py-4 mb-6">
-          <p className="text-orange-400 font-semibold text-sm">
-            🔥 {activeOrders.length} active {activeOrders.length === 1 ? 'order' : 'orders'}
-          </p>
-          <p className="text-zinc-400 text-xs mt-0.5">
-            Your order is being processed by the kitchen
-          </p>
-        </div>
-      )}
-
-      {/* Filter tabs */}
-      <div className="flex gap-2 mb-6 flex-wrap">
-        {['all', 'pending', 'preparing', 'ready', 'served', 'canceled'].map((status) => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition capitalize ${
-              filter === status
-                ? 'bg-orange-500 border-orange-500 text-white'
-                : 'border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-white'
-            }`}
-          >
-            {status === 'all' ? `All (${orders.length})` : STATUS_LABELS[status]}
-          </button>
-        ))}
       </div>
 
       {error && (
@@ -200,7 +245,27 @@ export default function UserOrderHistory() {
       )}
 
       {loading ? (
-        <div className="text-zinc-500 text-sm">Loading orders...</div>
+        <div className="space-y-4">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 animate-pulse">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <div className="h-5 w-28 bg-zinc-800 rounded-md mb-2"></div>
+                  <div className="h-3 w-40 bg-zinc-800 rounded-md"></div>
+                </div>
+                <div className="h-6 w-20 bg-zinc-800 rounded-full"></div>
+              </div>
+              <div className="space-y-2 mb-4">
+                <div className="h-4 w-full bg-zinc-800 rounded-md"></div>
+                <div className="h-4 w-3/4 bg-zinc-800 rounded-md"></div>
+              </div>
+              <div className="flex justify-between pt-4 border-t border-zinc-800">
+                <div className="h-4 w-12 bg-zinc-800 rounded-md"></div>
+                <div className="h-4 w-16 bg-zinc-800 rounded-md"></div>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : filteredOrders.length === 0 ? (
         <div className="text-center py-20">
           <p className="text-zinc-500 text-lg">No orders found</p>
@@ -217,7 +282,7 @@ export default function UserOrderHistory() {
           )}
         </div>
       ) : (
-        <div className="space-y-4">
+        <div ref={ordersRef} className="space-y-4">
           {filteredOrders.map((order) => (
             <div
               key={order.id}

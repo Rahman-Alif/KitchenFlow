@@ -7,9 +7,9 @@ const PUBLIC_ROUTES = [
 ];
 
 const ROLE_ROUTES: Record<string, string[]> = {
-  admin:         ['/dashboard', '/users', '/categories', '/menu', '/orders-history', '/messages'],
-  kitchen_staff: ['/orders', '/menu'],
-  user:          ['/menu', '/orders'],
+  admin:         ['/dashboard', '/users', '/categories', '/menu', '/orders-history', '/messages', '/profile'],
+  kitchen_staff: ['/orders', '/menu', '/profile'],
+  user:          ['/menu', '/orders', '/profile'],
 };
 
 const ROLE_HOME: Record<string, string> = {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { getKitchenMenu, updateAvailability, requestRestock, KitchenMenuItem } from '@/lib/services/orders';
 
 export default function KitchenMenuView() {
@@ -9,9 +10,17 @@ export default function KitchenMenuView() {
   const [error, setError] = useState('');
   const [toggling, setToggling] = useState<number | null>(null);
   const [restocking, setRestocking] = useState<number | null>(null);
+  const [menuRef] = useAutoAnimate<HTMLDivElement>();
 
   useEffect(() => {
     fetchMenu();
+    
+    // Auto refresh every 5 seconds
+    const interval = setInterval(() => {
+      fetchMenu();
+    }, 5000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   async function fetchMenu() {
@@ -69,17 +78,60 @@ export default function KitchenMenuView() {
   return (
     <div className="max-w-4xl mx-auto">
 
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Menu</h2>
-          <p className="text-zinc-400 text-sm mt-1">Toggle item availability</p>
+      {/* ── Staff Hero ── */}
+      <div className="relative mb-8 rounded-3xl overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 border border-zinc-800/80">
+
+        {/* Decorative glow — emerald for menu management */}
+        <div className="absolute -top-16 -right-16 w-64 h-64 bg-emerald-500/8 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-emerald-600/5 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative px-8 py-6 flex items-center justify-between gap-6 flex-wrap">
+
+          {/* Left: badge + title */}
+          <div>
+            <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-emerald-400 text-xs font-semibold uppercase tracking-widest">Kitchen Staff · Menu Control</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
+              Menu <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Availability</span>
+            </h1>
+            <p className="text-zinc-400 text-sm mt-1">Enable or disable items and request restocks instantly.</p>
+          </div>
+
+          {/* Right: stats + refresh */}
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-6">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-emerald-400">
+                  {items.filter(i => i.is_available).length}
+                </p>
+                <p className="text-zinc-500 text-xs mt-0.5">Available</p>
+              </div>
+              <div className="w-px h-10 bg-zinc-700" />
+              <div className="text-center">
+                <p className="text-2xl font-bold text-red-400">
+                  {items.filter(i => !i.is_available).length}
+                </p>
+                <p className="text-zinc-500 text-xs mt-0.5">Unavailable</p>
+              </div>
+              <div className="w-px h-10 bg-zinc-700" />
+              <div className="text-center">
+                <p className="text-2xl font-bold text-orange-400">
+                  {items.filter(i => i.is_low_stock).length}
+                </p>
+                <p className="text-zinc-500 text-xs mt-0.5">Low Stock</p>
+              </div>
+            </div>
+            <button
+              onClick={fetchMenu}
+              className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-sm font-semibold rounded-xl transition"
+            >
+              ↻ Refresh
+            </button>
+          </div>
+
         </div>
-        <button
-          onClick={fetchMenu}
-          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm rounded-lg transition"
-        >
-          Refresh
-        </button>
       </div>
 
       {error && (
@@ -89,9 +141,28 @@ export default function KitchenMenuView() {
       )}
 
       {loading ? (
-        <div className="text-zinc-500 text-sm">Loading menu...</div>
-      ) : (
         <div className="space-y-8">
+          {[1, 2].map(group => (
+            <div key={group}>
+              <div className="h-4 w-28 bg-zinc-800 rounded-full animate-pulse mb-4"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="bg-zinc-900/50 rounded-2xl overflow-hidden border border-zinc-800 animate-pulse">
+                    <div className="w-full h-40 bg-zinc-800"></div>
+                    <div className="p-5">
+                      <div className="h-5 w-32 bg-zinc-700 rounded-md mb-3"></div>
+                      <div className="h-3 w-full bg-zinc-800 rounded-md mb-2"></div>
+                      <div className="h-3 w-2/3 bg-zinc-800 rounded-md mb-4"></div>
+                      <div className="h-10 w-full bg-zinc-800 rounded-xl"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div ref={menuRef} className="space-y-8">
           {Object.entries(grouped).map(([category, categoryItems]) => (
             <div key={category}>
               <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">

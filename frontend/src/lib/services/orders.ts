@@ -9,6 +9,8 @@ export type OrderStatus = 'pending' | 'preparing' | 'ready' | 'served' | 'cancel
 export interface OrderItem {
   id:         number;
   name:       string;
+  description?: string | null;
+  image_url?:   string | null;
   quantity:   number;
   unit_price: string;
   subtotal?:  string;
