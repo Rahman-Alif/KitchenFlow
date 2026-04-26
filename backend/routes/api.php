@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\ProfileController;
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -31,7 +32,12 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
 
     Route::post('/auth/logout', [LogoutController::class, 'store']);
 
-
+    // ─── Profile ──────────────────────────────────────────────
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'show']);
+        Route::patch('/', [ProfileController::class, 'update']);
+        Route::put('/password', [ProfileController::class, 'updatePassword']);
+    });
     // ─── Admin ────────────────────────────────────────────
     Route::middleware('role:admin')->prefix('admin')->group(function () {
 

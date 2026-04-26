@@ -10,6 +10,7 @@ const navItems = [
   { href: '/menu', label: 'Menu Items' },
   { href: '/orders-history', label: 'Order History' },
   { href: '/messages', label: 'Messages' },
+  { href: '/profile', label: 'Profile' },
 ];
 
 export default function Sidebar() {
