@@ -184,12 +184,14 @@ export default function MessagesPortal() {
                       {msg.title}
                     </td>
                     <td>
-                      <span className={`adm-msg-badge adm-msg-badge--${msg.priority}`} style={{ marginRight: '6px' }}>
-                        {msg.priority}
-                      </span>
-                      <span className="adm-msg-badge adm-msg-badge--tag">
-                        {tagLabel(msg.tag)}
-                      </span>
+                      <div className="adm-msg-tags-cell">
+                        <span className={`adm-msg-badge adm-msg-badge--${msg.priority}`}>
+                          {msg.priority}
+                        </span>
+                        <span className="adm-msg-badge adm-msg-badge--tag">
+                          {tagLabel(msg.tag)}
+                        </span>
+                      </div>
                     </td>
                   </tr>
                   {expandedId === msg.id && (

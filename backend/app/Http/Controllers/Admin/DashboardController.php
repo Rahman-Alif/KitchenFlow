@@ -25,9 +25,7 @@ class DashboardController extends Controller
             ->get();
 
         // Revenue from served orders only
-        $revenue = Transaction::whereHas('order.user', fn($q) => $q->where('tenant_id', $tenantId))
-            ->whereDate('created_at', $date)
-            ->sum('tendered_amount');
+        $revenue = $orders->where('status', 'served')->sum('total_amount');
 
         // Order counts by status
         $statusCounts = $orders->groupBy('status')->map->count();
@@ -74,13 +72,14 @@ class DashboardController extends Controller
         $endDate = now()->startOfDay();
         $startDate = now()->subDays(6)->startOfDay();
 
-        $totalsByDate = Transaction::query()
-            ->whereHas('order.user', fn($query) => $query->where('tenant_id', $tenantId))
+        $totalsByDate = Order::query()
+            ->whereHas('user', fn($query) => $query->where('tenant_id', $tenantId))
+            ->where('status', 'served')
             ->whereBetween('created_at', [$startDate, $endDate->copy()->endOfDay()])
             ->orderBy('created_at')
             ->get()
-            ->groupBy(fn(Transaction $transaction) => $transaction->created_at->toDateString())
-            ->map(fn($transactions) => (float) $transactions->sum('tendered_amount'));
+            ->groupBy(fn(Order $order) => $order->created_at->toDateString())
+            ->map(fn($orders) => (float) $orders->sum('total_amount'));
 
         $data = [];
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {

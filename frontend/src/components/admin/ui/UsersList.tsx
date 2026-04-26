@@ -231,14 +231,14 @@ export default function UsersList() {
                   Status {sortKey === 'status' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
-              <th>Actions</th>
+              <th colSpan={3}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5}>Loading users...</td></tr>
+              <tr><td colSpan={7}>Loading users...</td></tr>
             ) : filteredUsers.length === 0 ? (
-              <tr><td colSpan={5}>No users found.</td></tr>
+              <tr><td colSpan={7}>No users found.</td></tr>
             ) : (
               filteredUsers.map((user) => (
                 <tr key={user.id} className="adm-users-row">
@@ -246,14 +246,16 @@ export default function UsersList() {
                   <td>{user.email}</td>
                   <td>{user.role}</td>
                   <td>
-                    <span className={user.is_active ? 'adm-badge adm-badge--active' : 'adm-badge'}>
+                    <span className={user.is_active ? 'adm-badge adm-badge--active' : 'adm-badge adm-badge--inactive'}>
                       {user.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="adm-users-row-actions">
+                  <td className="adm-users-action-col">
                     <Link href={`/users/${user.id}/edit`} className="adm-users-inline-btn">
                       Edit
                     </Link>
+                  </td>
+                  <td className="adm-users-action-col">
                     <button
                       type="button"
                       className={`adm-users-inline-btn adm-users-toggle-btn${actionUserId === user.id ? ' adm-users-toggle-btn--loading' : ''}`}
@@ -265,6 +267,8 @@ export default function UsersList() {
                         : user.is_active ? 'Deactivate' : 'Activate'
                       }
                     </button>
+                  </td>
+                  <td className="adm-users-action-col">
                     <button
                       type="button"
                       className="adm-users-inline-btn adm-users-inline-btn--danger"

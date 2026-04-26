@@ -1,297 +1,288 @@
-/* frontend/src/app/messages/messages.css */
+@import '@/components/admin/layouts/admin-shared.css';
 
+/* ── Messages Portal layout ────────────────────────────────── */
+.adm-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Filter bar */
 .adm-msg-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 20px;
-    justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--adm-surface);
+  padding: 16px 20px;
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-lg);
+  box-shadow: var(--adm-shadow);
 }
 
-.adm-msg-filters-left {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
+.adm-msg-filters-left { display: flex; gap: 8px; align-items: center; }
 
 .adm-msg-input,
 .adm-msg-select {
-    height: 38px;
-    padding: 0 12px;
-    border: 1px solid var(--adm-border);
-    border-radius: 8px;
-    background: var(--adm-surface);
-    color: var(--adm-text);
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s ease;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius);
+  background: var(--adm-surface2);
+  color: var(--adm-text);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .adm-msg-input:focus,
 .adm-msg-select:focus {
-    border-color: var(--adm-accent, #3b82f6);
+  border-color: var(--adm-primary);
+  box-shadow: 0 0 0 3px var(--adm-primary-glow);
 }
 
-.adm-msg-select {
-    min-width: 150px;
-    cursor: pointer;
-}
+.adm-msg-select { min-width: 145px; cursor: pointer; }
 
 .adm-msg-btn {
-    height: 38px;
-    padding: 0 18px;
-    border: none;
-    border-radius: 8px;
-    background: var(--adm-text);
-    color: var(--adm-surface);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 18px;
+  border: none;
+  border-radius: var(--adm-radius);
+  background: var(--adm-primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
-.adm-msg-btn:hover {
-    opacity: 0.85;
-}
+.adm-msg-btn:hover    { background: #1a50ee; box-shadow: 0 4px 12px rgba(42,97,255,0.28); }
+.adm-msg-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.adm-msg-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
+/* Table */
 .adm-msg-table-wrap {
-    border: 1px solid var(--adm-border);
-    border-radius: 12px;
-    overflow: hidden;
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-lg);
+  overflow: hidden;
+  background: var(--adm-surface);
+  box-shadow: var(--adm-shadow);
 }
 
 .adm-msg-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
 }
 
-.adm-msg-table thead {
-    background: var(--adm-surface);
-}
-
+.adm-msg-table thead { background: var(--adm-surface2); }
 .adm-msg-table thead th {
-    padding: 11px 16px;
-    text-align: left;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--adm-muted);
-    border-bottom: 1px solid var(--adm-border);
-    white-space: nowrap;
+  padding: 11px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--adm-muted);
+  border-bottom: 1px solid var(--adm-border);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
 }
 
 .adm-msg-table tbody td {
-    padding: 13px 16px;
-    color: var(--adm-text);
-    border-bottom: 1px solid var(--adm-border);
-    vertical-align: top;
+  padding: 13px 16px;
+  color: var(--adm-text);
+  border-bottom: 1px solid var(--adm-border);
+  vertical-align: middle;
+  font-size: 13.5px;
 }
 
-.adm-msg-row:last-child td {
-    border-bottom: none;
-}
+.adm-msg-row:last-child td { border-bottom: none; }
 
 .adm-msg-row--clickable {
-    cursor: pointer;
-    transition: background 0.15s ease;
+  cursor: pointer;
+  transition: background 0.12s ease;
 }
 
-.adm-msg-row--clickable:hover {
-    background: var(--adm-surface);
-}
+.adm-msg-row--clickable:hover { background: var(--adm-surface2); }
+.adm-msg-row--expanded        { background: var(--adm-surface2); }
+.adm-msg-row--expanded td     { border-bottom: none; }
 
-.adm-msg-row--expanded {
-    background: var(--adm-surface);
-}
+/* Unread = bolder title row */
+.adm-msg-row--unread td { font-weight: 700; }
 
-.adm-msg-row--expanded td {
-    border-bottom: none;
-}
-
-.adm-msg-row--unread {
-    font-weight: 600;
-}
-
+/* Priority badges */
 .adm-msg-badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 999px;
-    text-transform: capitalize;
-    white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid transparent;
 }
 
-.adm-msg-badge--high {
-    background: rgba(239, 68, 68, 0.12);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.25);
+.adm-msg-badge--high   { background: rgba(220,38,38,0.09);  color: #dc2626; border-color: rgba(220,38,38,0.22); }
+.adm-msg-badge--medium { background: rgba(217,119,6,0.09);  color: #d97706; border-color: rgba(217,119,6,0.22); }
+.adm-msg-badge--low    { background: rgba(42,97,255,0.09);  color: #2a61ff; border-color: rgba(42,97,255,0.20); }
+.adm-msg-badge--tag    { background: var(--adm-surface2); color: var(--adm-muted); border-color: var(--adm-border); }
+
+/* Tags cell — keep badges on one line, vertically centred */
+.adm-msg-tags-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
-.adm-msg-badge--medium {
-    background: rgba(245, 158, 11, 0.12);
-    color: #f59e0b;
-    border: 1px solid rgba(245, 158, 11, 0.25);
-}
-
-.adm-msg-badge--low {
-    background: rgba(59, 130, 246, 0.12);
-    color: #3b82f6;
-    border: 1px solid rgba(59, 130, 246, 0.25);
-}
-
-.adm-msg-badge--tag {
-    background: var(--adm-border);
-    color: var(--adm-text);
-}
-
+/* Expanded content */
 .adm-msg-detail {
-    background: var(--adm-surface);
-    border-bottom: 1px solid var(--adm-border);
-    animation: adm-msg-expand 0.2s ease-out both;
+  background: var(--adm-surface2);
+  border-bottom: 1px solid var(--adm-border);
+  animation: adm-msg-expand 0.2s ease-out both;
 }
 
-.adm-msg-detail td {
-    padding: 16px 20px !important;
-    border-bottom: none !important;
-}
+.adm-msg-detail td { padding: 20px 24px !important; border-bottom: none !important; }
 
 @keyframes adm-msg-expand {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .adm-msg-detail-title {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--adm-muted);
-    margin-bottom: 10px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--adm-muted);
+  margin-bottom: 10px;
 }
 
 .adm-msg-content {
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--adm-text);
-    margin: 0;
-    white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--adm-text);
+  margin: 0;
+  white-space: pre-wrap;
 }
 
-.adm-msg-state-row td {
-    padding: 32px 16px !important;
-    text-align: center;
-    color: var(--adm-muted);
-    font-size: 13px;
-}
+/* State rows */
+.adm-msg-state-row td { padding: 40px 16px !important; text-align: center; color: var(--adm-muted); font-size: 13.5px; }
 
-.adm-msg-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-top: 20px;
-}
+/* Pagination */
+.adm-msg-pagination { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 20px; }
 
 .adm-msg-page-btn {
-    min-width: 34px;
-    height: 34px;
-    padding: 0 10px;
-    border: 1px solid var(--adm-border);
-    border-radius: 8px;
-    background: var(--adm-surface);
-    color: var(--adm-text);
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius);
+  background: var(--adm-surface);
+  color: var(--adm-text-sub);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
 }
 
-.adm-msg-page-btn:hover:not(:disabled) {
-    background: var(--adm-border);
-}
-
-.adm-msg-page-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
+.adm-msg-page-btn:hover:not(:disabled) { background: var(--adm-primary-dim); border-color: var(--adm-border2); color: var(--adm-primary); }
+.adm-msg-page-btn:disabled             { opacity: 0.35; cursor: not-allowed; }
 
 .adm-msg-page-btn--active {
-    background: var(--adm-text);
-    color: var(--adm-surface);
-    border-color: var(--adm-text);
-    font-weight: 600;
+  background: var(--adm-primary);
+  border-color: var(--adm-primary);
+  color: #fff;
+  font-weight: 700;
 }
 
-/* Modal styles for sending message */
+/* ── New Message Modal ──────────────────────────────────────── */
 .adm-msg-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(8, 12, 20, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: adm-fade 0.15s ease;
 }
+
+@keyframes adm-fade { from { opacity: 0; } to { opacity: 1; } }
 
 .adm-msg-modal {
-    background: var(--adm-surface);
-    padding: 24px;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 500px;
-    border: 1px solid var(--adm-border);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  background: var(--adm-surface);
+  padding: 28px;
+  border-radius: var(--adm-radius-lg);
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid var(--adm-border);
+  box-shadow: 0 24px 48px rgba(12, 18, 35, 0.18);
+  animation: adm-modal-pop 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.adm-msg-modal-title {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 18px;
+@keyframes adm-modal-pop {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
 }
 
-.adm-msg-form-group {
-    margin-bottom: 16px;
-}
+.adm-msg-modal-title { margin: 0 0 20px; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
+
+.adm-msg-form-group { margin-bottom: 14px; }
 
 .adm-msg-form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 13px;
-    font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--adm-text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .adm-msg-form-group input,
 .adm-msg-form-group select,
 .adm-msg-form-group textarea {
-    width: 100%;
-    box-sizing: border-box;
+  width: 100%;
+  box-sizing: border-box;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius);
+  background: var(--adm-surface2);
+  color: var(--adm-text);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.adm-msg-form-group input:focus,
+.adm-msg-form-group select:focus,
+.adm-msg-form-group textarea:focus {
+  border-color: var(--adm-primary);
+  box-shadow: 0 0 0 3px var(--adm-primary-glow);
 }
 
 .adm-msg-form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-    padding: 10px 12px;
-    border: 1px solid var(--adm-border);
-    border-radius: 8px;
-    background: var(--adm-surface);
-    color: var(--adm-text);
-    font-size: 13px;
-    outline: none;
-    font-family: inherit;
+  height: auto;
+  min-height: 100px;
+  padding: 10px 12px;
+  resize: vertical;
 }
 
 .adm-msg-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
 }

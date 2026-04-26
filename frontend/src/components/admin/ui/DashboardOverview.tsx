@@ -46,14 +46,12 @@ function formatWeekday(dateText: string): string {
 // ── Animated number ───────────────────────────────────────────
 
 function AnimatedValue({ value, format }: { value: number; format?: 'currency' }) {
-  const [flash,   setFlash]   = useState(false);
-  const [display, setDisplay] = useState(value);
+  const [flash, setFlash] = useState(false);
   const prevRef = useRef(value);
 
   useEffect(() => {
     if (value !== prevRef.current) {
       setFlash(true);
-      setDisplay(value);
       prevRef.current = value;
       const t = setTimeout(() => setFlash(false), 600);
       return () => clearTimeout(t);
@@ -62,7 +60,7 @@ function AnimatedValue({ value, format }: { value: number; format?: 'currency' }
 
   return (
     <h3 className={`adm-dash-card-value${flash ? ' adm-dash-card-value--flash' : ''}`}>
-      {format === 'currency' ? formatCurrency(display) : display}
+      {format === 'currency' ? formatCurrency(value) : value}
     </h3>
   );
 }
@@ -128,8 +126,8 @@ function DonutChart({ segments, total }: DonutChartProps) {
         {arcs.map((arc) => (
           <li key={arc.seg.status} className="adm-donut-legend-item">
             <span className="adm-donut-legend-dot" style={{ background: arc.color }} />
-            <span className="adm-donut-legend-label">{arc.seg.status}</span>
             <strong className="adm-donut-legend-count">{arc.seg.count}</strong>
+            <span className="adm-donut-legend-label">{arc.seg.status}</span>
           </li>
         ))}
       </ul>
@@ -443,7 +441,8 @@ export default function DashboardOverview() {
         </article>
       </div>
 
-      <article className="adm-dash-card">
+      <div className="adm-dash-grid adm-dash-grid--split">
+        <article className="adm-dash-card">
         <div className="adm-dash-card-head">
           <h3>Revenue (Past 7 Days)</h3>
         </div>
@@ -488,7 +487,8 @@ export default function DashboardOverview() {
         ) : (
           <p className="adm-dash-muted">All items are sufficiently stocked.</p>
         )}
-      </article>
+        </article>
+      </div>
     </section>
   );
 }

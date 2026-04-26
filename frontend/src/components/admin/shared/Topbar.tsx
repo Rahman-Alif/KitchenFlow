@@ -81,7 +81,13 @@ export default function Topbar({ title }: TopbarProps) {
       <h1>{title}</h1>
 
       <div className="adm-user-area">
-        <span>{userName}</span>
+        {/* User chip */}
+        <div className="adm-user-chip">
+          <div className="adm-user-chip-avatar">
+            {userName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+          </div>
+          {userName}
+        </div>
 
         {/* Subscription button + dropdown */}
         <div className="adm-subscription-wrapper" ref={dropdownRef}>

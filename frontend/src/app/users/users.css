@@ -1,50 +1,103 @@
+@import '@/components/admin/layouts/admin-shared.css';
+
+/* ── Users page layout ─────────────────────────────────────── */
 .adm-users {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 }
 
-.adm-users-toolbar {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+.adm-users-toolbar   { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.adm-users-filters   { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.adm-users-actions   { display: flex; gap: 8px; align-items: center; }
 
-.adm-users-filters,
-.adm-users-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+/* Map existing classes to shared design system */
+.adm-users-search    { min-width: 260px; }
+.adm-users-select    { min-width: 140px; }
+.adm-users-table-wrap { border: 1px solid var(--adm-border); border-radius: var(--adm-radius-lg); overflow: auto; background: var(--adm-surface); box-shadow: var(--adm-shadow); }
+.adm-users-table      { width: 100%; border-collapse: collapse; min-width: 840px; font-size: 13.5px; }
 
 .adm-users-search,
 .adm-users-select,
 .adm-user-form-grid input,
 .adm-user-form-grid select {
+  height: 38px;
+  padding: 0 12px;
   border: 1px solid var(--adm-border);
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 14px;
-  background: #fff;
+  border-radius: var(--adm-radius);
+  background: var(--adm-surface);
+  color: var(--adm-text);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.adm-users-search {
-  min-width: 260px;
+.adm-users-search:focus,
+.adm-users-select:focus,
+.adm-user-form-grid input:focus,
+.adm-user-form-grid select:focus {
+  border-color: var(--adm-primary);
+  box-shadow: 0 0 0 3px var(--adm-primary-glow);
 }
 
+/* Table header */
+.adm-users-table thead tr { background: var(--adm-surface2); border-bottom: 1px solid var(--adm-border); }
+.adm-users-table thead th { padding: 11px 16px; text-align: left; font-size: 11px; font-weight: 700; color: var(--adm-muted); text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; }
+
+/* Table body */
+.adm-users-table tbody td  { padding: 13px 16px; color: var(--adm-text); border-bottom: 1px solid var(--adm-border); vertical-align: middle; }
+.adm-users-table tbody tr:last-child td { border-bottom: none; }
+.adm-users-table tbody tr:hover { background: var(--adm-surface2); }
+
+/* Sort button */
+.adm-users-sort-btn { border: none; background: transparent; padding: 0; margin: 0; font: inherit; font-size: 11px; font-weight: 700; letter-spacing: 0.07em; color: var(--adm-muted); text-transform: uppercase; cursor: pointer; }
+.adm-users-sort-btn:hover { color: var(--adm-text); }
+
+/* Row actions — prevent wrapping on long button text */
+.adm-users-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+.adm-users-row-actions .adm-users-inline-btn {
+  flex-shrink: 0;
+}
+
+/* Shrink action columns to content width — no hardcoded values */
+.adm-users-action-col {
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 4px !important;
+}
+
+.adm-users-action-col:last-child {
+  padding-right: 16px !important;
+}
+
+/* Buttons */
 .adm-users-create-btn,
 .adm-users-upload-btn,
 .adm-users-inline-btn {
-  border: 1px solid var(--adm-border);
-  border-radius: 8px;
-  background: #fff;
-  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: var(--adm-radius);
   font-size: 13px;
   font-weight: 600;
-  color: var(--adm-text);
+  font-family: inherit;
   cursor: pointer;
+  border: 1px solid var(--adm-border);
+  background: var(--adm-surface);
+  color: var(--adm-text);
   text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
 }
 
 .adm-users-create-btn {
@@ -53,127 +106,98 @@
   color: #fff;
 }
 
-.adm-users-inline-btn--danger {
-  color: #b42318;
+.adm-users-create-btn:hover { background: #1a50ee; box-shadow: 0 4px 12px rgba(42,97,255,0.28); }
+.adm-users-upload-btn:hover  { background: var(--adm-surface2); }
+.adm-users-inline-btn:hover  { background: var(--adm-surface2); }
+
+/* Action buttons inside table rows — smaller, uniform shape */
+.adm-users-row-actions .adm-users-inline-btn {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 
-.adm-users-error {
-  border: 1px solid #ffd8d8;
-  background: #fff3f3;
-  color: #a12525;
+.adm-users-inline-btn--danger {
+  color: var(--adm-danger);
+  background: rgba(220,38,38,0.06);
+  border-color: rgba(220,38,38,0.18);
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12.5px;
   border-radius: 8px;
-  padding: 8px 10px;
+}
+.adm-users-inline-btn--danger:hover { background: rgba(220,38,38,0.12); }
+
+/* Toggle button */
+.adm-users-toggle-btn { transition: opacity 0.2s ease; }
+.adm-users-toggle-btn--loading { opacity: 0.45; cursor: not-allowed; }
+
+/* Badges */
+.adm-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.adm-badge--active {
+  background: rgba(22,163,74,0.09);
+  color: #16a34a;
+  border-color: rgba(22,163,74,0.20);
+}
+
+.adm-badge--inactive {
+  background: rgba(220,38,38,0.08);
+  color: #dc2626;
+  border-color: rgba(220,38,38,0.18);
+}
+
+/* Alerts */
+.adm-users-error {
+  padding: 11px 14px;
+  border-radius: var(--adm-radius);
+  border: 1px solid rgba(220,38,38,0.22);
+  background: rgba(220,38,38,0.07);
+  color: #b91c1c;
+  font-size: 13.5px;
   margin: 0;
 }
 
 .adm-users-success {
-  border: 1px solid #c4f2d1;
-  background: #effdf3;
-  color: #1d7f3a;
-  border-radius: 8px;
-  padding: 8px 10px;
+  padding: 11px 14px;
+  border-radius: var(--adm-radius);
+  border: 1px solid rgba(22,163,74,0.22);
+  background: rgba(22,163,74,0.07);
+  color: #15803d;
+  font-size: 13.5px;
   margin: 0;
 }
 
-.adm-users-table-wrap {
-  border: 1px solid var(--adm-border);
-  border-radius: 12px;
-  background: #fff;
-  overflow: auto;
-}
-
-.adm-users-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 840px;
-}
-
-.adm-users-table th,
-.adm-users-table td {
-  text-align: left;
-  padding: 12px;
-  border-bottom: 1px solid var(--adm-border);
-  font-size: 14px;
-}
-
-.adm-users-sort-btn {
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  font-weight: 700;
-  color: inherit;
-  cursor: pointer;
-}
-
-.adm-users-row-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.adm-badge {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  border: 1px solid var(--adm-border);
-  color: var(--adm-muted);
-}
-
-.adm-badge--active {
-  border-color: #b8ebc8;
-  background: #eefcf2;
-  color: #227a3d;
-}
-
-.adm-user-form-wrap {
-  max-width: 760px;
-}
-
+/* Form */
+.adm-user-form-wrap { max-width: 720px; }
 .adm-user-form {
+  background: var(--adm-surface);
   border: 1px solid var(--adm-border);
-  border-radius: 12px;
-  background: #fff;
-  padding: 18px;
+  border-radius: var(--adm-radius-lg);
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
+  box-shadow: var(--adm-shadow);
 }
 
-.adm-user-form-header h2 {
-  margin: 0 0 4px;
-}
+.adm-user-form-header h2 { margin: 0 0 4px; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
+.adm-user-form-header p  { margin: 0; color: var(--adm-muted); font-size: 13px; }
 
-.adm-user-form-header p {
-  margin: 0;
-  color: var(--adm-muted);
-}
+.adm-user-form-grid { display: grid; gap: 14px; }
+.adm-user-form-grid label { display: flex; flex-direction: column; gap: 6px; font-size: 11.5px; font-weight: 700; color: var(--adm-text-sub); text-transform: uppercase; letter-spacing: 0.05em; }
+.adm-user-form-grid input,
+.adm-user-form-grid select { height: 40px; border-radius: var(--adm-radius); width: 100%; box-sizing: border-box; }
 
-.adm-user-form-grid {
-  display: grid;
-  gap: 12px;
-}
-
-.adm-user-form-grid label {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.adm-user-form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.adm-users-toggle-btn {
-  transition: opacity 0.2s ease;
-}
-
-.adm-users-toggle-btn--loading {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.adm-user-form-actions { display: flex; justify-content: flex-end; gap: 8px; }
