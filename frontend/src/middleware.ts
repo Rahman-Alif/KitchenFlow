@@ -7,15 +7,15 @@ const PUBLIC_ROUTES = [
 ];
 
 const ROLE_ROUTES: Record<string, string[]> = {
-  admin:         ['/dashboard', '/users', '/categories', '/menu', '/orders-history', '/messages', '/profile'],
-  kitchen_staff: ['/orders', '/menu', '/profile'],
-  user:          ['/menu', '/orders', '/profile'],
+  admin: ['/dashboard', '/users', '/categories', '/menu', '/orders-history', '/messages', '/profile'],
+  kitchen_staff: ['/orders', '/menu', '/messages', '/profile'],
+  user: ['/menu', '/orders', '/profile'],
 };
 
 const ROLE_HOME: Record<string, string> = {
-  admin:         '/dashboard',
+  admin: '/dashboard',
   kitchen_staff: '/orders',
-  user:          '/menu',
+  user: '/menu',
 };
 
 function isPublicRoute(pathname: string): boolean {
@@ -30,8 +30,8 @@ function isAllowedForRole(pathname: string, role: string): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const token    = request.cookies.get('kf_token')?.value ?? null;
-  const userRaw  = request.cookies.get('kf_user')?.value ?? null;
+  const token = request.cookies.get('kf_token')?.value ?? null;
+  const userRaw = request.cookies.get('kf_user')?.value ?? null;
   const isLoggedIn = !!token && !!userRaw;
 
   if (!isLoggedIn) {

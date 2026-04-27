@@ -367,14 +367,16 @@ export default function KitchenMenuView() {
                           ) : (item.is_available ? 'Disable Item' : 'Activate Item')}
                         </button>
 
-                        {item.stock_quantity === 0 && (
+                        {( !item.is_available || item.stock_quantity === 0 || item.is_low_stock ) && (
                           <button
                             onClick={() => handleRestock(item)}
                             disabled={item.needs_restock || restocking === item.id}
                             className={`w-full py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 ${
                               item.needs_restock
                                 ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
-                                : 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-200 active:scale-95'
+                                : item.stock_quantity === 0 || !item.is_available
+                                  ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 active:scale-95'
+                                  : 'bg-orange-50 text-orange-600 hover:bg-orange-600 hover:text-white border border-orange-200 active:scale-95'
                             } ${restocking === item.id ? 'opacity-50 cursor-wait' : ''}`}
                           >
                             {restocking === item.id ? (
@@ -383,15 +385,18 @@ export default function KitchenMenuView() {
                                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                Requesting...
+                                Sending Request...
                               </>
                             ) : item.needs_restock ? (
                               <>
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                Restock Requested {item.requested_restock_quantity ? `(${item.requested_restock_quantity})` : ''}
+                                Request Sent {item.requested_restock_quantity ? `(${item.requested_restock_quantity})` : ''}
                               </>
                             ) : (
-                              'Request Restock'
+                              <>
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                Request Restock
+                              </>
                             )}
                           </button>
                         )}

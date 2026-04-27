@@ -15,6 +15,8 @@ export interface AdminMenuItem {
   stock_quantity: number;
   low_stock_threshold: number;
   is_available: boolean;
+  needs_restock: boolean;
+  requested_restock_quantity: number | null;
   created_at: string;
 }
 

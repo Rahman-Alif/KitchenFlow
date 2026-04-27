@@ -183,11 +183,11 @@ export default function UserMenuView() {
   }, [categories, search, sort, activeCategory]);
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex gap-6">
+    <div className="max-w-7xl mx-auto pb-24 md:pb-0 px-1 sm:px-0">
+      <div className="flex flex-col md:flex-row gap-6">
 
         {/* Menu */}
-        <div className="flex-1">
+        <div className="flex-1 w-full overflow-hidden">
 
           {/* ── Hero Section ── */}
           <div className="relative mb-8 rounded-3xl overflow-hidden bg-white/70 backdrop-blur-md border border-slate-200 shadow-sm">
@@ -196,43 +196,43 @@ export default function UserMenuView() {
             <div className="absolute -top-16 -right-16 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-orange-600/5 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="relative px-8 pt-10 pb-8">
+            <div className="relative px-4 sm:px-8 pt-6 sm:pt-10 pb-6 sm:pb-8">
 
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-3 py-1 mb-5">
+              <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-3 py-1 mb-4 sm:mb-5">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
-                <span className="text-orange-400 text-xs font-semibold uppercase tracking-widest">Betopia Kitchen · Live Menu</span>
+                <span className="text-orange-400 text-[10px] sm:text-xs font-semibold uppercase tracking-widest">Betopia Kitchen · Live Menu</span>
               </div>
 
-              <div className="flex items-end justify-between gap-6 flex-wrap">
+              <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 {/* Text */}
-                <div>
-                  <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-2">
+                <div className="max-w-xl">
+                  <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-2">
                     What are you
                     <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
                       craving today?
                     </span>
                   </h1>
-                  <p className="text-slate-500 text-sm max-w-sm leading-relaxed">
+                  <p className="text-slate-500 text-xs sm:text-sm max-w-sm leading-relaxed">
                     Browse our fresh menu, add items to your order, and we'll have it ready for you in no time.
                   </p>
                 </div>
 
-                {/* Stats */}
-                <div className="flex items-center gap-6 shrink-0">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-slate-900">{categories.reduce((s, c) => s + c.items.length, 0)}</p>
-                    <p className="text-slate-500 text-xs mt-0.5">Menu Items</p>
+                {/* Stats - Horizontal scrollable on small mobile */}
+                <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto pb-2 sm:pb-0 no-scrollbar">
+                  <div className="text-center min-w-max">
+                    <p className="text-xl sm:text-2xl font-bold text-slate-900">{categories.reduce((s, c) => s + c.items.length, 0)}</p>
+                    <p className="text-slate-500 text-[10px] sm:text-xs mt-0.5">Menu Items</p>
                   </div>
-                  <div className="w-px h-10 bg-slate-200" />
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-slate-900">{categories.length}</p>
-                    <p className="text-slate-500 text-xs mt-0.5">Categories</p>
+                  <div className="w-px h-8 sm:h-10 bg-slate-200 shrink-0" />
+                  <div className="text-center min-w-max">
+                    <p className="text-xl sm:text-2xl font-bold text-slate-900">{categories.length}</p>
+                    <p className="text-slate-500 text-[10px] sm:text-xs mt-0.5">Categories</p>
                   </div>
-                  <div className="w-px h-10 bg-slate-200" />
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-orange-500">{cart.length}</p>
-                    <p className="text-slate-500 text-xs mt-0.5">In Cart</p>
+                  <div className="w-px h-8 sm:h-10 bg-slate-200 shrink-0" />
+                  <div className="text-center min-w-max">
+                    <p className="text-xl sm:text-2xl font-bold text-orange-500">{cart.length}</p>
+                    <p className="text-slate-500 text-[10px] sm:text-xs mt-0.5">In Cart</p>
                   </div>
                 </div>
               </div>
@@ -534,6 +534,33 @@ export default function UserMenuView() {
           )}
         </div>
       ))}
+
+      {/* Floating Mobile Cart Bar */}
+      {cart.length > 0 && (
+        <div className="fixed bottom-6 left-4 right-4 z-[60] md:hidden">
+          <button
+            onClick={handlePlaceOrder}
+            disabled={placing}
+            className="w-full bg-slate-900 text-white rounded-2xl p-4 shadow-2xl flex items-center justify-between group active:scale-95 transition-all border border-white/10"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+                <span className="text-sm font-bold">{cart.reduce((a, b) => a + b.quantity, 0)}</span>
+              </div>
+              <div className="text-left">
+                <p className="text-xs text-slate-400 font-medium">Ready to eat?</p>
+                <p className="text-sm font-bold">Place Order Now</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-lg font-bold">৳{cartTotal.toFixed(2)}</span>
+              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-orange-500 transition-colors">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+              </div>
+            </div>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

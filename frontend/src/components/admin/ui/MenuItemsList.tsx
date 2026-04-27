@@ -10,7 +10,7 @@ import {
   restockMenuItem,
   updateMenuItemAvailability,
 } from '@/lib/services/menuItems';
-import { Utensils, Folder, DollarSign, Package, Activity, Settings } from 'lucide-react';
+import { Utensils, Folder, DollarSign, Package, Activity, Settings, AlertCircle } from 'lucide-react';
 
 type SortKey = 'name' | 'category' | 'price' | 'stock' | 'status';
 type SortDirection = 'asc' | 'desc';
@@ -58,7 +58,6 @@ export default function MenuItemsList() {
 
     const enabling = !item.is_available;
 
-    // Client-side threshold check before even calling API
     if (enabling && item.stock_quantity <= item.low_stock_threshold) {
       setAvailError(
         `"${item.name}" cannot be enabled — stock (${item.stock_quantity}) is at or below the threshold (${item.low_stock_threshold}).`
@@ -68,7 +67,6 @@ export default function MenuItemsList() {
 
     setActionItemId(item.id);
 
-    // Optimistic update
     setItems((prev) =>
       prev.map((i) => i.id === item.id ? { ...i, is_available: enabling } : i)
     );
@@ -76,7 +74,6 @@ export default function MenuItemsList() {
     const { error: apiError } = await updateMenuItemAvailability(item.id, enabling);
 
     if (apiError) {
-      // Revert on failure
       setItems((prev) =>
         prev.map((i) => i.id === item.id ? { ...i, is_available: item.is_available } : i)
       );
@@ -144,7 +141,7 @@ export default function MenuItemsList() {
 
   function handleRestock(item: AdminMenuItem) {
     if (actionItemId !== null) return;
-    setRestockQuantity('10');
+    setRestockQuantity(item.requested_restock_quantity?.toString() || '10');
     setRestockTarget(item);
   }
 
@@ -166,13 +163,16 @@ export default function MenuItemsList() {
     setItems((prev) =>
       prev.map((i) =>
         i.id === restockTarget.id
-          ? { ...i, stock_quantity: i.stock_quantity + quantity, is_available: true }
+          ? { ...i, stock_quantity: i.stock_quantity + quantity, is_available: true, needs_restock: false, requested_restock_quantity: null }
           : i
       )
     );
     setRestockTarget(null);
     setActionItemId(null);
   }
+
+  // ── Stats ──────────────────────────────────────────────────
+  const requestCount = useMemo(() => items.filter(i => i.needs_restock).length, [items]);
 
   // ── Render ─────────────────────────────────────────────────
 
@@ -190,6 +190,13 @@ export default function MenuItemsList() {
           Create Menu Item
         </Link>
       </div>
+
+      {requestCount > 0 && (
+        <div className="adm-menu-request-alert">
+          <AlertCircle size={18} />
+          <span>Staff Alert: <strong>{requestCount}</strong> {requestCount === 1 ? 'item needs' : 'items need'} restocking.</span>
+        </div>
+      )}
 
       {error && <p className="adm-menu-error">{error}</p>}
       {availError && (
@@ -245,10 +252,21 @@ export default function MenuItemsList() {
                   <tr key={item.id}>
                     <td>{item.name}</td>
                     <td>{item.category.name}</td>
-                    <td>${Number(item.price).toFixed(2)}</td>
+                    <td>৳{Number(item.price).toFixed(2)}</td>
                     <td>
-                      {item.stock_quantity}
-                      {lowStock && <span className="adm-menu-low-stock">Low</span>}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className={lowStock ? 'text-orange-500 font-bold' : ''}>
+                            {item.stock_quantity}
+                          </span>
+                          {lowStock && <span className="adm-menu-low-stock">Low</span>}
+                        </div>
+                        {item.needs_restock && (
+                          <span className="adm-menu-request-badge">
+                             Staff needs {item.requested_restock_quantity || 'any'}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td>
                       <button

@@ -55,8 +55,9 @@
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
-  z-index: 30;
+  z-index: 50; /* Higher z-index for mobile overlay */
   overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Subtle blue glow at the top-left corner of sidebar */
@@ -177,10 +178,42 @@
   color: rgba(255,255,255,0.35);
 }
 
+/* Mobile Sidebar State */
+@media (max-width: 1024px) {
+  .adm-sidebar {
+    transform: translateX(-100%);
+  }
+  .adm-sidebar--open {
+    transform: translateX(0);
+    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+  }
+}
+
+/* Overlay for mobile */
+.adm-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 45;
+  display: none;
+}
+
+.adm-sidebar-overlay--visible {
+  display: block;
+}
+
 /* ── Main content wrapper ───────────────────────────────────────── */
 .adm-content {
   margin-left: var(--adm-sidebar-width);
   min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+  .adm-content {
+    margin-left: 0;
+  }
 }
 
 /* ── Topbar ─────────────────────────────────────────────────────── */
@@ -197,8 +230,34 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
-  z-index: 20;
+  padding: 0 16px; /* Reduced padding for mobile */
+  z-index: 40;
+  transition: left 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+  .adm-topbar {
+    left: 0;
+  }
+}
+
+.adm-mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--adm-border);
+  background: white;
+  color: var(--adm-text);
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .adm-mobile-menu-btn {
+    display: flex;
+  }
 }
 
 .adm-topbar h1 {
@@ -413,7 +472,14 @@
 
 /* ── Page main area ─────────────────────────────────────────────── */
 .adm-main {
-  padding: calc(var(--adm-topbar-height) + 28px) 28px 32px;
+  padding: calc(var(--adm-topbar-height) + 16px) 16px 24px;
+  transition: padding 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .adm-main {
+    padding: calc(var(--adm-topbar-height) + 28px) 28px 32px;
+  }
 }
 
 /* ── Shared modal ───────────────────────────────────────────────── */

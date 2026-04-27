@@ -103,7 +103,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       </header>
 
       {/* Page content */}
-      <main className="p-6">
+      <main className="p-4 sm:p-6">
         {children}
       </main>
 

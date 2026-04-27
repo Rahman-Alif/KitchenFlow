@@ -4,15 +4,16 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest } from '@/lib/api';
 import { clearAuth, getUser } from '@/lib/auth';
-import { CreditCard, LogOut } from 'lucide-react';
+import { CreditCard, LogOut, Menu } from 'lucide-react';
 
 interface TopbarProps {
   title: string;
+  onMenuClick?: () => void;
 }
 
 interface TenantData {
-  name:                 string;
-  subscription_active:  boolean;
+  name: string;
+  subscription_active: boolean;
   subscription_ends_at: string;
 }
 
@@ -20,15 +21,15 @@ interface TenantResponse {
   data: TenantData;
 }
 
-export default function Topbar({ title }: TopbarProps) {
+export default function Topbar({ title, onMenuClick }: TopbarProps) {
   const router = useRouter();
 
   const [logoutLoading, setLogoutLoading] = useState(false);
-  const [dropdownOpen,  setDropdownOpen]  = useState(false);
-  const [tenant,        setTenant]        = useState<TenantData | null>(null);
-  const [tenantError,   setTenantError]   = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [tenant, setTenant] = useState<TenantData | null>(null);
+  const [tenantError, setTenantError] = useState<string | null>(null);
   const [tenantLoading, setTenantLoading] = useState(false);
-  const [userName,      setUserName]      = useState<string>('Admin');
+  const [userName, setUserName] = useState<string>('Admin');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -84,7 +85,17 @@ export default function Topbar({ title }: TopbarProps) {
 
   return (
     <header className="adm-topbar">
-      <h1>{title}</h1>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          className="adm-mobile-menu-btn"
+          onClick={onMenuClick}
+          aria-label="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+        <h1>{title}</h1>
+      </div>
 
       <div className="adm-user-area">
         {/* Subscription button + dropdown */}
@@ -127,9 +138,9 @@ export default function Topbar({ title }: TopbarProps) {
                     <span className="adm-subscription-label">Deadline</span>
                     <span className="adm-subscription-value">
                       {new Date(tenant.subscription_ends_at).toLocaleDateString('en-GB', {
-                        day:   'numeric',
+                        day: 'numeric',
                         month: 'long',
-                        year:  'numeric',
+                        year: 'numeric',
                       })}
                     </span>
                   </div>
@@ -141,8 +152,8 @@ export default function Topbar({ title }: TopbarProps) {
 
         {/* User chip + dropdown */}
         <div className="adm-user-dropdown-wrapper" ref={userDropdownRef}>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`adm-user-chip ${userDropdownOpen ? 'adm-user-chip--active' : ''}`}
             onClick={() => setUserDropdownOpen(!userDropdownOpen)}
           >
