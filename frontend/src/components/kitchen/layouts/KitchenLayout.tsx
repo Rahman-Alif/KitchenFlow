@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { getUser, clearAuth, AuthUser } from '@/lib/auth';
 import { apiRequest } from '@/lib/api';
 import Link from 'next/link';
+import KitchenFooter from '@/components/kitchen/shared/KitchenFooter';
 
 export default function KitchenLayout({ children }: { children: React.ReactNode }) {
   const router   = useRouter();
@@ -35,9 +36,8 @@ export default function KitchenLayout({ children }: { children: React.ReactNode 
 
 
   return (
-    <div className="min-h-screen text-slate-900">
-
-      {/* Topbar */}
+    <div className="min-h-screen flex flex-col text-slate-900 bg-slate-50">
+      {/* ... header ... */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-slate-200 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all duration-300 shadow-sm">
         <div className="flex items-center justify-between w-full sm:w-auto gap-8">
           <Link href={navItems[0].href} className="flex items-center gap-2 group">
@@ -105,10 +105,11 @@ export default function KitchenLayout({ children }: { children: React.ReactNode 
       </header>
 
       {/* Page content */}
-      <main className="p-6">
+      <main className="p-6 flex-1">
         {children}
       </main>
 
+      <KitchenFooter />
     </div>
   );
 }

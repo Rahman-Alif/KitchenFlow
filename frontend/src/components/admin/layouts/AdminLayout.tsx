@@ -3,6 +3,7 @@
 import { ReactNode, useState } from 'react';
 import Sidebar from '@/components/admin/shared/Sidebar';
 import Topbar from '@/components/admin/shared/Topbar';
+import AdminFooter from '@/components/admin/shared/AdminFooter';
 
 interface AdminLayoutProps {
   title: string;
@@ -26,9 +27,10 @@ export default function AdminLayout({ title, children }: AdminLayoutProps) {
         onClick={() => setSidebarOpen(false)}
       />
 
-      <div className="adm-content">
+      <div className="adm-content flex flex-col">
         <Topbar title={title} onMenuClick={() => setSidebarOpen(true)} />
-        <main className="adm-main">{children}</main>
+        <main className="adm-main flex-1">{children}</main>
+        <AdminFooter />
       </div>
     </div>
   );
