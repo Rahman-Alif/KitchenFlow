@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { getKitchenMenu, updateAvailability, requestRestock, KitchenMenuItem } from '@/lib/services/orders';
+
+type SortOption = 'default' | 'price_asc' | 'price_desc' | 'stock_asc' | 'stock_desc';
 
 export default function KitchenMenuView() {
   const [items, setItems] = useState<KitchenMenuItem[]>([]);
@@ -10,6 +12,11 @@ export default function KitchenMenuView() {
   const [error, setError] = useState('');
   const [toggling, setToggling] = useState<number | null>(null);
   const [restocking, setRestocking] = useState<number | null>(null);
+
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState<SortOption>('default');
+  const [activeCategory, setActiveCategory] = useState<string>('All');
+
   const [menuRef] = useAutoAnimate<HTMLDivElement>();
 
   useEffect(() => {
@@ -68,7 +75,43 @@ export default function KitchenMenuView() {
     setRestocking(null);
   }
 
-  const grouped = items.reduce<Record<string, KitchenMenuItem[]>>((acc, item) => {
+  const categoriesList = useMemo(() => {
+    const cats = new Set(items.map(i => i.category.name));
+    return ['All', ...Array.from(cats).sort()];
+  }, [items]);
+
+  const filteredItems = useMemo(() => {
+    let result = [...items];
+
+    // 1. Category Filter
+    if (activeCategory !== 'All') {
+      result = result.filter(item => item.category.name === activeCategory);
+    }
+
+    // 2. Search Filter
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(item => 
+        item.name.toLowerCase().includes(q) || 
+        item.category.name.toLowerCase().includes(q)
+      );
+    }
+
+    // 3. Sorting
+    if (sort === 'price_asc') {
+      result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (sort === 'price_desc') {
+      result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    } else if (sort === 'stock_asc') {
+      result.sort((a, b) => a.stock_quantity - b.stock_quantity);
+    } else if (sort === 'stock_desc') {
+      result.sort((a, b) => b.stock_quantity - a.stock_quantity);
+    }
+
+    return result;
+  }, [items, search, sort, activeCategory]);
+
+  const grouped = filteredItems.reduce<Record<string, KitchenMenuItem[]>>((acc, item) => {
     const cat = item.category.name;
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(item);
@@ -130,8 +173,77 @@ export default function KitchenMenuView() {
               ↻ Refresh
             </button>
           </div>
-
         </div>
+
+        {/* Integrated Search Bar */}
+        <div className="px-8 pb-6">
+          <div className="relative max-w-lg">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search items by name or category..."
+              className="w-full bg-white/50 backdrop-blur-sm border border-slate-200 text-slate-900 placeholder-slate-400 rounded-2xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 focus:bg-white transition-all shadow-sm"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition text-xs"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Category Filter Pills */}
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-none">
+        {categoriesList.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border transition-all ${
+              activeCategory === cat
+                ? 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                : 'bg-white/70 backdrop-blur-md border-slate-200 text-slate-600 hover:border-emerald-200 hover:text-emerald-600 hover:bg-emerald-50 shadow-sm'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Sort + Clear toolbar */}
+      <div className="flex items-center gap-3 mb-6">
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+          className="bg-white/70 backdrop-blur-md border border-slate-200 text-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition cursor-pointer shadow-sm"
+        >
+          <option value="default">Sort by...</option>
+          <option value="price_asc">Price: Low → High</option>
+          <option value="price_desc">Price: High → Low</option>
+          <option value="stock_asc">Stock: Low → High</option>
+          <option value="stock_desc">Stock: High → Low</option>
+        </select>
+
+        {(search || sort !== 'default' || activeCategory !== 'All') && (
+          <button
+            onClick={() => { setSearch(''); setSort('default'); setActiveCategory('All'); }}
+            className="flex items-center gap-1.5 px-4 py-2 bg-white/70 backdrop-blur-md hover:bg-slate-50 text-slate-600 hover:text-slate-900 text-sm rounded-xl border border-slate-200 transition shadow-sm"
+          >
+            ✕ Clear filters
+          </button>
+        )}
+
+        {(search || activeCategory !== 'All') && (
+          <p className="text-slate-500 text-sm ml-auto">
+            {search && <span>Results for <span className="text-slate-900 font-medium">"{search}"</span></span>}
+            {!search && activeCategory !== 'All' && <span>Showing <span className="text-slate-900 font-medium">{activeCategory}</span></span>}
+          </p>
+        )}
       </div>
 
       {error && (
@@ -160,6 +272,17 @@ export default function KitchenMenuView() {
               </div>
             </div>
           ))}
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="text-center py-20 bg-white/70 backdrop-blur-md border border-slate-200 rounded-3xl shadow-sm">
+          <p className="text-slate-500 text-lg font-semibold">No items found</p>
+          <p className="text-slate-400 text-sm mt-1">Try a different search term or category</p>
+          <button
+            onClick={() => { setSearch(''); setSort('default'); setActiveCategory('All'); }}
+            className="mt-6 px-5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 text-sm font-bold rounded-xl transition shadow-sm"
+          >
+            Clear all filters
+          </button>
         </div>
       ) : (
         <div ref={menuRef} className="space-y-8">

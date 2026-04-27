@@ -17,5 +17,59 @@ html {
  
 body {
   min-height: 100vh;
+  background-color: #f7f9fc; /* Slightly deeper blue-grey base */
+  background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px); /* Darker, larger dots */
+  background-size: 32px 32px; /* Wider spacing */
+  position: relative;
+  isolation: isolate;
 }
- 
+
+/* Top-right warm orange glow - increased opacity */
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  right: -5%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Bottom-left cool indigo glow - increased opacity */
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -10%;
+  left: -5%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes flyToCart {
+  0% {
+    transform: translate(var(--startX), var(--startY)) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(calc(var(--startX) + (var(--endX) - var(--startX)) * 0.3), calc(var(--startY) - 40px)) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--endX), var(--endY)) scale(0.1);
+    opacity: 0;
+  }
+}
+
+.animate-fly {
+  animation: flyToCart 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}

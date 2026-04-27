@@ -4,6 +4,7 @@ import { useState } from "react";
 import { apiRequest } from "@/lib/api";
 import { AuthUser, saveAuth, getToken } from "@/lib/auth";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { toast } from "sonner";
 
 interface Props {
   user: AuthUser;
@@ -32,8 +33,10 @@ export default function GeneralTab({ user, isAdmin }: Props) {
 
     if (apiError) {
       setError(apiError);
+      toast.error(apiError);
     } else {
       setMessage("Profile updated successfully");
+      toast.success("Profile updated successfully");
       
       // Update local storage and cookie
       const token = getToken();

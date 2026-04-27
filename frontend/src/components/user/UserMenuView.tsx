@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { toast } from 'sonner';
 import {
   getUserMenu,
   placeOrder,
@@ -25,6 +26,7 @@ export default function UserMenuView() {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<SortOption>('default');
   const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [flyingItems, setFlyingItems] = useState<{ id: number, startX: string, startY: string, endX: string, endY: string, image: string | null }[]>([]);
   
   const [menuContainerRef] = useAutoAnimate<HTMLDivElement>();
   const [cartRef] = useAutoAnimate<HTMLDivElement>();
@@ -43,7 +45,24 @@ export default function UserMenuView() {
     setLoading(false);
   }
 
-  function addToCart(item: { id: number; name: string; price: string }) {
+  function addToCart(item: { id: number; name: string; price: string, image_path?: string | null }, e?: React.MouseEvent) {
+    if (e) {
+      const cartEl = document.getElementById('cart-container');
+      if (cartEl) {
+        const cartRect = cartEl.getBoundingClientRect();
+        // Fallback for smaller screens to fly to the middle if cart isn't strictly right side
+        const endX = cartRect.left + cartRect.width / 2 + 'px';
+        const endY = cartRect.top + cartRect.height / 2 + 'px';
+        const startX = e.clientX + 'px';
+        const startY = e.clientY + 'px';
+        const flyingId = Date.now() + Math.random();
+        setFlyingItems(prev => [...prev, { id: flyingId, startX, startY, endX, endY, image: item.image_path || null }]);
+        setTimeout(() => {
+          setFlyingItems(prev => prev.filter(f => f.id !== flyingId));
+        }, 800);
+      }
+    }
+
     setCart((prev) => {
       const existing = prev.find((c) => c.menu_item_id === item.id);
       if (existing) {
@@ -60,6 +79,7 @@ export default function UserMenuView() {
         quantity: 1,
       }];
     });
+    toast.success(`${item.name} added to cart`, { duration: 2000 });
   }
 
   function removeFromCart(menu_item_id: number) {
@@ -99,11 +119,13 @@ export default function UserMenuView() {
 
     if (error) {
       setOrderError(error);
+      toast.error('Failed to place order');
       setPlacing(false);
       return;
     }
 
     const orderId = data?.data?.id;
+    toast.success('Order placed successfully!');
     router.push(`/orders/${orderId}/confirmation`);
   }
 
@@ -168,7 +190,7 @@ export default function UserMenuView() {
         <div className="flex-1">
 
           {/* ── Hero Section ── */}
-          <div className="relative mb-8 rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
+          <div className="relative mb-8 rounded-3xl overflow-hidden bg-white/70 backdrop-blur-md border border-slate-200 shadow-sm">
 
             {/* Decorative background glow */}
             <div className="absolute -top-16 -right-16 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -218,13 +240,13 @@ export default function UserMenuView() {
               {/* Integrated Search Bar */}
               <div className="mt-6 relative max-w-lg">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search dishes, drinks, desserts..."
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-2xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 focus:bg-white transition-all shadow-sm"
-                />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search dishes, drinks, desserts..."
+                    className="w-full bg-white/50 backdrop-blur-sm border border-slate-200 text-slate-900 placeholder-slate-400 rounded-2xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/50 focus:bg-white transition-all shadow-sm"
+                  />
                 {search && (
                   <button
                     onClick={() => setSearch('')}
@@ -260,7 +282,7 @@ export default function UserMenuView() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
-              className="bg-white border border-slate-200 text-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer shadow-sm"
+              className="bg-white/70 backdrop-blur-md border border-slate-200 text-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer shadow-sm"
             >
               <option value="default">Sort by price</option>
               <option value="price_asc">Price: Low → High</option>
@@ -312,7 +334,7 @@ export default function UserMenuView() {
               ))}
             </div>
           ) : filteredCategories.length === 0 ? (
-            <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
+            <div className="text-center py-20 bg-white/70 backdrop-blur-md border border-slate-200 rounded-3xl shadow-sm">
               <p className="text-slate-500 text-lg">No items found</p>
               <p className="text-slate-400 text-sm mt-1">Try a different search term</p>
               <button
@@ -343,19 +365,20 @@ export default function UserMenuView() {
                       return (
                         <div key={item.id} className="flex flex-col items-center text-center">
 
-                          {/* Image */}
-                          <div className="w-full aspect-square rounded-lg overflow-hidden mb-3 bg-slate-100 border border-slate-200/50">
-                            {item.image_path ? (
-                              <img
-                                src={item.image_path}
-                                alt={item.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">
-                                No image
-                              </div>
-                            )}
+                          <div className="group relative w-full aspect-square rounded-2xl overflow-hidden mb-3 bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-orange-300 p-1">
+                            <div className="w-full h-full rounded-[14px] overflow-hidden">
+                              {item.image_path ? (
+                                <img
+                                  src={item.image_path}
+                                  alt={item.name}
+                                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">
+                                  No image
+                                </div>
+                              )}
+                            </div>
                           </div>
 
                           {/* Name */}
@@ -378,7 +401,7 @@ export default function UserMenuView() {
                           {/* Add / Quantity control */}
                           {qty === 0 ? (
                             <button
-                              onClick={() => addToCart(item)}
+                              onClick={(e) => addToCart(item, e)}
                               className="px-5 py-1.5 border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white text-xs font-semibold rounded-full transition"
                             >
                               Add to Order
@@ -395,7 +418,7 @@ export default function UserMenuView() {
                                 {qty}
                               </span>
                               <button
-                                onClick={() => addToCart(item)}
+                                onClick={(e) => addToCart(item, e)}
                                 className="w-7 h-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition shadow-sm"
                               >
                                 +
@@ -413,12 +436,18 @@ export default function UserMenuView() {
         </div>
 
         {/* Cart — right side */}
-        <div className="w-80 shrink-0">
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 sticky top-24 shadow-sm">
+        <div className="w-80 shrink-0 hidden md:block">
+          <div id="cart-container" className="bg-white/70 backdrop-blur-md border border-slate-200 rounded-2xl p-5 sticky top-24 shadow-sm">
             <h3 className="text-slate-900 font-bold text-lg mb-4">Your Order</h3>
 
             {cart.length === 0 ? (
-              <p className="text-slate-500 text-sm">No items added yet.</p>
+              <div className="flex flex-col items-center justify-center py-10 text-center">
+                <svg className="w-20 h-20 text-slate-200 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <p className="text-slate-500 text-sm font-medium">Your cart is hungry!</p>
+                <p className="text-slate-400 text-xs mt-1">Browse the menu to add some items.</p>
+              </div>
             ) : (
               <>
                 <div ref={cartRef} className="space-y-3 mb-4">
@@ -441,7 +470,7 @@ export default function UserMenuView() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => addToCart({ id: item.menu_item_id, name: item.name, price: item.price })}
+                          onClick={(e) => addToCart({ id: item.menu_item_id, name: item.name, price: item.price }, e)}
                           className="w-6 h-6 rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs flex items-center justify-center transition shadow-sm"
                         >
                           +
@@ -490,6 +519,21 @@ export default function UserMenuView() {
         </div>
 
       </div>
+
+      {/* Flying Items overlay */}
+      {flyingItems.map(item => (
+        <div
+          key={item.id}
+          className="animate-fly w-16 h-16 rounded-full overflow-hidden shadow-xl border-2 border-white bg-white flex items-center justify-center"
+          style={{ '--startX': item.startX, '--startY': item.startY, '--endX': item.endX, '--endY': item.endY } as React.CSSProperties}
+        >
+          {item.image ? (
+            <img src={item.image} alt="flying" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-orange-100 flex items-center justify-center text-orange-500 text-xl font-bold">😋</div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { apiRequest } from "@/lib/api";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { toast } from "sonner";
 
 export default function SecurityTab({ isAdmin }: { isAdmin?: boolean }) {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -17,6 +18,7 @@ export default function SecurityTab({ isAdmin }: { isAdmin?: boolean }) {
     e.preventDefault();
     if (password !== passwordConfirmation) {
       setError("New passwords do not match.");
+      toast.error("New passwords do not match.");
       return;
     }
 
@@ -37,8 +39,10 @@ export default function SecurityTab({ isAdmin }: { isAdmin?: boolean }) {
 
     if (apiError) {
       setError(apiError);
+      toast.error(apiError);
     } else {
       setMessage("Password updated successfully.");
+      toast.success("Password updated successfully.");
       setCurrentPassword("");
       setPassword("");
       setPasswordConfirmation("");
