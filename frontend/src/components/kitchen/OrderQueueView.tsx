@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { toast } from 'sonner';
 import { getOrderQueue, updateOrderStatus, Order } from '@/lib/services/orders';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -43,8 +44,8 @@ export default function OrderQueueView() {
   useEffect(() => {
     fetchOrders();
 
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchOrders, 30000);
+    // Auto-refresh every 5 seconds
+    const interval = setInterval(fetchOrders, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -64,9 +65,11 @@ export default function OrderQueueView() {
     const { data, error: apiError } = await updateOrderStatus(order.id, newStatus);
     if (apiError) {
       setError(apiError);
+      toast.error('Failed to update status');
     } else {
       // update local state
       setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: newStatus as Order['status'] } : o));
+      toast.success(`Order #${order.id} marked as ${STATUS_LABELS[newStatus] || 'Served'}`);
     }
     setUpdating(null);
   }
@@ -81,7 +84,7 @@ export default function OrderQueueView() {
     <div className="max-w-7xl mx-auto">
 
       {/* ── Staff Hero ── */}
-      <div className="relative mb-6 rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
+      <div className="relative mb-6 rounded-3xl overflow-hidden bg-white/70 backdrop-blur-md border border-slate-200 shadow-sm">
 
         {/* Decorative glow — blue for staff */}
         <div className="absolute -top-16 -right-16 w-64 h-64 bg-blue-500/8 rounded-full blur-3xl pointer-events-none" />
@@ -168,14 +171,14 @@ export default function OrderQueueView() {
           ))}
         </div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
+        <div className="text-center py-20 bg-white/70 backdrop-blur-md border border-slate-200 rounded-3xl shadow-sm">
           <p className="text-slate-500 text-lg">No active orders</p>
           <p className="text-slate-400 text-sm mt-1">New orders will appear here automatically</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {(['pending', 'preparing', 'ready'] as const).map((status) => (
-            <div key={status} className="bg-slate-50 rounded-3xl p-5 border border-slate-200 flex flex-col h-[calc(100vh-12rem)]">
+            <div key={status} className="bg-white/40 backdrop-blur-sm rounded-3xl p-5 border border-slate-200 flex flex-col h-[calc(100vh-12rem)] shadow-inner">
               {/* Column header */}
               <div className="flex items-center justify-between mb-5 px-1">
                 <div className="flex items-center gap-3">
@@ -203,7 +206,7 @@ export default function OrderQueueView() {
                   grouped[status].map((order) => (
                     <div
                       key={order.id}
-                      className="bg-white border border-slate-200 hover:border-slate-300 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-slate-200 group flex flex-col"
+                      className="bg-white/80 backdrop-blur-md border border-slate-200 hover:border-slate-300 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-slate-200 group flex flex-col"
                     >
                       <div 
                         className="p-5 cursor-pointer flex-1"

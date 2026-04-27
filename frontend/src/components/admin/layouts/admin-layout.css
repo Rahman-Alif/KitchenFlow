@@ -38,7 +38,7 @@
   --adm-shadow-md: 0 6px 24px rgba(14, 23, 38, 0.10);
 
   min-height: 100vh;
-  background: var(--adm-bg);
+  background: transparent;
   color: var(--adm-text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -86,17 +86,6 @@
   text-decoration: none;
 }
 
-/* KitchenFlow logo dot */
-.adm-brand::before {
-  content: '';
-  display: inline-block;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #2a61ff 0%, #5b8aff 100%);
-  flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(42, 97, 255, 0.55);
-}
 
 /* ── Nav ────────────────────────────────────────────────────────── */
 .adm-nav {

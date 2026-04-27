@@ -19,7 +19,16 @@ export default function Sidebar() {
 
   return (
     <aside className="adm-sidebar">
-      <div className="adm-brand">KitchenFlow</div>
+      <Link href="/dashboard" className="adm-brand group">
+        <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20 group-hover:shadow-orange-500/40 transition-all duration-300 group-hover:scale-105">
+          <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <span className="text-xl font-black text-white tracking-tight">
+          Kitchen<span className="text-orange-500">Flow</span>
+        </span>
+      </Link>
 
       <nav className="adm-nav" aria-label="Admin navigation">
         <div className="adm-nav-section">Main Menu</div>

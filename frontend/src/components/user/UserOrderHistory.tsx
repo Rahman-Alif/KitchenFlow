@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { toast } from 'sonner';
 import { getUserOrders, updateUserOrder, cancelUserOrder, Order, OrderItem } from '@/lib/services/orders';
 
 
@@ -54,6 +55,8 @@ export default function UserOrderHistory() {
 
   useEffect(() => {
     fetchOrders();
+    const interval = setInterval(fetchOrders, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   async function fetchOrders() {
@@ -106,6 +109,7 @@ export default function UserOrderHistory() {
 
     if (error) {
       setEditError(error);
+      toast.error('Failed to update order');
       setSaving(false);
       return;
     }
@@ -114,6 +118,7 @@ export default function UserOrderHistory() {
     setOrders((prev) =>
       prev.map((o) => (o.id === editing.orderId ? data!.data! : o))
     );
+    toast.success('Order updated successfully!');
     setEditing(null);
     setSaving(false);
   }
@@ -124,10 +129,12 @@ export default function UserOrderHistory() {
   const { data, error } = await cancelUserOrder(orderId);
   if (error) {
     setError(error);
+    toast.error('Failed to cancel order');
   } else {
     setOrders((prev) =>
       prev.map((o) => (o.id === orderId ? data!.data! : o))
     );
+    toast.success('Order cancelled successfully!');
   }
   setCanceling(null);
 }
@@ -148,9 +155,9 @@ export default function UserOrderHistory() {
     : 0;
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       {/* ── Hero Section ── */}
-      <div className="relative mb-8 rounded-3xl overflow-hidden bg-white border border-slate-200 shadow-sm">
+      <div className="relative mb-8 rounded-3xl overflow-hidden bg-white/70 backdrop-blur-md border border-slate-200 shadow-sm">
 
         {/* Decorative glow */}
         <div className="absolute -top-16 -right-16 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -245,7 +252,7 @@ export default function UserOrderHistory() {
       )}
 
       {loading ? (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2, 3].map(i => (
             <div key={i} className="bg-white border border-slate-200 rounded-2xl p-5 animate-pulse shadow-sm">
               <div className="flex items-center justify-between mb-4">
@@ -267,26 +274,29 @@ export default function UserOrderHistory() {
           ))}
         </div>
       ) : filteredOrders.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
-          <p className="text-slate-500 text-lg">No orders found</p>
+        <div className="text-center py-24 bg-white/70 backdrop-blur-md border border-slate-200 rounded-3xl shadow-sm flex flex-col items-center">
+          <svg className="w-24 h-24 text-slate-200 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <p className="text-slate-500 text-lg font-medium">No orders yet</p>
           <p className="text-slate-400 text-sm mt-1">
-            {filter === 'all' ? 'Place your first order from the menu.' : 'No orders with this status.'}
+            {filter === 'all' ? 'Browse the menu to place your first order.' : 'No orders with this status.'}
           </p>
           {filter === 'all' && (
             <button
               onClick={() => router.push('/menu')}
-              className="mt-4 px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition"
+              className="mt-6 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-xl transition shadow-sm"
             >
               Browse Menu
             </button>
           )}
         </div>
       ) : (
-        <div ref={ordersRef} className="space-y-4">
+        <div ref={ordersRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm"
+              className="bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col h-full"
             >
               {/* Order header */}
               <div className="flex items-center justify-between mb-4">
@@ -370,7 +380,7 @@ export default function UserOrderHistory() {
                   </div>
 
                   {/* New total */}
-                  <div className="flex justify-between text-sm mb-4 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                  <div className="flex justify-between text-sm mb-4 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 mt-auto">
                     <span className="text-slate-500">New Total</span>
                     <span className="text-slate-900 font-bold">৳{editTotal.toFixed(2)}</span>
                   </div>
@@ -420,7 +430,7 @@ export default function UserOrderHistory() {
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-200 mt-auto">
                     <span className="text-slate-500 text-sm font-medium">Total</span>
                     <span className="text-slate-900 font-bold">৳{order.total_amount}</span>
                   </div>

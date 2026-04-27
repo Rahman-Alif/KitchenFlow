@@ -13,7 +13,9 @@ class MenuItemResource extends JsonResource
             'id'          => $this->id,
             'name'        => $this->name,
             'description' => $this->description,
-            'image_path'  => $this->image_path,
+            'image_path'  => $this->image_path 
+                ? (filter_var($this->image_path, FILTER_VALIDATE_URL) ? $this->image_path : asset('storage/' . $this->image_path)) 
+                : null,
             'price'       => $this->price,
             'category'    => [
                 'id'   => $this->category->id,
