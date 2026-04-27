@@ -26,6 +26,11 @@ class MenuItemResource extends JsonResource
             'needs_restock'              => $this->needs_restock,
             'requested_restock_quantity' => $this->requested_restock_quantity,
             'created_at'                 => $this->created_at,
+            'updated_at'                 => $this->updated_at,
+            'created_by'                 => $this->created_by,
+            'created_by_name'            => $this->createdBy?->name,
+            'updated_by'                 => $this->updated_by,
+            'updated_by_name'            => $this->updatedBy?->name,
         ];
     }
 }

@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
             'email'     => 'alif@betopia.com',
             'password'  => 'password123',
             'role'      => 'admin',
+            'role_id'   => 1, // admin role
             'is_active' => true,
         ]);
 
@@ -25,6 +26,7 @@ class UserSeeder extends Seeder
             'email'     => 'shuvo@betopia.com',
             'password'  => 'password123',
             'role'      => 'kitchen_staff',
+            'role_id'   => 2, // kitchen_staff role
             'is_active' => true,
         ]);
 
@@ -34,6 +36,7 @@ class UserSeeder extends Seeder
             'email'     => 'john@betopia.com',
             'password'  => 'password123',
             'role'      => 'user',
+            'role_id'   => 3, // user role
             'is_active' => true,
         ]);
 
@@ -43,6 +46,7 @@ class UserSeeder extends Seeder
             'email'     => 'jane@betopia.com',
             'password'  => 'password123',
             'role'      => 'user',
+            'role_id'   => 3, // user role
             'is_active' => true,
         ]);
 
@@ -52,6 +56,7 @@ class UserSeeder extends Seeder
             'email'     => 'inactive@betopia.com',
             'password'  => 'password123',
             'role'      => 'kitchen_staff',
+            'role_id'   => 2, // kitchen_staff role
             'is_active' => false,
         ]);
 
@@ -62,6 +67,7 @@ class UserSeeder extends Seeder
             'email'     => 'admin@otherog.com',
             'password'  => 'password123',
             'role'      => 'admin',
+            'role_id'   => 1, // admin role
             'is_active' => true,
         ]);
     }

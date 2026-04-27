@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\AuditableWithUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transaction extends Model
 {
+    use AuditableWithUser;
     protected $fillable = [
         'order_id',
         'recorded_by',

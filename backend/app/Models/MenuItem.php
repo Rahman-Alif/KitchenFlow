@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\AuditableWithUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MenuItem extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, AuditableWithUser;
 
     protected $fillable = [
         'category_id',
@@ -34,6 +36,11 @@ class MenuItem extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function stock(): HasOne
+    {
+        return $this->hasOne(Stock::class);
     }
 
     public function orderItems(): HasMany
