@@ -8,6 +8,9 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\ProfileController;
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -47,6 +50,22 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
 
         // Tenant
         Route::get('/tenant', [TenantController::class, 'show']);
+
+        // Roles (Phase 1: Demonstrating FK relationship)
+        Route::get('/roles', [RoleController::class, 'index']);
+        Route::get('/roles/{role}', [RoleController::class, 'show']);
+        Route::get('/users/with-roles', [RoleController::class, 'usersWithRoles']);
+
+        // Stock (Phase 2: Demonstrating stock management)
+        Route::get('/stock', [StockController::class, 'index']);
+        Route::get('/menu-items/{menuItem}/stock-history', [StockController::class, 'history']);
+        Route::post('/menu-items/{menuItem}/stock/restock', [StockController::class, 'restock']);
+        Route::post('/menu-items/{menuItem}/stock/record-sale', [StockController::class, 'recordSale']);
+
+        // Audit (Phase 3: Demonstrating audit columns)
+        Route::get('/audit/menu-items/{menuItem}', [AuditController::class, 'menuItemAudit']);
+        Route::get('/audit/categories/{category}', [AuditController::class, 'categoryAudit']);
+        Route::get('/audit/recent-changes', [AuditController::class, 'recentChanges']);
 
         // Users (Admin specific management)
         Route::apiResource('users', UserController::class)->except(['index']);

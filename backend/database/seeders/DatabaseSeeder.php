@@ -76,11 +76,13 @@ class DatabaseSeeder extends Seeder
         $this->now         = Carbon::now();
         $this->twoWeeksAgo = Carbon::now()->subDays(14);
 
+        $this->call(RoleSeeder::class);
         $this->seedTenants();
         $this->seedUsers();
         $this->seedPasswordResetTokens();
         $this->seedCategories();
         $this->seedMenuItems();
+        $this->call(StockSeeder::class);
         $this->seedOrders();
         $this->seedTransactions();
         $this->seedMessages();
@@ -124,6 +126,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'sarah.ahmed@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'admin',
+            'role_id'    => 1,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(30),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(30),
@@ -136,6 +139,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'karim.hossain@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'kitchen_staff',
+            'role_id'    => 2,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(30),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(30),
@@ -148,6 +152,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'priya.nair@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'kitchen_staff',
+            'role_id'    => 2,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(5),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(5),
@@ -160,6 +165,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'tanvir.mahmud@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(28),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(28),
@@ -172,6 +178,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'nusrat.jahan@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(28),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(28),
@@ -184,6 +191,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'arif.chowdhury@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(20),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(20),
@@ -196,6 +204,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'mehrin.sultana@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(20),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(20),
@@ -208,6 +217,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'rafiq.islam@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => false, // suspended
             'created_at' => $this->twoWeeksAgo->copy()->subDays(25),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(2),
@@ -220,6 +230,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'shabnam.akter@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(15),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(15),
@@ -232,6 +243,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'zahid.hassan@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => false,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(30),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(8),
@@ -244,6 +256,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'fariha.begum@nexuscorp.com',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(10),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(10),
@@ -257,6 +270,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'david.park@orionlabs.io',
             'password'   => $pass,
             'role'       => 'admin',
+            'role_id'    => 1,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(60),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(60),
@@ -269,6 +283,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'lena.muller@orionlabs.io',
             'password'   => $pass,
             'role'       => 'kitchen_staff',
+            'role_id'    => 2,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(60),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(60),
@@ -281,6 +296,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'reza.moradi@orionlabs.io',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(60),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(60),
@@ -293,6 +309,7 @@ class DatabaseSeeder extends Seeder
             'email'      => 'yuki.tanaka@orionlabs.io',
             'password'   => $pass,
             'role'       => 'user',
+            'role_id'    => 3,
             'is_active'  => true,
             'created_at' => $this->twoWeeksAgo->copy()->subDays(55),
             'updated_at' => $this->twoWeeksAgo->copy()->subDays(55),

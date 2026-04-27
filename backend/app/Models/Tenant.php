@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\AuditableWithUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tenant extends Model
 {
+    use AuditableWithUser;
     protected $fillable = [
         'name',
         'subscription_active',
