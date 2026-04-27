@@ -74,4 +74,18 @@ class MessageController extends Controller
             'data' => $message
         ]);
     }
+
+    public function destroy(Request $request, Message $message): JsonResponse
+    {
+        // Check if user is sender or receiver
+        $userId = $request->user()->id;
+        if ($message->sender_id !== $userId && $message->receiver_id !== $userId) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $message->delete();
+
+        return response()->json(['message' => 'Message deleted successfully']);
+    }
 }
+

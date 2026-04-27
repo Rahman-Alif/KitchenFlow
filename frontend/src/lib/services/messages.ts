@@ -59,3 +59,10 @@ export async function markMessageRead(id: number) {
     method: 'PATCH',
   });
 }
+
+export async function deleteMessage(id: number) {
+  return apiRequest<{ message: string }>(`/admin/messages/${id}`, {
+    method: 'DELETE',
+  });
+}
+

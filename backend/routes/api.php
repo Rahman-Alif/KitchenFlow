@@ -71,7 +71,9 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::get('/messages', [MessageController::class, 'index']);
         Route::post('/messages', [MessageController::class, 'store']);
         Route::patch('/messages/{message}/read', [MessageController::class, 'markAsRead']);
+        Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
     });
+
 
     // ─── Kitchen Staff ────────────────────────────────────
     Route::middleware('role:kitchen_staff')->prefix('kitchen')->group(function () {

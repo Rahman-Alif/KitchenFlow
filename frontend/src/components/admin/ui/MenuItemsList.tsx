@@ -12,23 +12,23 @@ import {
 } from '@/lib/services/menuItems';
 import { Utensils, Folder, DollarSign, Package, Activity, Settings } from 'lucide-react';
 
-type SortKey       = 'name' | 'category' | 'price' | 'stock' | 'status';
+type SortKey = 'name' | 'category' | 'price' | 'stock' | 'status';
 type SortDirection = 'asc' | 'desc';
 
 const POLL_INTERVAL = 30_000;
 
 export default function MenuItemsList() {
-  const [items,           setItems]           = useState<AdminMenuItem[]>([]);
-  const [loading,         setLoading]         = useState(true);
-  const [error,           setError]           = useState<string | null>(null);
-  const [search,          setSearch]          = useState('');
-  const [sortKey,         setSortKey]         = useState<SortKey>('name');
-  const [sortDirection,   setSortDirection]   = useState<SortDirection>('asc');
-  const [actionItemId,    setActionItemId]    = useState<number | null>(null);
-  const [deleteTarget,    setDeleteTarget]    = useState<AdminMenuItem | null>(null);
-  const [restockTarget,   setRestockTarget]   = useState<AdminMenuItem | null>(null);
+  const [items, setItems] = useState<AdminMenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
+  const [sortKey, setSortKey] = useState<SortKey>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [actionItemId, setActionItemId] = useState<number | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminMenuItem | null>(null);
+  const [restockTarget, setRestockTarget] = useState<AdminMenuItem | null>(null);
   const [restockQuantity, setRestockQuantity] = useState('10');
-  const [availError,      setAvailError]      = useState<string | null>(null);
+  const [availError, setAvailError] = useState<string | null>(null);
 
   async function loadMenuItems(silent = false) {
     if (!silent) setLoading(true);
@@ -100,10 +100,10 @@ export default function MenuItemsList() {
 
     return [...filtered].sort((a, b) => {
       const direction = sortDirection === 'asc' ? 1 : -1;
-      if (sortKey === 'name')     return a.name.localeCompare(b.name) * direction;
+      if (sortKey === 'name') return a.name.localeCompare(b.name) * direction;
       if (sortKey === 'category') return a.category.name.localeCompare(b.category.name) * direction;
-      if (sortKey === 'price')    return (Number(a.price) - Number(b.price)) * direction;
-      if (sortKey === 'stock')    return (a.stock_quantity - b.stock_quantity) * direction;
+      if (sortKey === 'price') return (Number(a.price) - Number(b.price)) * direction;
+      if (sortKey === 'stock') return (a.stock_quantity - b.stock_quantity) * direction;
       const statusA = a.is_available ? 'available' : 'unavailable';
       const statusB = b.is_available ? 'available' : 'unavailable';
       return statusA.localeCompare(statusB) * direction;
@@ -191,7 +191,7 @@ export default function MenuItemsList() {
         </Link>
       </div>
 
-      {error     && <p className="adm-menu-error">{error}</p>}
+      {error && <p className="adm-menu-error">{error}</p>}
       {availError && (
         <p className="adm-menu-error" style={{ cursor: 'pointer' }} onClick={() => setAvailError(null)}>
           {availError} ✕
@@ -227,7 +227,7 @@ export default function MenuItemsList() {
                   <span className="adm-icon-wrapper"><Activity size={14} className="adm-icon" /> Status</span> {sortKey === 'status' ? (sortDirection === 'asc' ? '↑' : '↓') : ''}
                 </button>
               </th>
-              <th><span className="adm-icon-wrapper"><Settings size={14} className="adm-icon" /> Actions</span></th>
+              <th><span className="adm-icon-wrapper" style={{ paddingLeft: '55px' }}><Settings size={14} className="adm-icon" /> Actions</span></th>
             </tr>
           </thead>
           <tbody>
@@ -237,9 +237,9 @@ export default function MenuItemsList() {
               <tr><td colSpan={6}>No menu items found.</td></tr>
             ) : (
               visibleItems.map((item) => {
-                const lowStock      = item.stock_quantity <= item.low_stock_threshold;
-                const isToggling    = actionItemId === item.id;
-                const canEnable     = item.stock_quantity > item.low_stock_threshold;
+                const lowStock = item.stock_quantity <= item.low_stock_threshold;
+                const isToggling = actionItemId === item.id;
+                const canEnable = item.stock_quantity > item.low_stock_threshold;
 
                 return (
                   <tr key={item.id}>

@@ -294,3 +294,60 @@
   gap: 8px;
   margin-top: 20px;
 }
+
+/* Autocomplete suggestions */
+.adm-msg-autocomplete-container {
+  position: relative;
+}
+
+.adm-msg-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius);
+  box-shadow: var(--adm-shadow-md);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 4px;
+  list-style: none;
+  padding: 0;
+}
+
+.adm-msg-suggestion-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--adm-text);
+  transition: background 0.12s ease;
+}
+
+.adm-msg-suggestion-item:hover {
+  background: var(--adm-surface2);
+}
+
+.adm-msg-suggestion-item strong {
+  color: var(--adm-primary);
+}
+
+.adm-msg-reply-btn {
+  background: transparent;
+  border: 1px solid var(--adm-border);
+  color: var(--adm-primary);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: 12px;
+}
+
+.adm-msg-reply-btn:hover {
+  background: var(--adm-primary-dim);
+  border-color: var(--adm-primary);
+}
+

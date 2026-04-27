@@ -1,23 +1,25 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  getMessages, 
-  sendMessage, 
-  markMessageRead, 
-  Message, 
-  PaginatedMessages 
+import {
+  getMessages,
+  sendMessage,
+  markMessageRead,
+  deleteMessage,
+  Message,
+  PaginatedMessages
 } from '@/lib/services/messages';
 import { getUsers, AdminUser } from '@/lib/services/users';
-import { Calendar, User as UserIcon, MessageSquare, Tag } from 'lucide-react';
+import { Calendar, User as UserIcon, MessageSquare, Tag, Trash2, Settings } from 'lucide-react';
 import { getUser, AuthUser } from '@/lib/auth';
+import AdminConfirmDialog from '@/components/admin/shared/AdminConfirmDialog';
 
 function formatDateTime(dt: string): string {
   return new Date(dt).toLocaleString('en-GB', {
-    day:    '2-digit',
-    month:  'short',
-    year:   'numeric',
-    hour:   '2-digit',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
     minute: '2-digit',
   });
 }
@@ -51,6 +53,13 @@ export default function MessagesPortal() {
   const [sending, setSending] = useState(false);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
 
+  // Autocomplete State
+  const [staffSearch, setStaffSearch] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+
+
+
   function isUnreadForMe(msg: Message) {
     return !msg.is_read && currentUser?.id === msg.receiver_id;
   }
@@ -73,11 +82,29 @@ export default function MessagesPortal() {
     setCurrentUser(getUser());
     fetchMessages();
     getUsers().then(res => {
-      if (res.data) setStaffUsers(res.data.filter(u => u.is_active));
+      if (res.data) {
+        // Only allow messaging admins and kitchen staff
+        setStaffUsers(res.data.filter(u => u.is_active && (u.role === 'admin' || u.role === 'kitchen_staff')));
+      }
     });
+
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (showSuggestions) {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.adm-msg-autocomplete-container')) {
+          setShowSuggestions(false);
+        }
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showSuggestions]);
+
   function handleSearch() {
+
     fetchMessages(1);
   }
 
@@ -98,9 +125,18 @@ export default function MessagesPortal() {
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
+
+    // Validate that a staff was actually selected via autocomplete
+    const isValidStaff = staffUsers.some(u => u.id.toString() === newMsg.receiver_id && u.name === staffSearch);
+    if (!isValidStaff) {
+      alert('Please select a valid staff member from the suggestions list.');
+      return;
+    }
+
     if (!newMsg.receiver_id || !newMsg.title || !newMsg.content) return;
-    
+
     setSending(true);
+
     const res = await sendMessage({
       receiver_id: Number(newMsg.receiver_id),
       title: newMsg.title,
@@ -108,16 +144,60 @@ export default function MessagesPortal() {
       priority: newMsg.priority,
       tag: newMsg.tag
     });
-    
+
     setSending(false);
     if (!res.error) {
       setShowModal(false);
       setNewMsg({ receiver_id: '', title: '', content: '', priority: 'low', tag: 'other' });
+      setStaffSearch('');
       fetchMessages(1);
     } else {
       alert(res.error);
     }
   }
+
+  function handleReply(msg: Message, e: React.MouseEvent) {
+    e.stopPropagation(); // Don't trigger expand
+    const targetId = msg.sender_id;
+    const targetStaff = staffUsers.find(u => u.id === targetId);
+
+    setNewMsg({
+      receiver_id: targetId.toString(),
+      title: msg.title.startsWith('Re: ') ? msg.title : `Re: ${msg.title}`,
+      content: '',
+      priority: msg.priority,
+      tag: msg.tag
+    });
+    setStaffSearch(targetStaff?.name || '');
+    setShowModal(true);
+    setExpandedId(null);
+  }
+
+  async function handleDelete(id: number, e: React.MouseEvent) {
+    e.stopPropagation();
+    setDeleteTargetId(id);
+  }
+
+  async function confirmDelete() {
+    if (!deleteTargetId) return;
+
+    const res = await deleteMessage(deleteTargetId);
+    if (!res.error) {
+      setMessages(prev => prev.filter(m => m.id !== deleteTargetId));
+      setDeleteTargetId(null);
+    } else {
+      alert(res.error);
+    }
+  }
+
+
+  const filteredStaff = staffSearch.trim() === ''
+    ? []
+    : staffUsers.filter(u =>
+      u.name.toLowerCase().includes(staffSearch.toLowerCase()) ||
+      u.role.toLowerCase().includes(staffSearch.toLowerCase())
+    );
+
 
   const pageNumbers = meta ? Array.from({ length: meta.last_page }, (_, i) => i + 1) : [];
 
@@ -159,21 +239,23 @@ export default function MessagesPortal() {
               <th><span className="adm-icon-wrapper"><UserIcon size={14} className="adm-icon" /> To</span></th>
               <th><span className="adm-icon-wrapper"><MessageSquare size={14} className="adm-icon" /> Title</span></th>
               <th><span className="adm-icon-wrapper"><Tag size={14} className="adm-icon" /> Tags</span></th>
+              <th><span className="adm-icon-wrapper" style={{ paddingLeft: '20px' }}><Settings size={14} className="adm-icon" /> Actions</span></th>
             </tr>
           </thead>
+
           <tbody>
             {loading ? (
               <tr className="adm-msg-state-row">
-                <td colSpan={5}>Loading messages...</td>
+                <td colSpan={6}>Loading messages...</td>
               </tr>
             ) : messages.length === 0 ? (
               <tr className="adm-msg-state-row">
-                <td colSpan={5}>No messages found.</td>
+                <td colSpan={6}>No messages found.</td>
               </tr>
             ) : (
               messages.map(msg => (
                 <React.Fragment key={msg.id}>
-                  <tr 
+                  <tr
                     className={`adm-msg-row adm-msg-row--clickable ${isUnreadForMe(msg) ? 'adm-msg-row--unread' : ''} ${expandedId === msg.id ? 'adm-msg-row--expanded' : ''}`}
                     onClick={() => handleExpand(msg)}
                   >
@@ -194,15 +276,37 @@ export default function MessagesPortal() {
                         </span>
                       </div>
                     </td>
+                    <td>
+                      <div className="adm-msg-tags-cell">
+                        {msg.sender_id !== currentUser?.id && (
+                          <button
+                            className="adm-msg-reply-btn"
+                            onClick={(e) => handleReply(msg, e)}
+                            title="Reply"
+                          >
+                            Reply
+                          </button>
+                        )}
+                        <button
+                          className="adm-msg-reply-btn"
+                          style={{ borderColor: 'rgba(220,38,38,0.2)', color: '#dc2626' }}
+                          onClick={(e) => handleDelete(msg.id, e)}
+                          title="Delete"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                   {expandedId === msg.id && (
                     <tr className="adm-msg-detail">
-                      <td colSpan={5}>
+                      <td colSpan={6}>
                         <div className="adm-msg-detail-title">Message Content</div>
                         <p className="adm-msg-content">{msg.content}</p>
                       </td>
                     </tr>
                   )}
+
                 </React.Fragment>
               ))
             )}
@@ -247,25 +351,49 @@ export default function MessagesPortal() {
             <form onSubmit={handleSend}>
               <div className="adm-msg-form-group">
                 <label>To (Staff Member)</label>
-                <select 
-                  className="adm-msg-select" 
-                  value={newMsg.receiver_id} 
-                  onChange={e => setNewMsg({...newMsg, receiver_id: e.target.value})}
-                  required
-                >
-                  <option value="" disabled>Select a staff member</option>
-                  {staffUsers.map(u => (
-                    <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
-                  ))}
-                </select>
+                <div className="adm-msg-autocomplete-container">
+                  <input
+                    type="text"
+                    className="adm-msg-input"
+                    placeholder="Search staff name..."
+                    value={staffSearch}
+                    onChange={e => {
+                      setStaffSearch(e.target.value);
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    required
+                  />
+                  {showSuggestions && filteredStaff.length > 0 && (
+                    <ul className="adm-msg-suggestions">
+                      {filteredStaff.map(u => (
+                        <li
+                          key={u.id}
+                          className="adm-msg-suggestion-item"
+                          onClick={() => {
+                            setNewMsg({ ...newMsg, receiver_id: u.id.toString() });
+                            setStaffSearch(u.name);
+                            setShowSuggestions(false);
+                          }}
+                        >
+                          <strong>{u.name}</strong> ({u.role})
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {/* Hidden field to keep required validation working if needed, 
+                      though we validate on submit manually if we want. 
+                      Actually we use receiver_id in state for handleSend. */}
+                </div>
               </div>
+
               <div className="adm-msg-form-group">
                 <label>Title</label>
-                <input 
-                  type="text" 
-                  className="adm-msg-input" 
-                  value={newMsg.title} 
-                  onChange={e => setNewMsg({...newMsg, title: e.target.value})}
+                <input
+                  type="text"
+                  className="adm-msg-input"
+                  value={newMsg.title}
+                  onChange={e => setNewMsg({ ...newMsg, title: e.target.value })}
                   required
                   placeholder="Subject of message"
                 />
@@ -273,10 +401,10 @@ export default function MessagesPortal() {
               <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
                 <div className="adm-msg-form-group" style={{ flex: 1, marginBottom: 0 }}>
                   <label>Priority</label>
-                  <select 
-                    className="adm-msg-select" 
-                    value={newMsg.priority} 
-                    onChange={e => setNewMsg({...newMsg, priority: e.target.value})}
+                  <select
+                    className="adm-msg-select"
+                    value={newMsg.priority}
+                    onChange={e => setNewMsg({ ...newMsg, priority: e.target.value })}
                   >
                     <option value="high">High</option>
                     <option value="medium">Medium</option>
@@ -285,10 +413,10 @@ export default function MessagesPortal() {
                 </div>
                 <div className="adm-msg-form-group" style={{ flex: 1, marginBottom: 0 }}>
                   <label>Tag</label>
-                  <select 
-                    className="adm-msg-select" 
-                    value={newMsg.tag} 
-                    onChange={e => setNewMsg({...newMsg, tag: e.target.value})}
+                  <select
+                    className="adm-msg-select"
+                    value={newMsg.tag}
+                    onChange={e => setNewMsg({ ...newMsg, tag: e.target.value })}
                   >
                     <option value="item_requirement">Item Requirement</option>
                     <option value="customer_inquiry">Customer Inquiry</option>
@@ -300,9 +428,9 @@ export default function MessagesPortal() {
               </div>
               <div className="adm-msg-form-group">
                 <label>Message Content</label>
-                <textarea 
-                  value={newMsg.content} 
-                  onChange={e => setNewMsg({...newMsg, content: e.target.value})}
+                <textarea
+                  value={newMsg.content}
+                  onChange={e => setNewMsg({ ...newMsg, content: e.target.value })}
                   required
                   placeholder="Type your message here..."
                 />
@@ -319,6 +447,17 @@ export default function MessagesPortal() {
           </div>
         </div>
       )}
+
+      <AdminConfirmDialog
+        open={deleteTargetId !== null}
+        title="Delete Message"
+        message="Are you sure you want to delete this message? This action cannot be undone."
+        confirmText="Delete"
+        danger
+        onCancel={() => setDeleteTargetId(null)}
+        onConfirm={confirmDelete}
+      />
     </section>
   );
 }
+
