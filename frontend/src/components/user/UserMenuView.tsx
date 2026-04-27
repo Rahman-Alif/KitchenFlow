@@ -266,7 +266,7 @@ export default function UserMenuView() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border transition-all ${
+                className={`whitespace-nowrap px-6 py-2.5 rounded-full text-base font-bold border transition-all ${
                   activeCategory === cat
                     ? 'bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/20'
                     : 'bg-white border-slate-200 text-slate-600 hover:border-orange-200 hover:text-orange-600 hover:bg-orange-50 shadow-sm'
@@ -350,12 +350,11 @@ export default function UserMenuView() {
                 <div key={cat.category_id} className="mb-12">
 
                   {/* Category header */}
-                  <div className="text-center mb-6">
-                    <p className="text-slate-300 text-lg">···</p>
-                    <h2 className="text-xl font-bold text-slate-900 uppercase tracking-widest mt-1">
+                  <div className="flex flex-col items-center mb-10">
+                    <h2 className="text-3xl font-black text-slate-900 uppercase tracking-[0.2em]">
                       {cat.category_name}
                     </h2>
-                    <p className="text-slate-300 text-lg">···</p>
+                    <div className="h-1 w-20 bg-orange-500 rounded-full mt-3 shadow-sm shadow-orange-500/30" />
                   </div>
 
                   {/* Items grid */}
@@ -382,7 +381,7 @@ export default function UserMenuView() {
                           </div>
 
                           {/* Name */}
-                          <p className="text-slate-900 font-semibold text-sm leading-tight mb-1">
+                          <p className="text-slate-900 font-extrabold text-lg leading-tight mb-1">
                             {item.name}
                           </p>
 
@@ -394,7 +393,7 @@ export default function UserMenuView() {
                           )}
 
                           {/* Price */}
-                          <p className="text-orange-500 font-bold text-base mb-3">
+                          <p className="text-orange-500 font-extrabold text-xl mb-3 tracking-tight">
                             ৳{item.price}
                           </p>
 
@@ -454,8 +453,8 @@ export default function UserMenuView() {
                   {cart.map((item) => (
                     <div key={item.menu_item_id} className="flex justify-between items-center">
                       <div>
-                        <p className="text-slate-900 text-sm font-medium">{item.name}</p>
-                        <p className="text-slate-500 text-xs">
+                        <p className="text-slate-900 text-base font-bold">{item.name}</p>
+                        <p className="text-slate-500 text-sm font-medium">
                           ৳{item.price} x {item.quantity}
                         </p>
                       </div>
@@ -483,7 +482,7 @@ export default function UserMenuView() {
                 <div className="border-t border-slate-200 pt-4 mb-4">
                   <div className="flex justify-between">
                     <span className="text-slate-500 text-sm">Total</span>
-                    <span className="text-slate-900 font-bold">৳{cartTotal.toFixed(2)}</span>
+                    <span className="text-slate-900 font-extrabold text-lg">৳{cartTotal.toFixed(2)}</span>
                   </div>
                 </div>
 

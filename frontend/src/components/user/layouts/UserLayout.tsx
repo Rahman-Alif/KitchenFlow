@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { getUser, clearAuth, AuthUser } from '@/lib/auth';
 import { apiRequest } from '@/lib/api';
 import Link from 'next/link';
+import UserFooter from '@/components/user/shared/UserFooter';
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   const router   = useRouter();
@@ -33,7 +34,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   ];
 
   return (
-    <div className="min-h-screen text-slate-900">
+    <div className="min-h-screen flex flex-col text-slate-900">
 
       {/* Topbar */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-slate-200 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all duration-300 shadow-sm">
@@ -103,10 +104,11 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
       </header>
 
       {/* Page content */}
-      <main className="p-4 sm:p-6">
+      <main className="p-4 sm:p-6 flex-1">
         {children}
       </main>
 
+      <UserFooter />
     </div>
   );
 }
