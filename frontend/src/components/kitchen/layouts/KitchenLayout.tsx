@@ -29,8 +29,10 @@ export default function KitchenLayout({ children }: { children: React.ReactNode 
   const navItems = [
     { href: '/orders', label: 'Orders' },
     { href: '/menu',   label: 'Menu'   },
+    { href: '/messages', label: 'Messages' },
     { href: '/profile', label: 'Profile' },
   ];
+
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">

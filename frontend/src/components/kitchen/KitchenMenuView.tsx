@@ -176,10 +176,10 @@ export default function KitchenMenuView() {
                       }`}
                   >
                     {/* Image */}
-                    {(item as any).image_path && (
+                    {item.image_url && (
                       <div className="w-full h-40 shrink-0 relative overflow-hidden">
                         <img
-                          src={(item as any).image_path}
+                          src={item.image_url}
                           alt={item.name}
                           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                         />
@@ -209,13 +209,13 @@ export default function KitchenMenuView() {
                             )}
                           </div>
                         </div>
-                        {(item as any).description && (
+                        {item.description && (
                           <p className="text-slate-500 text-sm line-clamp-2">
-                            {(item as any).description}
+                            {item.description}
                           </p>
                         )}
                         {/* Fallback for no image */}
-                        {!(item as any).image_path && (
+                        {!item.image_url && (
                            <div className="flex items-center justify-between mt-3">
                              <p className="text-slate-900 font-bold text-lg">৳{item.price}</p>
                              <p className="text-slate-500 text-sm">Stock: {item.stock_quantity}</p>

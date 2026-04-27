@@ -48,8 +48,8 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         // Tenant
         Route::get('/tenant', [TenantController::class, 'show']);
 
-        // Users
-        Route::apiResource('users', UserController::class);
+        // Users (Admin specific management)
+        Route::apiResource('users', UserController::class)->except(['index']);
         Route::patch('/users/{user}/activate', [UserController::class, 'activate']);
         Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate']);
         Route::post('/users/bulk', [UserController::class, 'bulk']);
@@ -64,8 +64,14 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::patch('/menu-items/{menuItem}/availability', [MenuItemController::class, 'updateAvailability']);
 
         // Orders
-        Route::get('/orders', [AdminOrderController::class, 'index']);  //AdminController is OrderController renamed
-        Route::get('/orders/{order}', [AdminOrderController::class, 'show']);  //AdminController is OrderController renamed
+        Route::get('/orders', [AdminOrderController::class, 'index']);
+        Route::get('/orders/{order}', [AdminOrderController::class, 'show']);
+    });
+
+    // ─── Shared Admin & Kitchen Staff ─────────────────────
+    Route::middleware('role:admin,kitchen_staff')->prefix('admin')->group(function () {
+        // Users (List users for messaging/autocomplete)
+        Route::get('/users', [UserController::class, 'index']);
 
         // Messages
         Route::get('/messages', [MessageController::class, 'index']);
@@ -73,6 +79,8 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::patch('/messages/{message}/read', [MessageController::class, 'markAsRead']);
         Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
     });
+
+
 
 
     // ─── Kitchen Staff ────────────────────────────────────

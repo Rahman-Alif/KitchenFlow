@@ -14,6 +14,11 @@ import { Calendar, User as UserIcon, MessageSquare, Tag, Trash2, Settings } from
 import { getUser, AuthUser } from '@/lib/auth';
 import AdminConfirmDialog from '@/components/admin/shared/AdminConfirmDialog';
 
+interface MessagesPortalProps {
+  isAdmin?: boolean;
+}
+
+
 function formatDateTime(dt: string): string {
   return new Date(dt).toLocaleString('en-GB', {
     day: '2-digit',
@@ -28,8 +33,9 @@ function tagLabel(tag: string): string {
   return tag.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
-export default function MessagesPortal() {
+export default function MessagesPortal({ isAdmin = true }: MessagesPortalProps) {
   const [messages, setMessages] = useState<Message[]>([]);
+
   const [meta, setMeta] = useState<PaginatedMessages | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,10 +89,20 @@ export default function MessagesPortal() {
     fetchMessages();
     getUsers().then(res => {
       if (res.data) {
-        // Only allow messaging admins and kitchen staff
-        setStaffUsers(res.data.filter(u => u.is_active && (u.role === 'admin' || u.role === 'kitchen_staff')));
+        // Admins can message Admin and Kitchen Staff
+        // Kitchen Staff can ONLY message Admin
+        const filtered = res.data.filter(u => {
+          if (!u.is_active) return false;
+          if (isAdmin) {
+            return u.role === 'admin' || u.role === 'kitchen_staff';
+          } else {
+            return u.role === 'admin';
+          }
+        });
+        setStaffUsers(filtered);
       }
     });
+
 
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -287,15 +303,18 @@ export default function MessagesPortal() {
                             Reply
                           </button>
                         )}
-                        <button
-                          className="adm-msg-reply-btn"
-                          style={{ borderColor: 'rgba(220,38,38,0.2)', color: '#dc2626' }}
-                          onClick={(e) => handleDelete(msg.id, e)}
-                          title="Delete"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        {isAdmin && (
+                          <button 
+                            className="adm-msg-reply-btn"
+                            style={{ borderColor: 'rgba(220,38,38,0.2)', color: '#dc2626' }}
+                            onClick={(e) => handleDelete(msg.id, e)}
+                            title="Delete"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
                       </div>
+
                     </td>
                   </tr>
                   {expandedId === msg.id && (

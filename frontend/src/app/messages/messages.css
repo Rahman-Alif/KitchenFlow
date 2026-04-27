@@ -351,3 +351,33 @@
   border-color: var(--adm-primary);
 }
 
+/* ── Kitchen Theme Overrides ────────────────────────────────── */
+.kitchen-theme {
+  --adm-primary: #f97316; /* orange-500 */
+  --adm-primary-dim: rgba(249, 115, 22, 0.10);
+  --adm-primary-glow: rgba(249, 115, 22, 0.18);
+  --adm-border2: rgba(249, 115, 22, 0.14);
+}
+
+.kitchen-theme .adm-msg-btn:hover {
+  background: #ea580c; /* orange-600 */
+}
+
+.kitchen-theme .adm-msg-suggestion-item strong {
+  color: #f97316;
+}
+
+.kitchen-theme .adm-msg-reply-btn {
+  color: #f97316;
+}
+
+.kitchen-theme .adm-msg-reply-btn:hover {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: #f97316;
+}
+
+.kitchen-theme .adm-icon {
+  color: #f97316;
+}
+
+
