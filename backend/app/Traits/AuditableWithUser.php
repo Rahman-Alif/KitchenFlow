@@ -34,9 +34,8 @@ trait AuditableWithUser
 
         // When deleting (soft delete), set deleted_by to current user
         static::deleting(function ($model) {
-            if (auth()->check() && $model->isDeletable()) {
+            if (auth()->check()) {
                 $model->deleted_by = auth()->id();
-                $model->save();
             }
         });
     }

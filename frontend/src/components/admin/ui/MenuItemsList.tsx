@@ -125,15 +125,23 @@ export default function MenuItemsList() {
 
   async function confirmDelete() {
     if (!deleteTarget) return;
-    setActionItemId(deleteTarget.id);
+
+    const targetId = deleteTarget.id;
+    setActionItemId(targetId);
     setError(null);
-    setItems((prev) => prev.filter((i) => i.id !== deleteTarget.id));
     setDeleteTarget(null);
-    const response = await deleteMenuItem(deleteTarget.id);
+
+    // Optimistic update
+    setItems((prev) => prev.filter((i) => i.id !== targetId));
+
+    const response = await deleteMenuItem(targetId);
+    
     if (response.error) {
       setError(response.error);
+      // Rollback optimistic update on error
       await loadMenuItems();
     }
+    
     setActionItemId(null);
   }
 
@@ -186,9 +194,14 @@ export default function MenuItemsList() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Link href="/menu/create" className="adm-menu-primary-btn">
-          Create Menu Item
-        </Link>
+        <div className="flex items-center gap-3">
+          <div className="adm-stat-badge">
+            Total Items: <strong>{items.length}</strong>
+          </div>
+          <Link href="/menu/create" className="adm-menu-primary-btn">
+            Create Menu Item
+          </Link>
+        </div>
       </div>
 
       {requestCount > 0 && (

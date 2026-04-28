@@ -194,6 +194,9 @@ export default function UsersList() {
         </div>
 
         <div className="adm-users-actions">
+          <div className="adm-stat-badge">
+            Total Users: <strong>{users.length}</strong>
+          </div>
           <label className="adm-users-upload-btn">
             {uploading ? 'Uploading...' : 'Upload CSV'}
             <input
