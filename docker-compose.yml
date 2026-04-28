@@ -24,7 +24,6 @@ services:
       - postgres
     env_file:
       - ./backend/.env
-    command: ["/usr/local/bin/start.sh"]
 
   nginx:
     image: nginx:alpine
