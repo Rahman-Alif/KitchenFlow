@@ -58,9 +58,9 @@ export default function MenuItemsList() {
 
     const enabling = !item.is_available;
 
-    if (enabling && item.stock_quantity <= item.low_stock_threshold) {
+    if (enabling && item.stock_quantity <= 0) {
       setAvailError(
-        `"${item.name}" cannot be enabled — stock (${item.stock_quantity}) is at or below the threshold (${item.low_stock_threshold}).`
+        `"${item.name}" cannot be enabled — stock is depleted (0 units). Please restock first.`
       );
       return;
     }

@@ -11,10 +11,12 @@ class MenuService
     {
         return Category::where('tenant_id', $tenantId)
             ->whereHas('menuItems', function ($query) {
-                $query->where('is_available', true);
+                // Show items to users only if stock > 0
+                $query->where('stock_quantity', '>', 0);
             })
             ->with(['menuItems' => function ($query) {
-                $query->where('is_available', true)
+                // Show items to users only if stock > 0
+                $query->where('stock_quantity', '>', 0)
                       ->oldest('name');
             }])
             ->oldest('name')

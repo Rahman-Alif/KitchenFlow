@@ -36,8 +36,9 @@ class MenuItemObserver
 
     public function saving(MenuItem $menuItem): void
     {
-        // Auto-disable if stock is at or below threshold.
-        if ($menuItem->stock_quantity <= $menuItem->low_stock_threshold) {
+        // Auto-disable only if stock reaches 0.
+        // Low stock threshold is now just a warning indicator, not for availability.
+        if ($menuItem->stock_quantity <= 0) {
             $menuItem->is_available = false;
         }
     }

@@ -98,8 +98,8 @@ class MenuItemController extends Controller
 
         $menuItem->stock_quantity += (int) $request->quantity;
 
-        // Restock can re-enable only when stock is above threshold.
-        if ($menuItem->stock_quantity > $menuItem->low_stock_threshold) {
+        // Restock can re-enable only when stock is above 0.
+        if ($menuItem->stock_quantity > 0) {
             $menuItem->is_available = true;
         }
 
@@ -119,8 +119,12 @@ class MenuItemController extends Controller
         $items = MenuItem::whereHas('category', function ($query) use ($tenantId) {
                 $query->where('tenant_id', $tenantId);
             })
-            ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
-            ->where('stock_quantity', '>', 0)
+            ->where(function ($query) {
+                // Include items with stock between 1 and threshold (warning level)
+                // AND items with 0 stock (out of stock)
+                $query->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+                      ->orWhere('stock_quantity', 0);
+            })
             ->with('category')
             ->orderBy('stock_quantity')
             ->get();
@@ -153,10 +157,10 @@ class MenuItemController extends Controller
     
         $enabling = $request->boolean('is_available');
     
-        // Prevent enabling if stock is at or below threshold
-        if ($enabling && $menuItem->stock_quantity <= $menuItem->low_stock_threshold) {
+        // Prevent enabling if stock is 0
+        if ($enabling && $menuItem->stock_quantity <= 0) {
             return response()->json([
-                'message' => "Cannot enable — stock ({$menuItem->stock_quantity}) is at or below the low stock threshold ({$menuItem->low_stock_threshold}).",
+                'message' => "Cannot enable — stock is depleted (0 units). Please restock first.",
             ], 422);
         }
     
