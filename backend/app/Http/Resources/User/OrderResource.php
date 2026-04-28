@@ -16,7 +16,10 @@ class OrderResource extends JsonResource
             'notes'        => $this->notes,
             'items'        => $this->orderItems->map(fn ($item) => [
                 'id'         => $item->id,
-                'name'       => $item->menuItem->name,
+                'name'       => $item->menuItem?->name ?? 'Deleted Item',
+                'image_url'  => $item->menuItem?->image_path 
+                    ? (filter_var($item->menuItem->image_path, FILTER_VALIDATE_URL) ? $item->menuItem->image_path : asset('storage/' . $item->menuItem->image_path)) 
+                    : null,
                 'quantity'   => $item->quantity,
                 'unit_price' => $item->unit_price,
             ]),

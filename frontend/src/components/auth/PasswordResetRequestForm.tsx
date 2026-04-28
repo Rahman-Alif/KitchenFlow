@@ -17,7 +17,7 @@ export default function PasswordResetRequestForm() {
     setError(null);
     setLoading(true);
 
-    const { error: apiError } = await apiRequest('/auth/password/email', {
+    const { error: apiError } = await apiRequest('/auth/password-reset/request', {
       method: 'POST',
       body: { email },
     });
@@ -96,7 +96,10 @@ export default function PasswordResetRequestForm() {
             </button>
           </form>
 
-          <div className="mt-8 text-center">
+          <div className="mt-8 text-center flex flex-col items-center gap-4">
+            <Link href="/reset-password/confirm" className="text-orange-500 hover:text-orange-600 text-sm font-medium transition-colors">
+              Already have a reset token?
+            </Link>
             <Link href="/login" className="auth-link inline-flex items-center gap-2">
               <ChevronLeft className="w-4 h-4" />
               Back to sign in

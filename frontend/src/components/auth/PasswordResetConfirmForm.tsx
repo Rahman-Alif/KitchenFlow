@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Lock, Eye, EyeOff, Zap, AlertCircle, ChevronLeft } from 'lucide-react';
+import { Lock, Eye, EyeOff, Zap, AlertCircle, ChevronLeft, Mail, Key } from 'lucide-react';
 import { apiRequest } from '@/lib/api';
 
 export default function PasswordResetConfirmForm() {
@@ -16,15 +16,15 @@ export default function PasswordResetConfirmForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const token = searchParams.get('token');
-  const email = searchParams.get('email');
+  const [email, setEmail] = useState(searchParams.get('email') || '');
+  const [token, setToken] = useState(searchParams.get('token') || '');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    const { error: apiError } = await apiRequest('/auth/password/reset', {
+    const { error: apiError } = await apiRequest('/auth/password-reset/confirm', {
       method: 'POST',
       body: {
         token,
@@ -80,6 +80,38 @@ export default function PasswordResetConfirmForm() {
           )}
 
           <form onSubmit={handleSubmit} noValidate className="space-y-6">
+            <div className="auth-form-group">
+              <label className="auth-label" htmlFor="email">Email Address</label>
+              <div className="auth-input-container">
+                <Mail className="auth-input-icon" />
+                <input
+                  id="email"
+                  type="email"
+                  className="auth-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="auth-form-group">
+              <label className="auth-label" htmlFor="token">Reset Token</label>
+              <div className="auth-input-container">
+                <Key className="auth-input-icon" />
+                <input
+                  id="token"
+                  type="text"
+                  className="auth-input"
+                  value={token}
+                  onChange={(e) => setToken(e.target.value)}
+                  placeholder="Enter your reset token"
+                  required
+                />
+              </div>
+            </div>
+
             <div className="auth-form-group">
               <label className="auth-label" htmlFor="password">New Password</label>
               <div className="auth-input-container">

@@ -24,6 +24,9 @@ class OrderResource extends JsonResource
             'items' => $this->orderItems->map(fn ($item) => [
                 'id'         => $item->id,
                 'name'       => $item->menuItem?->name ?? 'Deleted item',
+                'image_url'  => $item->menuItem?->image_path 
+                    ? (filter_var($item->menuItem->image_path, FILTER_VALIDATE_URL) ? $item->menuItem->image_path : asset('storage/' . $item->menuItem->image_path)) 
+                    : null,
                 'quantity'   => $item->quantity,
                 'unit_price' => number_format($item->unit_price, 2, '.', ''),
                 'subtotal'   => number_format($item->quantity * $item->unit_price, 2, '.', ''),
