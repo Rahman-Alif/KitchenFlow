@@ -26,9 +26,9 @@ const NEXT_STATUS: Record<string, string> = {
 };
 
 const NEXT_STATUS_LABEL: Record<string, string> = {
-  pending:   'Start Preparing',
+  pending:   'Accept & Record Payment',
   preparing: 'Mark as Ready',
-  ready:     'Record Payment & Serve',
+  ready:     'Complete & Serve',
 };
 
 export default function OrderDetailPage() {
@@ -71,7 +71,7 @@ export default function OrderDetailPage() {
     const next = NEXT_STATUS[order.status];
     if (!next) return;
 
-    if (next === 'served') {
+    if (next === 'preparing') {
       setShowPayment(true);
       return;
     }
@@ -120,8 +120,7 @@ export default function OrderDetailPage() {
       return;
     }
 
-    // After transaction — advance to served
-    await updateOrderStatus(id, 'served');
+    // After transaction — status is already advanced to preparing by backend
     await fetchOrder();
     setShowPayment(false);
     setActionLoading(false);
