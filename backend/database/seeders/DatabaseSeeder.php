@@ -407,15 +407,15 @@ class DatabaseSeeder extends Seeder
     // MENU ITEMS
     //
     // IMAGE FILENAMES — save to storage/app/public/menu/:
-    //   nexus_chicken_biryani.jpg      nexus_beef_kala_bhuna.jpg
-    //   nexus_dal_bhat.jpg             nexus_khichuri.jpg
-    //   nexus_vegetable_curry.jpg      nexus_samosa.jpg
-    //   nexus_spring_roll.jpg          nexus_piyaju.jpg
-    //   nexus_lemon_tea.jpg            nexus_mango_lassi.jpg
-    //   nexus_cold_coffee.jpg          nexus_mishti_doi.jpg
-    //   nexus_rasgolla.jpg             nexus_mango_pudding.jpg
-    //   orion_pasta_bolognese.jpg      orion_grilled_chicken.jpg
-    //   orion_mineral_water.jpg
+    //   nexus_chicken_biryani.jpeg      nexus_beef_kala_bhuna.jpeg
+    //   nexus_dal_bhat.jpeg             nexus_khichuri.jpeg
+    //   nexus_vegetable_curry.jpeg      nexus_samosa.jpeg
+    //   nexus_spring_roll.jpeg          nexus_piyaju.jpeg
+    //   nexus_lemon_tea.jpeg            nexus_mango_lassi.jpeg
+    //   nexus_cold_coffee.jpeg          nexus_mishti_doi.jpeg
+    //   nexus_rasgolla.jpeg             nexus_mango_pudding.jpeg
+    //   orion_pasta_bolognese.jpeg      orion_grilled_chicken.jpeg
+    //   orion_mineral_water.jpeg
     // =========================================================================
     private function seedMenuItems(): void
     {
@@ -424,7 +424,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catRiceCurryId,
             'name'                      => 'Chicken Biryani',
             'description'               => 'Aromatic basmati rice slow-cooked with tender chicken, saffron, and whole spices. Served with raita and sliced lemon.',
-            'image_path'                => 'storage/menu/nexus_chicken_biryani.jpg',
+            'image_path'                => '/menu/nexus_chicken_biryani.jpeg',
             'price'                     => '120.00',
             'stock_quantity'            => 35,
             'low_stock_threshold'       => 10,
@@ -440,7 +440,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catRiceCurryId,
             'name'                      => 'Beef Kala Bhuna',
             'description'               => 'Slow-roasted Chittagonian-style beef cooked in a deep, dark gravy of caramelised onions, whole spices, and mustard oil. Best paired with white rice.',
-            'image_path'                => 'storage/menu/nexus_beef_kala_bhuna.jpg',
+            'image_path'                => '/menu/nexus_beef_kala_bhuna.jpeg',
             'price'                     => '150.00',
             'stock_quantity'            => 8,
             'low_stock_threshold'       => 10,
@@ -456,7 +456,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catRiceCurryId,
             'name'                      => 'Dal Bhat',
             'description'               => 'Classic Bengali comfort meal — steamed white rice served with a generous portion of turmeric-lentil dal, fried hilsa or aloo bhaji on the side.',
-            'image_path'                => 'storage/menu/nexus_dal_bhat.jpg',
+            'image_path'                => '/menu/nexus_dal_bhat.jpeg',
             'price'                     => '70.00',
             'stock_quantity'            => 50,
             'low_stock_threshold'       => 15,
@@ -472,7 +472,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catRiceCurryId,
             'name'                      => 'Khichuri',
             'description'               => 'Warm rice and lentil porridge seasoned with turmeric, cumin, and bay leaves, topped with ghee. A popular rainy-day special served with fried eggplant.',
-            'image_path'                => 'storage/menu/nexus_khichuri.jpg',
+            'image_path'                => '/menu/nexus_khichuri.jpeg',
             'price'                     => '80.00',
             'stock_quantity'            => 0,
             'low_stock_threshold'       => 10,
@@ -488,7 +488,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catRiceCurryId,
             'name'                      => 'Vegetable Curry Set',
             'description'               => 'Seasonal vegetables simmered in a light tomato-based curry, served with two pieces of soft paratha. Suitable for vegetarians.',
-            'image_path'                => 'storage/menu/nexus_vegetable_curry.jpg',
+            'image_path'                => '/menu/nexus_vegetable_curry.jpeg',
             'price'                     => '65.00',
             'stock_quantity'            => 22,
             'low_stock_threshold'       => 10,
@@ -505,7 +505,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catSnacksId,
             'name'                      => 'Vegetable Samosa (2 pcs)',
             'description'               => 'Crispy golden pastry shells filled with spiced potatoes, peas, and herbs. Served with mint-coriander chutney.',
-            'image_path'                => 'storage/menu/nexus_samosa.jpg',
+            'image_path'                => '/menu/nexus_samosa.jpeg',
             'price'                     => '30.00',
             'stock_quantity'            => 60,
             'low_stock_threshold'       => 20,
@@ -521,7 +521,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catSnacksId,
             'name'                      => 'Chicken Spring Roll (2 pcs)',
             'description'               => 'Crunchy rolls filled with shredded chicken, cabbage, carrots, and sesame-soy sauce. Served hot with sweet chili dip.',
-            'image_path'                => 'storage/menu/nexus_spring_roll.jpg',
+            'image_path'                => '/menu/nexus_spring_roll.jpeg',
             'price'                     => '45.00',
             'stock_quantity'            => 40,
             'low_stock_threshold'       => 15,
@@ -537,7 +537,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catSnacksId,
             'name'                      => 'Piyaju (4 pcs)',
             'description'               => 'Traditional lentil fritters mixed with onion, green chilli, and fresh coriander, fried to a light crisp. A Dhaka canteen staple.',
-            'image_path'                => 'storage/menu/nexus_piyaju.jpg',
+            'image_path'                => '/menu/nexus_piyaju.jpeg',
             'price'                     => '20.00',
             'stock_quantity'            => 5,
             'low_stock_threshold'       => 15,
@@ -554,7 +554,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catBeveragesId,
             'name'                      => 'Lemon Tea',
             'description'               => 'Freshly brewed black tea with a squeeze of lemon, lightly sweetened. Served hot in a glass.',
-            'image_path'                => 'storage/menu/nexus_lemon_tea.jpg',
+            'image_path'                => '/menu/nexus_lemon_tea.jpeg',
             'price'                     => '15.00',
             'stock_quantity'            => 100,
             'low_stock_threshold'       => 25,
@@ -570,7 +570,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catBeveragesId,
             'name'                      => 'Mango Lassi',
             'description'               => 'Thick and chilled yoghurt drink blended with ripe Alphonso mango pulp, a pinch of cardamom, and crushed ice.',
-            'image_path'                => 'storage/menu/nexus_mango_lassi.jpg',
+            'image_path'                => '/menu/nexus_mango_lassi.jpeg',
             'price'                     => '40.00',
             'stock_quantity'            => 28,
             'low_stock_threshold'       => 10,
@@ -586,7 +586,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catBeveragesId,
             'name'                      => 'Cold Coffee',
             'description'               => 'Blended iced coffee with full-cream milk, sugar, and a dash of vanilla essence. A canteen favourite on warm afternoons.',
-            'image_path'                => 'storage/menu/nexus_cold_coffee.jpg',
+            'image_path'                => '/menu/nexus_cold_coffee.jpeg',
             'price'                     => '50.00',
             'stock_quantity'            => 18,
             'low_stock_threshold'       => 10,
@@ -603,7 +603,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catDessertsId,
             'name'                      => 'Mishti Doi',
             'description'               => 'Traditional Bengali sweet yoghurt, gently fermented and set in earthen pots. Mildly sweet with a slightly caramelised top.',
-            'image_path'                => 'storage/menu/nexus_mishti_doi.jpg',
+            'image_path'                => '/menu/nexus_mishti_doi.jpeg',
             'price'                     => '35.00',
             'stock_quantity'            => 30,
             'low_stock_threshold'       => 10,
@@ -619,7 +619,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catDessertsId,
             'name'                      => 'Rasgolla (2 pcs)',
             'description'               => 'Soft, spongy cottage cheese balls soaked in light sugar syrup. A classic Bengali sweet that melts in the mouth.',
-            'image_path'                => 'storage/menu/nexus_rasgolla.jpg',
+            'image_path'                => '/menu/nexus_rasgolla.jpeg',
             'price'                     => '25.00',
             'stock_quantity'            => 45,
             'low_stock_threshold'       => 10,
@@ -636,7 +636,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catSeasonalId,
             'name'                      => 'Mango Pudding',
             'description'               => 'Chilled pudding made from fresh seasonal mango pulp, condensed milk, and agar. Available during mango season only.',
-            'image_path'                => 'storage/menu/nexus_mango_pudding.jpg',
+            'image_path'                => '/menu/nexus_mango_pudding.jpeg',
             'price'                     => '55.00',
             'stock_quantity'            => 0,
             'low_stock_threshold'       => 10,
@@ -653,7 +653,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catOrionMainsId,
             'name'                      => 'Pasta Bolognese',
             'description'               => 'Al dente penne tossed in a rich beef and tomato ragù, slow-cooked with garlic, red wine, and fresh basil. Finished with parmesan.',
-            'image_path'                => 'storage/menu/orion_pasta_bolognese.jpg',
+            'image_path'                => '/menu/orion_pasta_bolognese.jpeg',
             'price'                     => '180.00',
             'stock_quantity'            => 12,
             'low_stock_threshold'       => 10,
@@ -669,7 +669,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catOrionMainsId,
             'name'                      => 'Grilled Chicken Plate',
             'description'               => 'Marinated chicken breast grilled to order, served with roasted potatoes and garden salad.',
-            'image_path'                => 'storage/menu/orion_grilled_chicken.jpg',
+            'image_path'                => '/menu/orion_grilled_chicken.jpeg',
             'price'                     => '200.00',
             'stock_quantity'            => 9,
             'low_stock_threshold'       => 10,
@@ -685,7 +685,7 @@ class DatabaseSeeder extends Seeder
             'category_id'               => $this->catOrionDrinksId,
             'name'                      => 'Mineral Water (500ml)',
             'description'               => 'Chilled bottled mineral water.',
-            'image_path'                => 'storage/menu/orion_mineral_water.jpg',
+            'image_path'                => '/menu/orion_mineral_water.jpeg',
             'price'                     => '20.00',
             'stock_quantity'            => 80,
             'low_stock_threshold'       => 20,
