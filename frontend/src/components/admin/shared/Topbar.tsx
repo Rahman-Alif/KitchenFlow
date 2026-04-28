@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { apiRequest } from '@/lib/api';
 import { clearAuth, getUser } from '@/lib/auth';
-import { CreditCard, LogOut, Menu } from 'lucide-react';
+import { CreditCard, LogOut, Menu, User } from 'lucide-react';
 
 interface TopbarProps {
   title: string;
@@ -165,6 +166,15 @@ export default function Topbar({ title, onMenuClick }: TopbarProps) {
 
           {userDropdownOpen && (
             <div className="adm-user-dropdown">
+              <Link
+                href="/profile"
+                className="adm-user-dropdown-item"
+                onClick={() => setUserDropdownOpen(false)}
+              >
+                <User size={14} className="adm-icon" />
+                Profile
+              </Link>
+              <div className="adm-user-dropdown-divider" />
               <button
                 type="button"
                 className="adm-user-dropdown-item adm-user-dropdown-item--danger"

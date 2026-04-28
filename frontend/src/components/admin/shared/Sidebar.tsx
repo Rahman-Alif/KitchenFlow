@@ -11,7 +11,6 @@ const navItems = [
   { href: '/menu', label: 'Menu Items', icon: '◈' },
   { href: '/orders-history', label: 'Order History', icon: '◷' },
   { href: '/messages', label: 'Messages', icon: '◻' },
-  { href: '/profile', label: 'Profile', icon: '◉' },
 ];
 
 interface SidebarProps {

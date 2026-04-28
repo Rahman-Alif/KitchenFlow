@@ -323,12 +323,13 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 180px;
+  width: 100%;
+  min-width: 140px;
   background: var(--adm-surface);
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-radius-lg);
   box-shadow: var(--adm-shadow-md);
-  padding: 8px;
+  padding: 6px;
   z-index: 100;
   animation: adm-dropdown-in 0.15s ease;
 }
@@ -336,9 +337,9 @@
 .adm-user-dropdown-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border: none;
   background: transparent;
   border-radius: var(--adm-radius);
@@ -361,6 +362,12 @@
 
 .adm-user-dropdown-item--danger:hover {
   background: rgba(220, 38, 38, 0.08);
+}
+
+.adm-user-dropdown-divider {
+  height: 1px;
+  background: var(--adm-border);
+  margin: 4px 0;
 }
 
 /* Subscription button */
