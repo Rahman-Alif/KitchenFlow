@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 class OrderQueueService
 {
     private const VALID_TRANSITIONS = [
-        'pending'   => ['preparing', 'canceled'],
+        'pending'   => ['canceled'],
         'preparing' => ['ready'],
         'ready'     => ['served'],
     ];

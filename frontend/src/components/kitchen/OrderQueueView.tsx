@@ -13,9 +13,9 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
-  pending:   'Pending',
-  preparing: 'Preparing',
-  ready:     'Ready',
+  pending:   'Payment Pending',
+  preparing: 'In Preparation',
+  ready:     'Ready for Pickup',
 };
 
 function timeAgo(dateStr: string): string {
@@ -109,7 +109,7 @@ export default function OrderQueueView() {
             <div className="flex items-center gap-6">
               <div className="text-center">
                 <p className="text-2xl font-bold text-yellow-500">{grouped.pending.length}</p>
-                <p className="text-slate-500 text-xs mt-0.5">Pending</p>
+                <p className="text-slate-500 text-xs mt-0.5">Unpaid</p>
               </div>
               <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
@@ -252,11 +252,10 @@ export default function OrderQueueView() {
                         <div className="flex items-center">
                           {status === 'pending' && (
                             <button
-                              onClick={(e) => handleQuickAction(e, order, 'preparing')}
-                              disabled={updating === order.id}
-                              className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white border border-blue-500/30 font-bold text-sm rounded-xl transition-all duration-200 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                              onClick={(e) => { e.stopPropagation(); router.push(`/orders/${order.id}`); }}
+                              className="px-4 py-2 bg-orange-500/20 hover:bg-orange-500 text-orange-400 hover:text-white border border-orange-500/30 font-bold text-sm rounded-xl transition-all duration-200 active:scale-95 flex items-center gap-2"
                             >
-                              {updating === order.id ? 'Updating...' : 'Start Prep'}
+                              Process Payment
                             </button>
                           )}
                           {status === 'preparing' && (

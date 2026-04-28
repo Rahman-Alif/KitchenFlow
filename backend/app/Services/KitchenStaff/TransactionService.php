@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\DB;
 class TransactionService
 {
     /**
-     * Records a cash transaction for an order and marks it as served.
+     * Records a cash transaction for an order and marks it as preparing.
      * Wrapped in a DB transaction — both writes succeed or neither does.
      *
      * Aborts:
      *   403 — order belongs to a different tenant
-     *   422 — order is not in 'ready' status
+     *   422 — order is not in 'pending' status
      *   422 — transaction already exists for this order
      *   422 — tendered amount is less than order total
      */
@@ -26,8 +26,8 @@ class TransactionService
             abort(403, 'Order does not belong to your organization.');
         }
 
-        if ($order->status !== 'ready') {
-            abort(422, 'Transaction can only be recorded for orders with status: ready.');
+        if ($order->status !== 'pending') {
+            abort(422, 'Transaction can only be recorded for orders with status: pending.');
         }
 
         if (Transaction::where('order_id', $orderId)->exists()) {
@@ -46,7 +46,7 @@ class TransactionService
                 'change_returned' => $tenderedAmount - $order->total_amount,
             ]);
 
-            $order->status = 'served';
+            $order->status = 'preparing';
             $order->save();
 
             return $transaction->load('recordedBy:id,name');
