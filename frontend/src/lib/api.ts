@@ -54,6 +54,15 @@ export async function apiRequest<T>(
       return { data: null, error: null, status: 204 };
     }
 
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return { 
+        data: null, 
+        error: `Server error (${response.status}). The server did not return a valid JSON response.`, 
+        status: response.status 
+      };
+    }
+
     const json = await response.json();
 
     if (!response.ok) {
@@ -67,7 +76,8 @@ export async function apiRequest<T>(
 
     return { data: json as T, error: null, status: response.status };
 
-  } catch {
-    return { data: null, error: 'Network error. Please try again.', status: 0 };
+  } catch (error) {
+    console.error('API Request failed:', error);
+    return { data: null, error: 'Network error. Please check your connection and ensure the server is running.', status: 0 };
   }
 }
