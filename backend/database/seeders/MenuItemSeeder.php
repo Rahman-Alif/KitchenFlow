@@ -44,12 +44,13 @@ class MenuItemSeeder extends Seeder
             ['category_id' => 1, 'name' => 'Kacchi Biryani',     'price' => 180, 'stock' => 22, 'available' => true,  'image_path' => 'https://i.pinimg.com/1200x/b9/4d/b9/b94db9d739919cf7c31d04004aefebee.jpg'],
             ['category_id' => 1, 'name' => 'Khichuri Combo',     'price' => 110, 'stock' => 28, 'available' => true,  'image_path' => 'https://i.pinimg.com/736x/3a/8b/00/3a8b00da554349060b36da3a8225032e.jpg'],
             ['category_id' => 1, 'name' => 'Grilled Chicken',    'price' => 170, 'stock' => 18, 'available' => true,  'image_path' => 'https://i.pinimg.com/736x/38/6f/ca/386fca8205bf6a76a954af0a66ae0178.jpg'],
+            ['category_id' => 1, 'name' => 'Mutton Rezala',      'price' => 220, 'stock' => 15, 'available' => true,  'image_path' => 'https://i.pinimg.com/736x/bf/58/11/bf58117d56f6aa5cb0c12b3a00859e2b.jpg', 'description' => 'A classic Bengali style mutton curry with a rich, aromatic gravy.'],
 
             // Appetizers (category 2)
             ['category_id' => 2, 'name' => 'Chicken Soup',       'price' => 60,  'stock' => 25, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 2, 'name' => 'Vegetable Roll',     'price' => 40,  'stock' => 60, 'available' => true,  'image_path' => 'https://i.pinimg.com/control1/1200x/d7/62/63/d76263919f64495d60ec9b7a0b0f9172.jpg'],
             ['category_id' => 2, 'name' => 'Chicken Spring Roll','price' => 55,  'stock' => 30, 'available' => true,  'image_path' => 'https://i.pinimg.com/1200x/4e/ef/68/4eef689dafa4a856a39497fbcb7175b2.jpg'],
-            ['category_id' => 2, 'name' => 'French Fries',       'price' => 70,  'stock' => 40, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=800&q=80'],
+            ['category_id' => 2, 'name' => 'French Fries',       'price' => 70,  'stock' => 40, 'available' => true,  'image_path' => 'https://i.pinimg.com/1200x/57/22/00/57220047fc59da5722f2daf2bf683b67.jpg'],
             ['category_id' => 2, 'name' => 'Fish Finger',        'price' => 95,  'stock' => 20, 'available' => true,  'image_path' => 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80'],
             ['category_id' => 2, 'name' => 'Garlic Bread',      'price' => 85,  'stock' => 30, 'available' => true,  'image_path' => 'https://i.pinimg.com/control1/736x/c7/ea/52/c7ea525037dbdc48af0003520fc33163.jpg', 'description' => 'Crispy baguette slices topped with rich garlic butter and melted mozzarella.'],
 
@@ -86,7 +87,7 @@ class MenuItemSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            $menuItem = MenuItem::firstOrCreate(
+            MenuItem::firstOrCreate(
                 [
                     'category_id' => $item['category_id'],
                     'name'        => $item['name'],
@@ -100,14 +101,6 @@ class MenuItemSeeder extends Seeder
                     'image_path'          => $item['image_path'] ?? null,
                 ]
             );
-
-            // If the item already existed, update image path AND description
-            if (!$menuItem->wasRecentlyCreated) {
-                $menuItem->update([
-                    'image_path'  => $item['image_path'] ?? $menuItem->image_path,
-                    'description' => $item['description'] ?? $menuItem->description
-                ]);
-            }
         }
     }
 }
