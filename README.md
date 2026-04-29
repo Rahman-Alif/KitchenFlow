@@ -124,6 +124,9 @@ docker exec -it kitchenflow_backend php artisan migrate
 
 The backend exposes a REST API consumed exclusively by the frontend. All endpoints require a Sanctum Bearer token except login and password reset.
 
+### Visit the official documentation through the link below:
+https://documenter.getpostman.com/view/54061227/2sBXqJKg2X
+
 Base URL: `http://localhost:8000/api`
 
 ### Auth
