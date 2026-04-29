@@ -49,30 +49,21 @@ Take the .env file, frontend folder, backend folder and drop it in the root dire
 
 ## 6. Run the Project
 
-Open a new PowerShell window and run these commands in order:
+Open a new PowerShell window and run this entire command block:
 
 ```powershell
-# Clone and enter the project
 git clone https://github.com/Rahman-Alif/KitchenFlow
 cd KitchenFlow
-
-# Build and start containers
 docker-compose build
 docker-compose up -d
-
-# Install PHP dependencies
 cd backend
 composer install
-
-# Set up the backend
 docker exec -it kitchenflow_backend php artisan key:generate
 docker exec -it kitchenflow_backend php artisan migrate:fresh
 docker exec -it kitchenflow_backend php artisan db:seed
 docker exec -it kitchenflow_backend php artisan storage:link
 docker exec -u root kitchenflow_backend chmod -R 775 storage bootstrap/cache
 docker exec -u root kitchenflow_backend chown -R www-data:www-data storage bootstrap/cache
-
-# Restart cleanly
 docker-compose down
 docker-compose up -d
 ```
