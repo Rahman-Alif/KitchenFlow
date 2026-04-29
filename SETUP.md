@@ -43,9 +43,10 @@ git config --global core.autocrlf input
 
 ---
 
-## 5. Drop .env in the Directories
+## 5. Put .env files in the Root Directory
 
-Take the .env file, frontend folder, backend folder and drop it in the root directory.
+Download the .env files from this link: https://drive.google.com/drive/folders/1NCtTjq_UGczrf2Nax4L0WCaJRcmdbdli?usp=sharing
+Unzip the downloaded file and take the .env file, frontend folder, backend folder from the unzipped folder and drop them in the root directory.
 
 ## 6. Run the Project
 
