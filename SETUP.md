@@ -43,7 +43,11 @@ git config --global core.autocrlf input
 
 ---
 
-## 5. Run the Project
+## 5. Drop .env in the Directories
+
+Take the .env file, frontend folder, backend folder and drop it in the root directory.
+
+## 6. Run the Project
 
 Open a new PowerShell window and run these commands in order:
 
