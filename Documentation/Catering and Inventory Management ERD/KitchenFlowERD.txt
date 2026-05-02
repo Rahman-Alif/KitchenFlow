@@ -1,0 +1,403 @@
+// ============================================================
+// KitchenFlow — Entity Relationship Diagram
+// Betopia Limited | April 2026
+// ============================================================
+// Roles are fixed by the SRS: admin, kitchen_staff, user.
+// No dynamic permission assignment exists in Phase 1.
+// role enum on users is the authoritative access control gate.
+// The roles table provides a descriptive label registry only —
+// it does NOT drive permission logic at the application layer.
+// ============================================================
+
+Enum user_role_enum {
+  admin         // Full system access: users, menu, inventory, dashboard
+  kitchen_staff // Order queue, availability toggle, cash transaction recording
+  user          // Browse menu and place orders only
+}
+
+// Order lifecycle is strictly linear.
+// Pending → Preparing → Ready → Served
+// Pending → Canceled
+// No backward transitions are permitted at the application layer.
+
+Enum order_status {
+  pending    // Order placed, awaiting Kitchen Staff acknowledgment
+  preparing  // Kitchen Staff has started fulfilling the order
+  ready      // Order is ready for collection
+  served     // Order handed to User, cash transaction recorded
+  canceled   // Order canceled by Kitchen Staff before preparation
+}
+
+// Tags categorize the nature of the message for filtering.
+// Values align with operational requirements (FR-09).
+
+Enum message_tag {
+  item_requirement // Low stock alerts or restock requests
+  customer_inquiry // Specific feedback or order-related questions
+  staff_duty       // Task assignments or shift handovers
+  incident         // Equipment failure or operational issues
+  other            // General communication
+}
+
+// Priority levels influence UI sorting and alert urgency.
+// High priority records trigger immediate staff notification.
+
+Enum message_priority {
+  high   // Immediate attention required
+  medium // Action required within shift
+  low    // Information only / Non-urgent
+}
+
+// Stock movement types track the reason for every quantity change.
+// Used for audit trail and inventory reporting.
+
+Enum stock_movement_type {
+  initial    // First quantity set when item is created
+  restock    // Admin-approved quantity top-up
+  sale       // Decremented automatically at order placement
+  adjustment // Manual correction by Admin
+  damage     // Written off due to spoilage or loss
+  return     // Quantity restored after a canceled order
+}
+
+// ============================================================
+// ROLES
+// Descriptor registry for the three fixed system roles.
+// Does NOT drive access control — the role enum on users
+// is the authoritative gate at every API request.
+// This table exists to support display labels and future
+// extensibility without altering the permission model.
+// No deleted_at — role definitions are permanent.
+// ============================================================
+
+Table roles {
+  id           bigserial     [pk]
+  name         varchar(50)   [not null, unique]   // matches user_role_enum values: admin, kitchen_staff, user
+  description  varchar(255)                        // human-readable label — nullable
+  created_at   timestamp     [not null, default: `now()`]
+  updated_at   timestamp     [not null, default: `now()`]
+}
+
+// ============================================================
+// TENANTS
+// One row per subscribing organization.
+// This is the highest-level entity in the system.
+// All users belong to a tenant. If the tenant's subscription
+// is inactive or expired, no user in that organization can
+// access the system regardless of role.
+//
+// subscription_active is toggled manually by Betopia when
+// a client pays or lapses — no payment gateway involved.
+// subscription_ends_at provides a hard date-based cutoff
+// as a secondary check alongside the active flag.
+//
+// No deleted_at — tenants are never deleted. A lapsed
+// tenant is deactivated, not removed. Historical data
+// must remain intact.
+//
+// created_by / updated_by / deleted_by — audit trail columns
+// added across all core tables. All nullable and nullOnDelete
+// to survive user soft-deletion without breaking records.
+// ============================================================
+
+Table tenants {
+  id                   bigserial     [pk]
+  name                 varchar(150)  [not null]
+  subscription_active  boolean       [not null, default: true]  // toggled manually by Betopia
+  subscription_ends_at timestamp     [not null]                 // hard expiry cutoff
+  created_at           timestamp     [not null, default: `now()`]
+  updated_at           timestamp     [not null, default: `now()`]
+  created_by           bigint        [ref: > users.id]          // nullable — audit: who created this record
+  updated_by           bigint        [ref: > users.id]          // nullable — audit: who last modified this record
+  deleted_by           bigint        [ref: > users.id]          // nullable — not applicable for tenants but column present for consistency
+}
+
+// ============================================================
+// USERS
+// All system actors — Admins, Kitchen Staff, and Users —
+// are stored in a single table, differentiated by role enum.
+// Every user belongs to a tenant (tenant_id).
+// is_active handles account suspension (FR-02.3 / FR-02.4).
+// deleted_at handles full soft deletion while preserving
+// historical order references (BR-05).
+// Self-registration is disabled — Admins create all accounts.
+//
+// role_id is a nullable FK to the roles descriptor table.
+// It must always match the role enum value on the same row.
+// Access control is enforced via the role enum — NOT role_id.
+// role_id is nullOnDelete: if a roles row were ever removed,
+// users retain their role enum and remain fully functional.
+// ============================================================
+
+Table users {
+  id          bigserial      [pk]
+  tenant_id   bigint         [not null, ref: > tenants.id]   // org-level scoping
+  name        varchar(100)   [not null]
+  email       varchar(255)   [not null, unique]
+  role_id     bigint         [ref: > roles.id]               // nullable FK to roles descriptor — nullOnDelete
+  password    varchar(255)   [not null]                      // bcrypt hashed — never plaintext (NFR-03)
+  role        user_role_enum [not null, default: 'user']     // authoritative access control gate
+  is_active   boolean        [not null, default: true]       // false = login blocked immediately
+  created_at  timestamp      [not null, default: `now()`]
+  updated_at  timestamp      [not null, default: `now()`]
+  deleted_at  timestamp                                      // soft delete — preserves FK integrity on orders
+}
+
+// ============================================================
+// PASSWORD RESET TOKENS
+// Write-once tokens generated on reset request (FR-01.4).
+// Validated against expires_at on every reset attempt.
+// Hard deleted immediately after successful use.
+// No updated_at — tokens are never modified, only created
+// or deleted.
+// ============================================================
+
+Table password_reset_tokens {
+  id          bigserial     [pk]
+  user_id     bigint        [not null, ref: > users.id]
+  token       varchar(255)  [not null, unique]               // secure random token, unique enforced at DB level
+  expires_at  timestamp     [not null]                       // checked server-side: WHERE expires_at > NOW()
+  created_at  timestamp     [not null, default: `now()`]
+}
+
+// ============================================================
+// CATEGORIES
+// Menu items must belong to a category (FR-03.1).
+// Scoped to tenant — each organization manages its own
+// categories independently.
+// Soft deleted to preserve category reference on any
+// historically associated menu items.
+// ============================================================
+
+Table categories {
+  id          bigserial     [pk]
+  tenant_id   bigint        [not null, ref: > tenants.id]   // org-level scoping
+  name        varchar(100)  [not null]
+  created_at  timestamp     [not null, default: `now()`]
+  updated_at  timestamp     [not null, default: `now()`]
+  deleted_at  timestamp                                      // soft delete — historical menu_item refs preserved
+  created_by  bigint        [ref: > users.id]               // nullable — audit trail
+  updated_by  bigint        [ref: > users.id]               // nullable — audit trail
+  deleted_by  bigint        [ref: > users.id]               // nullable — who soft-deleted this record
+}
+
+// ============================================================
+// MENU ITEMS
+// Core catalog entity. Manages pricing and availability (FR-03, FR-04).
+// Stock quantity and thresholds have been extracted to the
+// dedicated `stock` table for normalized inventory tracking.
+//
+// is_available is the single availability flag — set to false
+// both manually by Kitchen Staff (FR-03.4) and automatically
+// when stock hits 0 (FR-04.1). Re-enabling always requires
+// a manual action (FR-04.2 / FR-04.3).
+//
+// unit_price is snapshotted onto order_items at placement
+// time — price changes here do not affect historical orders.
+//
+// image_path stores the relative file path to the uploaded
+// item image on the server. One image per item. Nullable.
+//
+// needs_restock and requested_restock_quantity support the
+// Kitchen Staff → Admin restock request workflow (FR-04.3).
+//
+// Soft deleted to preserve order_items references on
+// removed items.
+// ============================================================
+
+Table menu_items {
+  id                          bigserial     [pk]
+  category_id                 bigint        [not null, ref: > categories.id]
+  name                        varchar(150)  [not null]
+  description                 text                                         // short item description — nullable, optional
+  image_path                  varchar(500)                                 // relative server path to image — nullable, optional
+  price                       decimal(8,2)  [not null]                    // decimal — never float for monetary values
+  needs_restock               boolean       [not null, default: false]    // flagged when stock hits low threshold
+  requested_restock_quantity  integer                                      // nullable — Kitchen Staff restock request quantity
+  is_available                boolean       [not null, default: true]
+  created_at                  timestamp     [not null, default: `now()`]
+  updated_at                  timestamp     [not null, default: `now()`]
+  deleted_at                  timestamp                                    // soft delete — preserves order_items FK integrity
+  created_by                  bigint        [ref: > users.id]             // nullable — audit trail
+  updated_by                  bigint        [ref: > users.id]             // nullable — audit trail
+  deleted_by                  bigint        [ref: > users.id]             // nullable — who soft-deleted this record
+}
+
+// ============================================================
+// STOCK
+// One-to-one with menu_items. Extracted from menu_items to
+// isolate inventory concerns from catalog concerns.
+//
+// current_quantity is the live portion count. Floor is 0 —
+// never decremented below zero (FR-08.4). Decremented
+// atomically at order placement inside a DB transaction.
+//
+// low_stock_threshold triggers needs_restock flag on the
+// parent menu_item when current_quantity falls at or below it.
+//
+// restock_level is the target quantity after a restock event —
+// used as the suggested fill quantity in the Admin restock flow.
+//
+// Soft deleted in sync with its parent menu_item.
+// ============================================================
+
+Table stock {
+  id                  bigserial   [pk]
+  menu_item_id        bigint      [not null, unique, ref: - menu_items.id]  // unique enforces one-to-one; cascade delete
+  current_quantity    integer     [not null, default: 0]                    // live portion count — floor is 0
+  low_stock_threshold integer     [not null, default: 10]                   // triggers restock flag at or below this value
+  restock_level       integer     [not null, default: 50]                   // target fill quantity on restock
+  created_at          timestamp   [not null, default: `now()`]
+  updated_at          timestamp   [not null, default: `now()`]
+  deleted_at          timestamp                                              // soft deleted with parent menu_item
+  created_by          bigint      [ref: > users.id]                         // nullable — audit trail
+  updated_by          bigint      [ref: > users.id]                         // nullable — audit trail
+  deleted_by          bigint      [ref: > users.id]                         // nullable — audit trail
+}
+
+// ============================================================
+// STOCK MOVEMENTS
+// Append-only audit log of every quantity change on a stock
+// record. Enables full inventory history reconstruction.
+//
+// quantity_changed may be positive (restock, return) or
+// negative (sale, damage, adjustment).
+//
+// previous_quantity and new_quantity are snapshotted at
+// write time — they never drift even if stock is later
+// corrected, because each correction creates its own row.
+//
+// reason is optional free-text context for manual adjustments.
+//
+// Soft deleted for audit integrity — movements are never
+// hard deleted even if the parent stock record is removed.
+// ============================================================
+
+Table stock_movements {
+  id                 bigserial             [pk]
+  stock_id           bigint                [not null, ref: > stock.id]      // cascade delete on stock removal
+  movement_type      stock_movement_type   [not null, default: 'adjustment']
+  quantity_changed   integer               [not null]                       // positive = added, negative = removed
+  previous_quantity  integer               [not null]                       // snapshotted before this movement
+  new_quantity       integer               [not null]                       // snapshotted after this movement
+  reason             varchar(255)                                           // nullable — optional context for manual entries
+  created_at         timestamp             [not null, default: `now()`]
+  updated_at         timestamp             [not null, default: `now()`]
+  deleted_at         timestamp                                              // soft delete — audit records preserved
+  created_by         bigint                [ref: > users.id]               // nullable — audit trail
+  updated_by         bigint                [ref: > users.id]               // nullable — audit trail
+  deleted_by         bigint                [ref: > users.id]               // nullable — audit trail
+}
+
+// ============================================================
+// ORDERS
+// Central transactional entity. Created when a User submits
+// an order (FR-05.2). Owned by the placing User via user_id.
+//
+// total_amount is computed and persisted at placement time
+// from order_items (quantity * unit_price). Never recalculated
+// dynamically — required as a stable reference for the
+// linked transaction record (FR-07).
+//
+// No deleted_at — orders are permanent records. The canceled
+// status is the only terminal state for invalid orders (BR-05).
+// ============================================================
+
+Table orders {
+  id            bigserial     [pk]
+  user_id       bigint        [not null, ref: > users.id]
+  status        order_status  [not null, default: 'pending']
+  total_amount  decimal(10,2) [not null]                     // persisted at placement — immutable after creation
+  notes         text                                         // optional Kitchen Staff instructions
+  created_at    timestamp     [not null, default: `now()`]
+  updated_at    timestamp     [not null, default: `now()`]
+  created_by    bigint        [ref: > users.id]             // nullable — audit trail
+  updated_by    bigint        [ref: > users.id]             // nullable — audit trail
+  deleted_by    bigint        [ref: > users.id]             // nullable — column present for consistency; orders have no deleted_at
+}
+
+// ============================================================
+// ORDER ITEMS
+// Junction table between orders and menu_items.
+// Carries quantity and unit_price as its own attributes.
+//
+// unit_price is snapshotted from menu_items.price at the
+// moment the order is placed. Price edits on the menu item
+// after placement do not affect this record (NFR-06.1).
+//
+// No deleted_at — order items are immutable once created.
+// ============================================================
+
+Table order_items {
+  id            bigserial     [pk]
+  order_id      bigint        [not null, ref: > orders.id]
+  menu_item_id  bigint        [not null, ref: > menu_items.id]
+  quantity      integer       [not null, default: 1]
+  unit_price    decimal(8,2)  [not null]                     // snapshotted at order placement — never read live from menu_items
+  created_at    timestamp     [not null, default: `now()`]
+  updated_at    timestamp     [not null, default: `now()`]
+  created_by    bigint        [ref: > users.id]             // nullable — audit trail
+  updated_by    bigint        [ref: > users.id]             // nullable — audit trail
+  deleted_by    bigint        [ref: > users.id]             // nullable — column present for consistency
+}
+
+// ============================================================
+// TRANSACTIONS
+// One-to-one with orders. Created at point of serving when
+// Kitchen Staff records the cash tendered by the User (FR-07).
+//
+// change_returned is persisted explicitly — what was recorded
+// at the counter is permanently saved, never recalculated.
+//
+// recorded_by links to the Kitchen Staff member who processed
+// the transaction — supports Admin audit trail (BRD risk matrix).
+//
+// tendered_amount >= order total is enforced at the application
+// layer via Form Request validation (FR-07.4).
+//
+// No deleted_at — transactions are permanent financial records
+// under no circumstance deletable (BR-05, NFR-06).
+// ============================================================
+
+Table transactions {
+  id               bigserial     [pk]
+  order_id         bigint        [not null, unique, ref: - orders.id] // unique enforces one-to-one
+  recorded_by      bigint        [not null, ref: > users.id]          // Kitchen Staff who processed payment
+  tendered_amount  decimal(10,2) [not null]
+  change_returned  decimal(10,2) [not null]                           // persisted at recording time — immutable
+  created_at       timestamp     [not null, default: `now()`]
+  updated_at       timestamp     [not null, default: `now()`]
+  created_by       bigint        [ref: > users.id]                    // nullable — audit trail
+  updated_by       bigint        [ref: > users.id]                    // nullable — audit trail
+  deleted_by       bigint        [ref: > users.id]                    // nullable — column present for consistency
+}
+
+// ============================================================
+// MESSAGES
+// Internal communication system for users with multi-tenant isolation.
+// Facilitates coordination between Kitchen Staff and Admin (FR-09).
+//
+// tag (Enum) defines the business context of the message.
+// priority (Enum) dictates UI sorting and notification urgency.
+// 'high' priority may trigger immediate push notifications (NFR-04).
+//
+// No deleted_at — messages are preserved as a non-volatile
+// communication audit trail between staff members (BR-12).
+// ============================================================
+
+Table messages {
+  id          bigserial         [pk]
+  tenant_id   bigint            [not null, ref: > tenants.id]
+  sender_id   bigint            [not null, ref: > users.id]
+  receiver_id bigint            [not null, ref: > users.id]
+  title       varchar(255)      [not null]                         // Brief subject line for inbox preview
+  content     text              [not null]                         // Detailed message body
+  tag         message_tag       [not null, default: 'other']
+  priority    message_priority  [not null, default: 'low']
+  is_read     boolean           [not null, default: false]         // Toggled when recipient views the message thread
+  created_at  timestamp         [not null, default: `now()`]
+  updated_at  timestamp         [not null, default: `now()`]
+  created_by  bigint            [ref: > users.id]                  // nullable — audit trail
+  updated_by  bigint            [ref: > users.id]                  // nullable — audit trail
+  deleted_by  bigint            [ref: > users.id]                  // nullable — column present for consistency
+}
