@@ -13,6 +13,7 @@ import { getUsers, AdminUser } from '@/lib/services/users';
 import { Calendar, User as UserIcon, MessageSquare, Tag, Trash2, Settings } from 'lucide-react';
 import { getUser, AuthUser } from '@/lib/auth';
 import AdminConfirmDialog from '@/components/admin/shared/AdminConfirmDialog';
+import { autofillMessage } from '@/lib/services/ai';
 
 interface MessagesPortalProps {
   isAdmin?: boolean;
@@ -63,6 +64,8 @@ export default function MessagesPortal({ isAdmin = true }: MessagesPortalProps) 
   const [staffSearch, setStaffSearch] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+
+  const [autofilling, setAutofilling] = useState(false);
 
 
 
@@ -206,6 +209,20 @@ export default function MessagesPortal({ isAdmin = true }: MessagesPortalProps) 
     }
   }
 
+  async function handleAutofill() {
+    if (!newMsg.content.trim()) return;
+    setAutofilling(true);
+    const { data } = await autofillMessage(newMsg.content);
+    if (data) {
+      setNewMsg(prev => ({
+        ...prev,
+        title:    data.title    || prev.title,
+        tag:      data.tag      || prev.tag,
+        priority: data.priority || prev.priority,
+      }));
+    }
+    setAutofilling(false);
+  }
 
   const filteredStaff = staffSearch.trim() === ''
     ? []
@@ -454,6 +471,18 @@ export default function MessagesPortal({ isAdmin = true }: MessagesPortalProps) 
                   placeholder="Type your message here..."
                 />
               </div>
+              
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-0.25rem' }}>
+                <button
+                  type="button"
+                  onClick={handleAutofill}
+                  disabled={autofilling || !newMsg.content.trim()}
+                  style={{ fontSize: '0.8rem', color: '#f97316', background: 'none', border: '1px solid #f97316', borderRadius: '0.4rem', padding: '0.3rem 0.75rem', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  {autofilling ? '⏳ Suggesting…' : '✨ Suggest Title & Tag'}
+                </button>
+              </div>
+
               <div className="adm-msg-modal-actions">
                 <button type="button" className="adm-msg-btn" style={{ background: 'transparent', color: 'var(--adm-text)', border: '1px solid var(--adm-border)' }} onClick={() => setShowModal(false)}>
                   Cancel
