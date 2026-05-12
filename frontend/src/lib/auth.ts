@@ -8,6 +8,7 @@ export interface AuthUser {
   name:  string;
   email: string;
   role:  UserRole;
+  tenant_id: number;   // ← added
 }
 
 export function saveAuth(token: string, user: AuthUser): void {

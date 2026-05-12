@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { generateDescription } from '@/lib/services/ai';
 import { AdminCategory, getCategories } from '@/lib/services/categories';
 import {
   createMenuItem,
@@ -31,6 +32,8 @@ export default function MenuItemForm({ mode, menuItemId }: MenuItemFormProps) {
   const [lowStockThreshold, setLowStockThreshold] = useState('10');
   const [isAvailable, setIsAvailable] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const [generatingDesc, setGeneratingDesc] = useState(false);
 
   useEffect(() => {
     async function bootstrapForm() {
@@ -107,6 +110,20 @@ export default function MenuItemForm({ mode, menuItemId }: MenuItemFormProps) {
     router.push('/menu');
   }
 
+  async function handleGenerateDescription() {
+    if (!name.trim() || !categoryId) return;
+    setGeneratingDesc(true);
+
+    const selectedCategory = categories.find(c => String(c.id) === categoryId);
+    const categoryName     = selectedCategory?.name ?? '';
+
+    const { data, error } = await generateDescription(categoryName, name);
+    if (data?.description) {
+      setDescription(data.description);
+    }
+    setGeneratingDesc(false);
+  }
+  
   return (
     <section className="adm-menu-form-wrap">
       <form className="adm-menu-form" onSubmit={handleSubmit}>
@@ -142,7 +159,18 @@ export default function MenuItemForm({ mode, menuItemId }: MenuItemFormProps) {
               </label>
 
               <label>
-                <span>Description</span>
+                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  Description
+                  {/* ← ADD THIS BUTTON */}
+                  <button
+                    type="button"
+                    onClick={handleGenerateDescription}
+                    disabled={generatingDesc || !name.trim() || !categoryId}
+                    style={{ fontSize: '0.75rem', color: '#f97316', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+                  >
+                    {generatingDesc ? '⏳ Generating…' : '✨ Autofill'}
+                  </button>
+                </span>
                 <textarea
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
