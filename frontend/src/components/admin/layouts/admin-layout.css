@@ -8,18 +8,18 @@
   --adm-topbar-height: 64px;
 
   /* Surfaces */
-  --adm-bg:       #f4f6fb;
-  --adm-surface:  #ffffff;
-  --adm-surface2: #f8faff;
+  --adm-bg:       #020617;
+  --adm-surface:  #1e293b;
+  --adm-surface2: #0f172a;
 
   /* Borders */
-  --adm-border:   rgba(0, 0, 0, 0.07);
-  --adm-border2:  rgba(42, 97, 255, 0.14);
+  --adm-border:   rgba(255, 255, 255, 0.05);
+  --adm-border2:  rgba(255, 255, 255, 0.1);
 
   /* Text */
-  --adm-text:        #0e1726;
-  --adm-text-sub:    #3d4760;
-  --adm-muted:       #8892a4;
+  --adm-text:        #f8fafc;
+  --adm-text-sub:    #cbd5e1;
+  --adm-muted:       #94a3b8;
 
   /* Brand Blue */
   --adm-primary:      #2a61ff;
@@ -38,7 +38,9 @@
   --adm-shadow-md: 0 6px 24px rgba(14, 23, 38, 0.10);
 
   min-height: 100vh;
-  background: transparent;
+  background-color: var(--adm-bg);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
   color: var(--adm-text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -223,9 +225,9 @@
   top: 0;
   left: var(--adm-sidebar-width);
   right: 0;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--adm-border);
   display: flex;
   align-items: center;
@@ -249,7 +251,7 @@
   height: 40px;
   border-radius: 10px;
   border: 1px solid var(--adm-border);
-  background: white;
+  background: var(--adm-surface);
   color: var(--adm-text);
   cursor: pointer;
 }
@@ -594,8 +596,8 @@
   max-width: 460px;
   border-radius: var(--adm-radius-lg);
   border: 1px solid var(--adm-border);
-  background: var(--adm-surface);
-  box-shadow: 0 24px 48px rgba(12, 18, 35, 0.18);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
   padding: 28px;
   animation: adm-modal-in 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
 }

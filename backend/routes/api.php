@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TenantController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\AiController;
 
 use App\Http\Controllers\KitchenStaff\OrderQueueController;
 use App\Http\Controllers\KitchenStaff\MenuAvailabilityController;
@@ -85,6 +86,10 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         // Orders
         Route::get('/orders', [AdminOrderController::class, 'index']);
         Route::get('/orders/{order}', [AdminOrderController::class, 'show']);
+
+        // AI Analytics
+        Route::get('/ai/affinity/{menuItem}', [AiController::class, 'getAffinity']);
+        Route::get('/ai/items/search', [AiController::class, 'searchItems']);
     });
 
     // ─── Shared Admin & Kitchen Staff ─────────────────────

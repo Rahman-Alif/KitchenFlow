@@ -120,7 +120,7 @@ function AnalogClock({ slots, activeIdx }: {
         cx={CX} cy={CY}
         r={(RING_OUT + RING_IN) / 2}
         fill="none"
-        stroke="#f1f5f9"
+        stroke="rgba(255, 255, 255, 0.05)"
         strokeWidth={RING_OUT - RING_IN}
       />
 
@@ -142,8 +142,8 @@ function AnalogClock({ slots, activeIdx }: {
       })}
 
       {/* Clock face */}
-      <circle cx={CX} cy={CY} r={FACE_R} fill="white" />
-      <circle cx={CX} cy={CY} r={FACE_R} fill="none" stroke="#e2e8f0" strokeWidth="1" />
+      <circle cx={CX} cy={CY} r={FACE_R} fill="#1e293b" />
+      <circle cx={CX} cy={CY} r={FACE_R} fill="none" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="1" />
 
       {/* Tick marks */}
       {ticks.map((t, i) => (
@@ -151,7 +151,7 @@ function AnalogClock({ slots, activeIdx }: {
           key={i}
           x1={t.inner.x} y1={t.inner.y}
           x2={t.outer.x} y2={t.outer.y}
-          stroke={t.isMajor ? '#94a3b8' : '#e2e8f0'}
+          stroke={t.isMajor ? '#94a3b8' : 'rgba(255, 255, 255, 0.1)'}
           strokeWidth={t.isMajor ? 1.5 : 1}
         />
       ))}
@@ -162,21 +162,21 @@ function AnalogClock({ slots, activeIdx }: {
         return (
           <text key={l} x={p.x} y={p.y + 4}
             textAnchor="middle" fontSize="10" fontWeight="700"
-            fill="#475569" fontFamily="Inter, sans-serif">
+            fill="#94a3b8" fontFamily="Inter, sans-serif">
             {l}
           </text>
         );
       })}
 
       {/* Hour hand */}
-      <path d={handPath(hAngle, FACE_R - 22)} stroke="#0f172a" strokeWidth="3" strokeLinecap="round" fill="none" />
+      <path d={handPath(hAngle, FACE_R - 22)} stroke="#fff" strokeWidth="3" strokeLinecap="round" fill="none" />
       {/* Minute hand */}
-      <path d={handPath(mAngle, FACE_R - 12)} stroke="#0f172a" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d={handPath(mAngle, FACE_R - 12)} stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" fill="none" />
       {/* Second hand */}
       <path d={handPath(sAngle, FACE_R - 8)}  stroke="#f97316" strokeWidth="1" strokeLinecap="round" fill="none" />
 
       {/* Center dot */}
-      <circle cx={CX} cy={CY} r="3.5" fill="#0f172a" />
+      <circle cx={CX} cy={CY} r="3.5" fill="#fff" />
       <circle cx={CX} cy={CY} r="1.5" fill="#f97316" />
     </svg>
   );
@@ -207,7 +207,7 @@ export default function StockRecommendationPanel({ data }: { data: StockResult }
     return (
       <div className="ai-clock-card" style={{
         borderLeftColor: color,
-        background: isActive ? `${color}0d` : '#fff',
+        background: isActive ? `${color}15` : 'rgba(255, 255, 255, 0.03)',
       }}>
         <div className="ai-clock-card-label" style={{ color }}>
           {slot.label}
@@ -215,8 +215,8 @@ export default function StockRecommendationPanel({ data }: { data: StockResult }
         </div>
         <div className="ai-clock-card-items">
           {slot.items.slice(0, 5).map(item => (
-            <div className="ai-clock-card-row" key={item.name}>
-              <span className="ai-clock-card-name">{item.name}</span>
+            <div className="ai-clock-card-row" key={item.name} style={{ borderBottomColor: 'rgba(255, 255, 255, 0.03)' }}>
+              <span className="ai-clock-card-name" style={{ color: '#e2e8f0' }}>{item.name}</span>
               <span className="ai-clock-card-qty" style={{ color, background: `${color}18` }}>
                 {item.predicted_qty}
               </span>

@@ -24,8 +24,8 @@ class DashboardController extends Controller
             ->whereDate('created_at', $date)
             ->get();
 
-        // Revenue from preparing orders only
-        $revenue = $orders->where('status', 'preparing')->sum('total_amount');
+        // Revenue from active/completed orders (excluding pending/canceled)
+        $revenue = $orders->whereIn('status', ['preparing', 'ready', 'served'])->sum('total_amount');
 
         // Order counts by status
         $statusCounts = $orders->groupBy('status')->map->count();
@@ -74,7 +74,7 @@ class DashboardController extends Controller
 
         $totalsByDate = Order::query()
             ->whereHas('user', fn($query) => $query->where('tenant_id', $tenantId))
-            ->where('status', 'preparing')
+            ->whereIn('status', ['preparing', 'ready', 'served'])
             ->whereBetween('created_at', [$startDate, $endDate->copy()->endOfDay()])
             ->orderBy('created_at')
             ->get()
