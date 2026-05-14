@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import revenue, demand, affinity, stock, description, messaging
+from routers import revenue, demand, affinity, stock, description, messaging, insight  # ← add insight
 
 app = FastAPI(title="KitchenFlow AI Features", version="1.0.0")
 
@@ -18,6 +18,7 @@ app.include_router(affinity.router,    prefix="/affinity",    tags=["Affinity An
 app.include_router(stock.router,       prefix="/stock",       tags=["Stock Recommendation"])
 app.include_router(description.router, prefix="/description", tags=["Description Autofill"])
 app.include_router(messaging.router,   prefix="/messaging",   tags=["Message Autofill"])
+app.include_router(insight.router,     prefix="/insight",     tags=["AI Insight"])  # ← add this
 
 @app.get("/health")
 def health():

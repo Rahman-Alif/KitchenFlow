@@ -5,7 +5,6 @@ import { getUser } from '@/lib/auth';
 import {
   trainRevenue, forecastRevenue, RevenueForecastResult,
   trainDemand, forecastDemand, DemandForecastResult,
-  getAffinity, AffinityResult,
   trainStock, recommendStock, StockResult,
 } from '@/lib/services/ai';
 
@@ -13,6 +12,7 @@ import RevenueChart           from './RevenueChart';
 import DemandChart            from './DemandChart';
 import AffinityPanel          from './AffinityPanel';
 import StockRecommendationPanel from './StockRecommendationPanel';
+import InsightCard from './InsightCard';
 
 type SectionState<T> = { status: 'idle' | 'training' | 'loading' | 'ready' | 'error'; data: T | null; error: string | null };
 
@@ -24,7 +24,6 @@ export default function AnalyticsDashboard() {
   const [tenantId, setTenantId] = useState<number>(0);
   const [revenue,  setRevenue]  = useState<SectionState<RevenueForecastResult>>(initState());
   const [demand,   setDemand]   = useState<SectionState<DemandForecastResult>>(initState());
-  const [affinity, setAffinity] = useState<SectionState<AffinityResult>>(initState());
   const [stock,    setStock]    = useState<SectionState<StockResult>>(initState());
 
   // ── Get tenantId from user on mount (client-side only) ────
@@ -38,7 +37,6 @@ export default function AnalyticsDashboard() {
     if (!tenantId) return;
     loadRevenue();
     loadDemand();
-    loadAffinity();
     loadStock();
   }, [tenantId]);
 
@@ -72,13 +70,6 @@ export default function AnalyticsDashboard() {
     await loadDemand();
   }
 
-  // ── Affinity (no training needed) ────────────────────────
-  async function loadAffinity() {
-    setAffinity(s => ({ ...s, status: 'loading', error: null }));
-    const { data, error } = await getAffinity(tenantId);
-    if (error) { setAffinity({ status: 'error', data: null, error }); return; }
-    setAffinity({ status: 'ready', data, error: null });
-  }
 
   // ── Stock ─────────────────────────────────────────────────
   async function loadStock() {
@@ -105,6 +96,9 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="ai-page">
+
+      {/* ── AI Insight (Full Width) ─────────────────────────── */}
+      <InsightCard />
 
       <div className="ai-dashboard-top">
         {/* ── Admin1: Revenue Forecast ─────────────────────── */}
@@ -155,27 +149,17 @@ export default function AnalyticsDashboard() {
       {/* ── Admin3: Affinity Analysis ────────────────────── */}
       <section className="ai-section">
         <div className="ai-section-head">
-          <span className="ai-section-title">🔗 Item Affinity Analysis</span>
-          <button className="ai-train-btn" onClick={loadAffinity} disabled={affinity.status === 'loading'}>
-            {affinity.status === 'loading' ? '⏳ Loading…' : '🔄 Refresh'}
-          </button>
+          <span className="ai-section-title">🔗 Predictive Item Affinity</span>
         </div>
         <div className="ai-section-body">
-          {affinity.status === 'loading'
-            ? <div className="ai-state">Analysing order patterns…</div>
-            : affinity.status === 'error'
-            ? <div className="ai-error">{affinity.error}</div>
-            : affinity.data
-            ? <AffinityPanel data={affinity.data} />
-            : <div className="ai-state">No affinity data available.</div>
-          }
+          <AffinityPanel />
         </div>
       </section>
 
       {/* ── A&S1: Stock Recommendation ───────────────────── */}
       <section className="ai-section">
         <div className="ai-section-head">
-          <span className="ai-section-title">📦 Today's Stock Recommendation</span>
+          <span className="ai-section-title">📦 Daily Stock Recommendation</span>
           <TrainBtn
             label="Train Stock Model"
             onClick={handleTrainStock}

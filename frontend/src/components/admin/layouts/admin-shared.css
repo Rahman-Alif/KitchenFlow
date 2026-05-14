@@ -29,15 +29,25 @@
 
 /* ── Card / Panel ─────────────────────────────────────────── */
 .adm-card {
-  background: var(--adm-surface);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-radius-lg);
-  box-shadow: var(--adm-shadow);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 
 .adm-card-body {
   padding: 20px 24px;
+}
+
+.adm-dash-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius);
+  padding: 12px 16px;
 }
 
 .adm-card-head {
@@ -83,7 +93,7 @@
   padding: 0 12px;
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-radius);
-  background: var(--adm-surface);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--adm-text);
   font-size: 13.5px;
   font-family: inherit;
@@ -101,7 +111,7 @@
   padding: 10px 12px;
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-radius);
-  background: var(--adm-surface);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--adm-text);
   font-size: 13.5px;
   font-family: inherit;
@@ -128,7 +138,7 @@
   font-family: inherit;
   cursor: pointer;
   border: 1px solid var(--adm-border);
-  background: var(--adm-surface);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--adm-text);
   text-decoration: none;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
@@ -136,8 +146,8 @@
 }
 
 .adm-btn:hover {
-  background: var(--adm-surface2);
-  border-color: rgba(0,0,0,0.12);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .adm-btn--primary {
@@ -192,8 +202,8 @@
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-radius-lg);
   overflow: hidden;
-  background: var(--adm-surface);
-  box-shadow: var(--adm-shadow);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
 .adm-table {
@@ -203,7 +213,7 @@
 }
 
 .adm-table thead tr {
-  background: var(--adm-surface2);
+  background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--adm-border);
 }
 
@@ -236,7 +246,7 @@
 }
 
 .adm-table tbody tr:hover {
-  background: var(--adm-surface2);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .adm-table tbody tr.adm-row--clickable {
@@ -461,6 +471,14 @@
 }
 
 /* ── Form panel ───────────────────────────────────────────── */
+.adm-dash-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius-lg);
+  padding: 22px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
 .adm-form-panel {
   background: var(--adm-surface);
   border: 1px solid var(--adm-border);
@@ -572,7 +590,7 @@
   gap: 8px;
   padding: 0 14px;
   height: 38px;
-  background: var(--adm-surface2);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-radius);
   font-size: 12.5px;

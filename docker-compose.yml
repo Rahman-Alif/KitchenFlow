@@ -40,17 +40,35 @@ services:
   frontend:
     image: node:20-alpine
     container_name: kitchenflow_frontend
+    restart: unless-stopped
     working_dir: /app
     volumes:
       - ./frontend:/app
       - /app/node_modules
     ports:
       - "3000:3000"
-    command: sh -c "npm install && npm run dev"
+    command: sh -c "npm install && npm run dev -- -H 0.0.0.0"
     env_file:
       - ./frontend/.env.local
     depends_on:
       - backend
+
+  # ── AI Features ──────────────────────────────────────────
+  ai_features:
+    build:
+      context: ./ai_features
+      dockerfile: Dockerfile
+    container_name: kitchenflow_ai
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ai_features:/app
+      - ai_models:/app/saved_models   # persists trained models across restarts
+    env_file:
+      - ./ai_features/.env
+    depends_on:
+      - postgres
 
   pgadmin:
     image: dpage/pgadmin4
@@ -66,3 +84,4 @@ services:
 
 volumes:
   postgres_data:
+  ai_models:        # ← named volume for model persistence

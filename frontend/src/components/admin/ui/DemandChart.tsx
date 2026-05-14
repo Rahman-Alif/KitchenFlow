@@ -43,7 +43,7 @@ export default function DemandChart({ data }: { data: DemandForecastResult }) {
       <div className="ai-donut-chart-area">
         <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
           {/* Background track */}
-          <circle cx={cx} cy={cy} r={R} fill="none" stroke="#f1f5f9" strokeWidth={STROKE} />
+          <circle cx={cx} cy={cy} r={R} fill="none" stroke="rgba(255, 255, 255, 0.05)" strokeWidth={STROKE} />
 
           {/* Arcs */}
           {arcs.map((arc) => (

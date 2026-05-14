@@ -148,13 +148,13 @@ export default function RevenueChart({ data }: { data: RevenueForecastResult }) 
               <g key={tick}>
                 <line
                   x1={PAD.left} x2={W - PAD.right} y1={y} y2={y}
-                  stroke={tick === 0 ? '#cbd5e1' : '#f1f5f9'}
+                  stroke={tick === 0 ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)'}
                   strokeWidth={tick === 0 ? 1.5 : 1}
                 />
                 <text
                   x={PAD.left - 10} y={y + 4}
                   textAnchor="end" fontSize="12"
-                  fill="#0f172a" fontFamily="Inter, sans-serif" fontWeight="600"
+                  fill="#94a3b8" fontFamily="Inter, sans-serif" fontWeight="600"
                 >
                   {fmtCompact(tick)}
                 </text>
@@ -166,7 +166,7 @@ export default function RevenueChart({ data }: { data: RevenueForecastResult }) 
           <line
             x1={toX(forecastStart)} x2={toX(forecastStart)}
             y1={PAD.top} y2={chartBottom}
-            stroke="#e2e8f0" strokeWidth="1" strokeDasharray="4 3"
+            stroke="rgba(255, 255, 255, 0.1)" strokeWidth="1" strokeDasharray="4 3"
           />
 
           {/* Lines */}
@@ -209,7 +209,7 @@ export default function RevenueChart({ data }: { data: RevenueForecastResult }) 
             <text
               key={label} x={x} y={chartBottom + 18}
               textAnchor="middle" fontSize="11"
-              fill="#0f172a" fontFamily="Inter, sans-serif" fontWeight="600"
+              fill="#94a3b8" fontFamily="Inter, sans-serif" fontWeight="600"
               style={{ pointerEvents: 'none' }}
             >
               {label}

@@ -61,11 +61,11 @@
 
 /* Stat card */
 .adm-dash-card {
-  background: var(--adm-surface);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-radius-lg);
   padding: 22px;
-  box-shadow: var(--adm-shadow);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -129,7 +129,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--adm-surface2);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--adm-border);
   border-radius: var(--adm-radius);
   padding: 10px 14px;
@@ -314,7 +314,7 @@
   max-width: 52px;
   height: 150px;
   border-radius: 10px;
-  background: var(--adm-surface2);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--adm-border);
   display: flex;
   align-items: flex-end;

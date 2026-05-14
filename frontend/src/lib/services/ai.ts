@@ -1,4 +1,5 @@
 // All AI feature calls — points to FastAPI at NEXT_PUBLIC_AI_URL
+import { apiRequest } from '@/lib/api';
 
 const AI_BASE = process.env.NEXT_PUBLIC_AI_URL ?? 'http://localhost:8080';
 
@@ -61,6 +62,26 @@ export interface AffinityResult    { anchors: AffinityAnchor[]; }
 export const getAffinity = (tenant_id: number) =>
   aiPost<AffinityResult>('/affinity', { tenant_id });
 
+// ── Predictive Affinity (Laravel-based) ─────────────────────
+export interface AffinityPrediction {
+  id: number;
+  name: string;
+  rate: number;
+  count: number;
+}
+export interface PredictiveAffinityResult {
+  anchor: { id: number; name: string };
+  predictions: AffinityPrediction[];
+  period_days: number;
+  total_anchor_orders: number;
+}
+
+export const predictItemAffinity = (itemId: number) =>
+  apiRequest<PredictiveAffinityResult>(`/admin/ai/affinity/${itemId}`);
+
+export const searchMenuItems = (query: string) =>
+  apiRequest<{ id: number; name: string }[]>(`/admin/ai/items/search?q=${encodeURIComponent(query)}`);
+
 // ── Stock Recommendation ──────────────────────────────────────
 export interface StockItem   { name: string; predicted_qty: number; }
 export interface StockSlot   { label: string; items: StockItem[]; }
@@ -81,3 +102,18 @@ export interface MessageAutofill { title: string; tag: string; priority: string;
 
 export const autofillMessage = (content: string) =>
   aiPost<MessageAutofill>('/messaging/autofill', { content });
+
+export interface InsightResult {
+  insight: string;
+  context: {
+    day: string;
+    time_slot: string;
+    today_orders: number;
+    today_revenue: number;
+    orders_vs_yesterday: number | null;
+    revenue_vs_yesterday: number | null;
+  };
+}
+
+export const getInsight = (tenant_id: number) =>
+  aiPost<InsightResult>('/insight', { tenant_id });
